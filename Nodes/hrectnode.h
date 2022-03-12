@@ -13,7 +13,11 @@ public:
 
     virtual QSGNode * build(HBoard *) override;
     virtual QRect getBoundRect() override;
+    virtual void move(const QPoint &p) override;
+    virtual void moveTo(const QPoint &p) override;
+    virtual void changedSelectStatus() override;
 private:
+    QColor _color;
 };
 
 #endif // HRECTNODE_H

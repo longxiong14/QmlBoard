@@ -19,7 +19,10 @@ public:
     virtual QSGNode* build(HBoard*) {return nullptr;}
     virtual QRect getBoundRect() {return  QRect();}
     virtual QUuid id();
-
+    virtual void changedSelectStatus(){ _select = !_select; }
+    virtual void move(const QPoint&){}
+    virtual void moveTo(const QPoint& ){}
+    virtual bool isSelect(){ return _select; }
 public:
     QJsonObject param();
     void setParam(const QJsonObject& p);
@@ -27,6 +30,7 @@ public:
 protected:
     QJsonObject _param;
     QUuid _id;
+    bool _select;
 };
 
 #endif // HNODEBASE_H

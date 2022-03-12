@@ -2,7 +2,7 @@
 #include <QSGNode>
 #include <QDebug>
 #define DEBUG qDebug() << __FUNCTION__ << " " << __LINE__ << " "
-HNodeBase::HNodeBase()
+HNodeBase::HNodeBase():_select(false)
 {
     _id = QUuid::createUuid();
     DEBUG << "build node " << _id;

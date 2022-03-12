@@ -17,7 +17,6 @@
 #include <QDebug>
 #define DEBUG qDebug() << __FUNCTION__ << " " << __LINE__ << " "
 
-
 HBoard::HBoard(QQuickItem *parent):
     QQuickItem(parent),
     _trans_node(nullptr),
@@ -32,33 +31,24 @@ HBoard::HBoard(QQuickItem *parent):
     setAcceptedMouseButtons(Qt::MouseButton::LeftButton
                             | Qt::MouseButton::RightButton
                             | Qt::MouseButton::MiddleButton);
-
-
-    pushNode(new HImageNode("D:/Codes/build-Exe-Desktop_Qt_5_13_2_MSVC2017_64bit-Debug/debug/test.jpg"));
-//    pushNode(new HImageNode("D:/Codes/build-Exe-Desktop_Qt_5_13_2_MSVC2017_64bit-Debug/debug/test.jpg", QRect(4000 * i,0,0,0)));
-//    pushNode(new HImageNode("D:/Codes/build-Exe-Desktop_Qt_5_13_2_MSVC2017_64bit-Debug/debug/DSC04018.JPG", QRect(4000 * i,0,0,0)));
-//    for(int i = 0; i < 4; i++){
-//        pushNode(new HImageNode("D:/Codes/build-Exe-Desktop_Qt_5_13_2_MSVC2017_64bit-Debug/debug/test.jpg", QRect(4000 * i,0,0,0)));
-//    }
-    for(int i = 0; i < 4; i++){
-//        pushNode(new HRectNode(QRect(i*400,0,200,200), Qt::GlobalColor::red));
-        pushNode(new HRectNode(QRect(i*400,0,200,200), QColor(255,0,0,150)));
-    }
-
-    pushTransform(QTransform().scale(0.5,0.5));
-
 }
 
 void HBoard::pushTransform(const QTransform &trans)
 {
-    QMutexLocker lock(&_mutex);
-    _transform_list.enqueue(trans);
+    pushTask([=](){
+        if(_trans_node)_trans_node->setMatrix(trans);
+    });
 }
 
 void HBoard::pushNode(HNodeBase *node)
 {
-    QMutexLocker lock(&_mutex);
-    _node_list.enqueue(node);
+    pushTask([=](){
+        if(node){
+            _trans_node->appendChildNode(node->build(this));
+            _nodes.insert(node->id(), node);
+        }
+
+    });
 }
 
 void HBoard::setHandle(HHandleBase *handle)
@@ -74,38 +64,86 @@ void HBoard::setSelect(const QUuid &s)
 
 void HBoard::clearSelect()
 {
-    for(const auto& s: _selects){
-        removdSelect(s);
+    for(auto n : _nodes){
+        if(n->isSelect()){
+            pushTask([=](){
+               n->changedSelectStatus();
+            });
+        }
     }
-    _selects.clear();
+    update();
 }
 
 void HBoard::pushSelect(const QUuid &s)
 {
-    if(!_selects.contains(s)){
-        _selects.insert(s);
-    }
+    pushTask([=](){
+        if(_nodes.contains(s)){
+            if(!_nodes[s]->isSelect()){
+                _nodes[s]->changedSelectStatus();
+            }
+        }
+    });
+    update();
 }
 
 void HBoard::removdSelect(const QUuid &s)
 {
-    if(_selects.contains(s)){
-        _selects.remove(s);
-    }
+    pushTask([=](){
+        if(_nodes.contains(s)){
+            if(_nodes[s]->isSelect()){
+                _nodes[s]->changedSelectStatus();
+            }
+        }
+    });
+    update();
 }
 
 void HBoard::changeSelectStatus(const QUuid &s)
 {
-    if(_selects.contains(s)){
-        removdSelect(s);
-    }else{
-        pushSelect(s);
+    if(_nodes.contains(s)){
+        if(_nodes[s]->isSelect()){
+            removdSelect(s);
+        }else{
+            pushSelect(s);
+        }
     }
+}
+
+QSet<QUuid> HBoard::selects()
+{
+    QSet<QUuid> set;
+    for(auto n :_nodes){
+        if(n->isSelect()){
+            set.insert(n->id());
+        }
+    }
+    return set;
 }
 
 QHash<QUuid, HNodeBase *> HBoard::nodes()
 {
     return _nodes;
+}
+
+void HBoard::moveNode(const QUuid &n, QPoint dlt)
+{
+    pushTask([=](){
+        if(_nodes.contains(n)){
+            DEBUG << "move node " << n << " " << dlt;
+            _nodes[n]->move(dlt);
+        }
+    });
+    update();
+}
+
+void HBoard::nodeMoveTo(const QUuid &n, QPoint point)
+{
+    pushTask([=](){
+        if(_nodes.contains(n)){
+            _nodes[n]->moveTo(point);
+        }
+    });
+    update();
 }
 
 QString HBoard::name()
@@ -124,11 +162,11 @@ void HBoard::setName(const QString &name)
 QPoint HBoard::WCS2LCS(const QPoint &point)
 {
     QPoint pt;
-   if(_trans_node){
-       auto trans_form = _trans_node->matrix().toTransform();
-       pt = trans_form.inverted().map(point);
-   }
-   return pt;
+    if(_trans_node){
+        auto trans_form = _trans_node->matrix().toTransform();
+        pt = trans_form.inverted().map(point);
+    }
+    return pt;
 }
 
 QSGTransformNode *HBoard::transformNode()
@@ -154,16 +192,9 @@ QSGNode *HBoard::updatePaintNode(QSGNode * node, QQuickItem::UpdatePaintNodeData
     }
 
     QMutexLocker lock(&_mutex);
-    while (!_node_list.empty()) {
-        auto n = _node_list.dequeue();
-        if(n){
-            _trans_node->appendChildNode(n->build(this));
-            _nodes.insert(n->id(), n);
-        }
-    }
-    while (!_transform_list.empty()) {
-        auto f = _transform_list.dequeue();
-        if(_trans_node)_trans_node->setMatrix(f);
+    while (!_tasks.empty()) {
+        auto f = _tasks.dequeue();
+        f();
     }
     return node;
 }
@@ -190,4 +221,15 @@ void HBoard::wheelEvent(QWheelEvent *event)
 {
     if(_handle)_handle->wheelEvent(this, event);
     update();
+}
+
+void HBoard::hoverMoveEvent(QHoverEvent *event)
+{
+//    DEBUG << WCS2LCS(event->pos());
+}
+
+void HBoard::pushTask(const HBoard::task &t)
+{
+    QMutexLocker lock(&_mutex);
+    _tasks.push_back(t);
 }

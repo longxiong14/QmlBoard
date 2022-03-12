@@ -4,12 +4,12 @@
 #include <QRectF>
 #include "hselectstyle.h"
 #include <QSGRenderNode>
+#include <QDebug>
+#define DEBUG qDebug() << __FUNCTION__ << " " << __LINE__ << " "
 HRectNode::HRectNode(const QRect &rect, const QColor &color)
 {
     setRect(rect);
     setColor(color);
-    auto rander = new HSelectStyle();
-    appendChildNode(rander);
 }
 
 QSGNode *HRectNode::build(HBoard *)
@@ -25,4 +25,31 @@ QRect HRectNode::getBoundRect()
                       static_cast<int>(r.width()),
                       static_cast<int>(r.height()));
     return rect ;
+}
+
+void HRectNode::move(const QPoint &p)
+{
+    auto tl = rect().topLeft() + p;
+    DEBUG << tl;
+    setRect(QRectF(tl, rect().size()));
+}
+
+void HRectNode::moveTo(const QPoint &p)
+{
+    auto r = rect();
+    r.setX(p.x());
+    r.setY(p.y());
+    setRect(r);
+    DEBUG << rect();
+}
+
+void HRectNode::changedSelectStatus()
+{
+    DEBUG << id();
+    HNodeBase::changedSelectStatus();
+    if(_select){
+         setColor(Qt::GlobalColor::blue);
+    }else{
+        setColor(Qt::GlobalColor::red);
+    }
 }

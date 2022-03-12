@@ -21,14 +21,11 @@ QSGNode *HImageNode::build(HBoard *board)
             return nullptr;
         }
         QSGTexture* texture = board->window()->createTextureFromImage(image);
-//        QSGSimpleTextureNode * tn = new QSGSimpleTextureNode();
         setTexture(texture);
         if(_rect.size().isNull()){
             _rect.setSize(image.size());
         }
        setRect(_rect);
-//        appendChildNode(tn);
-//        return tn;
     }
     return  this;
 }
@@ -37,9 +34,4 @@ QRect HImageNode::getBoundRect()
 {
     return _rect;
 }
-
-//void HImageNode::update()
-//{
-
-//}
 

@@ -13,6 +13,7 @@ public:
     virtual void wheelEvent(HBoard* board, QWheelEvent *event) ;
 
 private:
+
 };
 
 #endif // HHANDLEARROW_H

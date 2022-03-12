@@ -24,8 +24,7 @@ SOURCES += \
     Nodes/himagenode.cpp \
     Nodes/hnodebase.cpp \
     Nodes/hrectnode.cpp \
-    hboard.cpp \
-    hselectstyle.cpp
+    hboard.cpp
 
 HEADERS += \
     HBoard_global.h \
@@ -35,8 +34,7 @@ HEADERS += \
     Nodes/himagenode.h \
     Nodes/hnodebase.h \
     Nodes/hrectnode.h \
-    hboard.h \
-    hselectstyle.h
+    hboard.h
 
 # Default rules for deployment.
 unix {
