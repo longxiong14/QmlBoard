@@ -2,7 +2,6 @@
 #include <QSGSimpleRectNode>
 #include <QSGRectangleNode>
 #include <QRectF>
-#include "hselectstyle.h"
 #include <QSGRenderNode>
 #include <QDebug>
 #define DEBUG qDebug() << __FUNCTION__ << " " << __LINE__ << " "

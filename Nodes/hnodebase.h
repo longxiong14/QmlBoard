@@ -1,10 +1,10 @@
 #ifndef HNODEBASE_H
 #define HNODEBASE_H
 
-#include "hboard.h"
-#include "HBoard_global.h"
+#include "../HBoard_global.h"
 #include <QJsonObject>
 #include <QUuid>
+#include <QRect>
 class QSGNode;
 class HBoard;
 class HBOARD_EXPORT HNodeBase

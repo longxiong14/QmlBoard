@@ -13,7 +13,7 @@
 #include "Nodes/hnodebase.h"
 #include "Nodes/himagenode.h"
 #include "Nodes/hrectnode.h"
-
+#include "hboardmanager.h"
 #include <QDebug>
 #define DEBUG qDebug() << __FUNCTION__ << " " << __LINE__ << " "
 
@@ -129,7 +129,6 @@ void HBoard::moveNode(const QUuid &n, QPoint dlt)
 {
     pushTask([=](){
         if(_nodes.contains(n)){
-            DEBUG << "move node " << n << " " << dlt;
             _nodes[n]->move(dlt);
         }
     });
@@ -154,7 +153,9 @@ QString HBoard::name()
 void HBoard::setName(const QString &name)
 {
     if(name != _name){
+        auto old = _name;
         _name = name;
+        HBoardManager::getInstance()->changeBoardNmae(old, this);
         nameChanged();
     }
 }
@@ -225,7 +226,7 @@ void HBoard::wheelEvent(QWheelEvent *event)
 
 void HBoard::hoverMoveEvent(QHoverEvent *event)
 {
-//    DEBUG << WCS2LCS(event->pos());
+    DEBUG << WCS2LCS(event->pos());
 }
 
 void HBoard::pushTask(const HBoard::task &t)
