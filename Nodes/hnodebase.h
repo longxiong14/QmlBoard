@@ -5,6 +5,7 @@
 #include <QJsonObject>
 #include <QUuid>
 #include <QRect>
+#include <QColor>
 class QSGNode;
 class HBoard;
 class HBOARD_EXPORT HNodeBase

@@ -3,8 +3,8 @@
 #include <QImage>
 #include <QSGSimpleTextureNode>
 #include <QQuickWindow>
-#include <QDebug>
 #include "hboard.h"
+#include <QDebug>
 #define DEBUG qDebug() << __FUNCTION__ << " " << __LINE__ << " "
 
 HImageNode::HImageNode(const QString &path, const QRect &rect)
