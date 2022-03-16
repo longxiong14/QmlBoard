@@ -67,7 +67,7 @@ void HBoard::clearSelect()
     for(auto n : _nodes){
         if(n->isSelect()){
             pushTask([=](){
-               n->changedSelectStatus();
+                n->changedSelectStatus();
             });
         }
     }
@@ -143,6 +143,19 @@ void HBoard::nodeMoveTo(const QUuid &n, QPoint point)
         }
     });
     update();
+}
+
+void HBoard::drawNodePoint(const QUuid &node, const QList<QPoint> points)
+{
+    if(_nodes.contains(node))
+        pushTask([=](){
+            _nodes[node]->drawPoints(points);
+        });
+}
+
+bool HBoard::hasNode(const QUuid &node)
+{
+    return _nodes.contains(node);
 }
 
 QString HBoard::name()
@@ -226,7 +239,7 @@ void HBoard::wheelEvent(QWheelEvent *event)
 
 void HBoard::hoverMoveEvent(QHoverEvent *event)
 {
-    DEBUG << WCS2LCS(event->pos());
+    //    DEBUG << WCS2LCS(event->pos());
 }
 
 void HBoard::pushTask(const HBoard::task &t)

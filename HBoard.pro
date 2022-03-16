@@ -18,6 +18,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    Common/hcommons.cpp \
     Handles/hhandlearrow.cpp \
     Handles/hhandlebase.cpp \
     Handles/hhandlemove.cpp \
@@ -30,6 +31,7 @@ SOURCES += \
     hboardmanager.cpp
 
 HEADERS += \
+    Common/hcommons.h \
     HBoard_global.h \
     Handles/hhandlearrow.h \
     Handles/hhandlebase.h \

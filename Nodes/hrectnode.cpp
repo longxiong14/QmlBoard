@@ -11,6 +11,11 @@ HRectNode::HRectNode(const QRect &rect, const QColor &color)
     setColor(color);
 }
 
+QSGNode *HRectNode::get()
+{
+    return this;
+}
+
 QSGNode *HRectNode::build(HBoard *)
 {
     return this;
@@ -47,8 +52,16 @@ void HRectNode::changedSelectStatus()
     DEBUG << id();
     HNodeBase::changedSelectStatus();
     if(_select){
-         setColor(Qt::GlobalColor::blue);
+        setColor(Qt::GlobalColor::blue);
     }else{
         setColor(Qt::GlobalColor::red);
     }
 }
+
+void HRectNode::drawPoints(const QList<QPoint> & points)
+{
+    if(2 == points.size()){
+        setRect(QRect(points[0], points[1]));
+    }
+}
+

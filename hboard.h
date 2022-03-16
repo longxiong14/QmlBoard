@@ -30,6 +30,8 @@ public:
     QHash<QUuid, HNodeBase*> nodes();
     void moveNode(const QUuid& n, QPoint dlt);      //move node delta
     void nodeMoveTo(const QUuid& n, QPoint point);  //move node to point
+    void drawNodePoint(const QUuid& node, const QList<QPoint> points); //draw handle move event
+    bool hasNode(const QUuid &node);
 public:
     void setSelect(const QUuid& s);
     void clearSelect();

@@ -1,7 +1,7 @@
 #ifndef HHANDLEBASE_H
 #define HHANDLEBASE_H
 
-#include "HBoard_global.h"
+#include "../HBoard_global.h"
 class QMouseEvent;
 class HBoard;
 class QWheelEvent;

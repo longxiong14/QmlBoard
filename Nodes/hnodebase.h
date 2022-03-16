@@ -21,9 +21,10 @@ public:
     virtual QRect getBoundRect() {return  QRect();}
     virtual QUuid id();
     virtual void changedSelectStatus(){ _select = !_select; }
-    virtual void move(const QPoint&){}
-    virtual void moveTo(const QPoint& ){}
+    virtual void move(const QPoint&){}      //move delta
+    virtual void moveTo(const QPoint& ){}   //move to point
     virtual bool isSelect(){ return _select; }
+    virtual void drawPoints(const QList<QPoint>& ){}
 public:
     QJsonObject param();
     void setParam(const QJsonObject& p);

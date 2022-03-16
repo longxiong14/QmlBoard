@@ -36,3 +36,8 @@ QRect HImageNode::getBoundRect()
     return _rect;
 }
 
+void HImageNode::changedSelectStatus()
+{
+    _select = false;
+}
+

@@ -11,6 +11,7 @@ public:
 
     virtual QSGNode * build(HBoard *board) override;
     virtual QRect getBoundRect() override;
+    virtual void changedSelectStatus() override;
 
 private:
     QString  _path;

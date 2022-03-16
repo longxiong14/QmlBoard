@@ -2,7 +2,8 @@
 #define HHANDLEPAINT_H
 
 #include "hhandlebase.h"
-
+#include <QPoint>
+#include <QUuid>
 class HBOARD_EXPORT HHandleDrawRect : public HHandleBase
 {
 public:
@@ -12,8 +13,9 @@ public:
     virtual void mouseMoveEvent(HBoard* board, QMouseEvent *event) override;
     virtual void mouseReleaseEvent(HBoard* board, QMouseEvent *event) override;
     virtual void wheelEvent(HBoard* board, QWheelEvent *event) override;
-public:
-
+protected:
+    QPoint _point;
+    QUuid _node;
 };
 
 #endif // HHANDLEPAINT_H
