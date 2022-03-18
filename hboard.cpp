@@ -12,7 +12,6 @@
 #include "Handles/hhandlearrow.h"
 #include "Nodes/hnodebase.h"
 #include "Nodes/himagenode.h"
-#include "Nodes/hrectnode.h"
 #include "hboardmanager.h"
 #include <QDebug>
 #define DEBUG qDebug() << __FUNCTION__ << " " << __LINE__ << " "

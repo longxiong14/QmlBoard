@@ -25,6 +25,7 @@ public:
     virtual void moveTo(const QPoint& ){}   //move to point
     virtual bool isSelect(){ return _select; }
     virtual void drawPoints(const QList<QPoint>& ){}
+    virtual void setColor(const QColor& ){}
 public:
     QJsonObject param();
     void setParam(const QJsonObject& p);

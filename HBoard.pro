@@ -23,10 +23,9 @@ SOURCES += \
     Handles/hhandlebase.cpp \
     Handles/hhandlemove.cpp \
     Handles/hhandlepaint.cpp \
+    Nodes/hfillnode.cpp \
     Nodes/himagenode.cpp \
     Nodes/hnodebase.cpp \
-    Nodes/hrectnode.cpp \
-    Nodes/hshaperect.cpp \
     hboard.cpp \
     hboardmanager.cpp
 
@@ -37,10 +36,9 @@ HEADERS += \
     Handles/hhandlebase.h \
     Handles/hhandlemove.h \
     Handles/hhandlepaint.h \
+    Nodes/hfillnode.h \
     Nodes/himagenode.h \
     Nodes/hnodebase.h \
-    Nodes/hrectnode.h \
-    Nodes/hshaperect.h \
     hboard.h \
     hboardmanager.h
 
