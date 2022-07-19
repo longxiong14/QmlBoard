@@ -3,17 +3,18 @@
 #include <QSGFlatColorMaterial>
 
 HFillNode::HFillNode(const QList<QPoint> &points, const QColor &color,
-                     bool fill) {
-  setOurGeometry(points, fill);
+                     unsigned long type) {
+  setOurGeometry(points, type);
   setColor(color);
 }
 
-HFillNode::HFillNode(const QRect &rect, const QColor &color, bool fill) {
+HFillNode::HFillNode(const QRect &rect, const QColor &color,
+                     unsigned long type) {
   QList<QPoint> list{{rect.left(), rect.top()},
                      {rect.right(), rect.top()},
                      {rect.right(), rect.bottom()},
                      {rect.left(), rect.bottom()}};
-  setOurGeometry(list, fill);
+  setOurGeometry(list, type);
   setColor(color);
 }
 
@@ -63,7 +64,11 @@ void HFillNode::changedSelectStatus() {
 }
 
 void HFillNode::drawPoints(const QList<QPoint> &points) {
-  setOurGeometry(points);
+  auto ptr = geometry();
+  if (ptr)
+    setOurGeometry(points, ptr->drawingMode());
+  else
+    setOurGeometry(points);
 }
 
 void HFillNode::setColor(const QColor &color) {
@@ -73,21 +78,21 @@ void HFillNode::setColor(const QColor &color) {
   setFlag(QSGNode::OwnsMaterial);
 }
 
-QSGGeometry *HFillNode::buildGeometry(const QList<QPoint> &points, bool fill) {
+QSGGeometry *HFillNode::buildGeometry(const QList<QPoint> &points,
+                                      unsigned long type) {
   QSGGeometry *geometry =
       new QSGGeometry(QSGGeometry::defaultAttributes_Point2D(), points.size());
-  if (fill)
-    geometry->setDrawingMode(GL_POLYGON);
-  else
-    geometry->setDrawingMode(GL_LINE_LOOP);
+  GL_LINE_LOOP;
+  geometry->setDrawingMode(static_cast<unsigned long>(type));
   for (int i = 0; i < points.size(); i++) {
     geometry->vertexDataAsPoint2D()[i].set(points[i].x(), points[i].y());
   }
   return geometry;
 }
 
-void HFillNode::setOurGeometry(const QList<QPoint> &points, bool fill) {
-  QSGGeometry *geometry = buildGeometry(points, fill);
+void HFillNode::setOurGeometry(const QList<QPoint> &points,
+                               unsigned long type) {
+  QSGGeometry *geometry = buildGeometry(points, type);
   setGeometry(geometry);
   setFlag(QSGNode::OwnsGeometry);
 }
