@@ -58,8 +58,6 @@ void HHandleDrawPoly::mouseMoveEvent(HBoard *board, QMouseEvent *event) {
 
 void HHandleDrawPoly::mouseReleaseEvent(HBoard *board, QMouseEvent *event) {
   if (board && event) {
-    auto point = board->WCS2LCS(event->pos());
-    _points.push_back(point);
     _points.push_back(_points.first());
     board->drawNodePoint(_node, _points);
   }
@@ -67,3 +65,54 @@ void HHandleDrawPoly::mouseReleaseEvent(HBoard *board, QMouseEvent *event) {
 }
 
 void HHandleDrawPoly::wheelEvent(HBoard *, QWheelEvent *) {}
+
+HHandleDrawLine::HHandleDrawLine() {}
+
+void HHandleDrawLine::mousePressEvent(HBoard *board, QMouseEvent *event) {
+  if (board && event) {
+    _point = board->WCS2LCS(event->pos());
+    QList<QPoint> list{_point};
+    auto node = new HFillNode(list, Qt::GlobalColor::red, GL_LINES);
+    board->pushNode(node);
+    _node = node->id();
+  }
+}
+
+void HHandleDrawLine::mouseMoveEvent(HBoard *board, QMouseEvent *event) {
+  if (board && event) {
+    auto point = board->WCS2LCS(event->pos());
+    QList<QPoint> list{_point, point};
+    board->drawNodePoint(_node, list);
+  }
+}
+
+void HHandleDrawLine::mouseReleaseEvent(HBoard *, QMouseEvent *) {}
+
+void HHandleDrawLine::wheelEvent(HBoard *, QWheelEvent *) {}
+
+HHandleDrawCurve::HHandleDrawCurve() {}
+
+void HHandleDrawCurve::mousePressEvent(HBoard *board, QMouseEvent *event) {
+  if (board && event) {
+    auto point = board->WCS2LCS(event->pos());
+    auto node = new HFillNode(QRect(point, QSize(1, 1)), Qt::GlobalColor::red,
+                              GL_LINE_STRIP);
+    _points = {point};
+    board->pushNode(node);
+    _node = node->id();
+  }
+}
+
+void HHandleDrawCurve::mouseMoveEvent(HBoard *board, QMouseEvent *event) {
+  if (board && event) {
+    auto point = board->WCS2LCS(event->pos());
+    _points.push_back(point);
+    board->drawNodePoint(_node, _points);
+  }
+}
+
+void HHandleDrawCurve::mouseReleaseEvent(HBoard *, QMouseEvent *) {
+  _points.clear();
+}
+
+void HHandleDrawCurve::wheelEvent(HBoard *, QWheelEvent *) {}

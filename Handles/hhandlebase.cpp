@@ -1,37 +1,21 @@
-#include "hhandlebase.h"
+﻿#include "hhandlebase.h"
 
 #include <QMouseEvent>
+
 #include "hboard.h"
-HHandleBase::HHandleBase()
-{
+HHandleBase::HHandleBase() {}
 
-}
+HHandleBase::~HHandleBase() {}
 
-HHandleBase::~HHandleBase()
-{
+void HHandleBase::mousePressEvent(HBoard *, QMouseEvent *) {}
 
-}
+void HHandleBase::mouseMoveEvent(HBoard *, QMouseEvent *) {}
 
-void HHandleBase::mousePressEvent(HBoard *board, QMouseEvent *event)
-{
-    (void)event;
-    (void)board;
-}
+void HHandleBase::mouseReleaseEvent(HBoard *, QMouseEvent *) {}
 
-void HHandleBase::mouseMoveEvent(HBoard* board, QMouseEvent *event)
-{
-    (void)event;
-    (void)board;
-}
+void HHandleBase::wheelEvent(HBoard *, QWheelEvent *) {}
 
-void HHandleBase::mouseReleaseEvent(HBoard* board, QMouseEvent *event)
-{
-    (void)event;
-    (void)board;
-}
-
-void HHandleBase::wheelEvent(HBoard *board, QWheelEvent *event)
-{
-    (void)event;
-    (void)board;
+bool HHandleBase::middleButtonPress(QMouseEvent *event) {
+  return (Qt::MouseButton::MiddleButton ==
+          (Qt::MouseButton::MiddleButton & event->buttons()));
 }

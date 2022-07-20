@@ -20,6 +20,9 @@ class HBOARD_EXPORT HHandleBase {
   virtual void wheelEvent(HBoard* board, QWheelEvent* event);
 
  protected:
+  bool middleButtonPress(QMouseEvent* event);
+
+ protected:
   QUuid _node;
 };
 
