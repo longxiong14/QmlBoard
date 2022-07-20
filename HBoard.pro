@@ -27,7 +27,8 @@ SOURCES += \
     Nodes/himagenode.cpp \
     Nodes/hnodebase.cpp \
     hboard.cpp \
-    hboardmanager.cpp
+    hboardmanager.cpp \
+    hboarduicontrol.cpp
 
 HEADERS += \
     Common/hcommons.h \
@@ -40,7 +41,8 @@ HEADERS += \
     Nodes/himagenode.h \
     Nodes/hnodebase.h \
     hboard.h \
-    hboardmanager.h
+    hboardmanager.h \
+    hboarduicontrol.h
 
 # Default rules for deployment.
 unix {

@@ -1,17 +1,18 @@
-#ifndef HBOARDUICONTROL_H
+﻿#ifndef HBOARDUICONTROL_H
 #define HBOARDUICONTROL_H
 
 #include <QObject>
 
-class HBoardUIControl : public QObject
-{
-    Q_OBJECT
-public:
-    explicit HBoardUIControl(QObject *parent = nullptr);
+#include "HBoard_global.h"
 
-signals:
+class HBOARD_EXPORT HBoardUIControl : public QObject {
+  Q_OBJECT
+ public:
+  explicit HBoardUIControl(QObject *parent = nullptr);
 
-public slots:
+ signals:
+
+ public slots:
 };
 
-#endif // HBOARDUICONTROL_H
+#endif  // HBOARDUICONTROL_H

@@ -33,6 +33,35 @@ HBoard::HBoard(QQuickItem *parent)
                           Qt::MouseButton::MiddleButton);
 }
 
+void HBoard::home() {
+  pushTask([=]() {
+    QRect rect(INT_MAX, INT_MAX, INT_MIN, INT_MIN);
+    for (const auto &key : _nodes.keys()) {
+      auto node = _nodes.value(key);
+      if (node) {
+        auto r = node->getBoundRect();
+        rect.setX(std::min(r.x(), rect.x()));
+        rect.setY(std::min(r.y(), rect.y()));
+        rect.setWidth(std::max(r.width(), rect.width()));
+        rect.setHeight(std::max(r.height(), rect.height()));
+      }
+    }
+    auto w = width();
+    auto h = height();
+
+    auto ws = w / rect.width();
+    auto hs = h / rect.height();
+    auto scale = std::min(ws, hs);
+    QTransform trans;
+    auto x = (w - rect.width() * scale) / 2;
+    auto y = (h - rect.height() * scale) / 2;
+    DEBUG << scale << " " << x << " " << y;
+    trans.translate(x, y);
+    trans.scale(scale, scale);
+    if (_trans_node) _trans_node->setMatrix(trans);
+  });
+}
+
 void HBoard::pushTransform(const QTransform &trans) {
   pushTask([=]() {
     if (_trans_node) _trans_node->setMatrix(trans);
