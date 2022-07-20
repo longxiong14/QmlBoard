@@ -33,3 +33,13 @@ QSGNode *HImageNode::build(HBoard *board) {
 QRect HImageNode::getBoundRect() { return _rect; }
 
 void HImageNode::changedSelectStatus() { _select = !_select; }
+
+void HImageNode::move(const QPoint &p) {
+  auto r = rect();
+  auto tl = r.topLeft();
+  tl += p;
+  QRectF s = QRectF();
+  s.setTopLeft(tl);
+  s.setSize(r.size());
+  setRect(s);
+}
