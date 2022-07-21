@@ -57,7 +57,7 @@ QList<QPoint> HCommon::BuildRectList(const QPoint &f, const QPoint &s) {
 
 bool HCommon::PointInContour(const QPoint &vtPoint,
                              const QList<QPoint> &vecPoints) {
-  if (false) {
+  if (true) {
     bool bResult =
         false;  //判断结果（true；点落在多边形内；false:点未落在多边形内）
     int nSize = vecPoints.size();

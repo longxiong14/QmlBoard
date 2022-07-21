@@ -21,6 +21,16 @@ HHandleArrow::HHandleArrow() : HHandleMove(), _move(false) {}
 void HHandleArrow::mousePressEvent(HBoard *board, QMouseEvent *event) {
   HHandleMove::mousePressEvent(board, event);
   if (board && event) {
+    _move = false;
+    auto pos = board->WCS2LCS(event->pos());
+    auto nodes = board->nodes();
+    for (const auto &n : nodes.values()) {
+      auto points = n->getPointList();
+      if (HCommon::PointInContour(pos, points)) {
+        _move = true;
+        return;
+      }
+    }
   }
 }
 

@@ -103,6 +103,7 @@ QSGGeometry *HFillNode::buildGeometry(const QList<QPoint> &points,
   for (int i = 0; i < points.size(); i++) {
     geometry->vertexDataAsPoint2D()[i].set(points[i].x(), points[i].y());
   }
+  geometry->setLineWidth(5);
   return geometry;
 }
 
