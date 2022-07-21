@@ -7,23 +7,24 @@
 #include "Nodes/hfillnode.h"
 #include "hboard.h"
 #define DEBUG qDebug() << __FUNCTION__ << " " << __LINE__ << " "
-HHandleDrawRect::HHandleDrawRect() : HHandleBase() {}
+HHandleDrawRect::HHandleDrawRect() {}
 
 void HHandleDrawRect::mousePressEvent(HBoard *board, QMouseEvent *event) {
-  DEBUG << "mouse press";
-  if (board && event) {
+  HHandleMove::mousePressEvent(board, event);
+  if (board && event && leftButtonPress(event)) {
     _point = board->WCS2LCS(event->pos());
-    auto node = new HFillNode(QRect(_point, QSize(1, 1)), Qt::GlobalColor::red);
+    auto node = new HFillNode(QRect(_point, QSize(1, 1)), Qt::GlobalColor::red,
+                              GL_LINE_LOOP);
     board->pushNode(node);
     _node = node->id();
   }
 }
 
 void HHandleDrawRect::mouseMoveEvent(HBoard *board, QMouseEvent *event) {
-  if (board && event) {
+  HHandleMove::mouseMoveEvent(board, event);
+  if (board && event && leftButtonPress(event)) {
     auto pos = board->WCS2LCS(event->pos());
     QList<QPoint> points = HCommon::BuildRectList(_point, pos);
-    DEBUG << points;
     board->drawNodePoint(_node, points);
   } else {
     DEBUG << "board or event or node is null";
@@ -32,13 +33,11 @@ void HHandleDrawRect::mouseMoveEvent(HBoard *board, QMouseEvent *event) {
 
 void HHandleDrawRect::mouseReleaseEvent(HBoard *, QMouseEvent *) {}
 
-void HHandleDrawRect::wheelEvent(HBoard *, QWheelEvent *) {}
-
 HHandleDrawPoly::HHandleDrawPoly() {}
 
 void HHandleDrawPoly::mousePressEvent(HBoard *board, QMouseEvent *event) {
-  DEBUG << "mouse press";
-  if (board && event) {
+  HHandleMove::mousePressEvent(board, event);
+  if (board && event && leftButtonPress(event)) {
     auto point = board->WCS2LCS(event->pos());
     auto node = new HFillNode(QRect(point, QSize(1, 1)), Qt::GlobalColor::red,
                               GL_LINE_STRIP);
@@ -49,7 +48,8 @@ void HHandleDrawPoly::mousePressEvent(HBoard *board, QMouseEvent *event) {
 }
 
 void HHandleDrawPoly::mouseMoveEvent(HBoard *board, QMouseEvent *event) {
-  if (board && event) {
+  HHandleMove::mouseMoveEvent(board, event);
+  if (board && event && leftButtonPress(event)) {
     auto point = board->WCS2LCS(event->pos());
     _points.push_back(point);
     board->drawNodePoint(_node, _points);
@@ -57,6 +57,7 @@ void HHandleDrawPoly::mouseMoveEvent(HBoard *board, QMouseEvent *event) {
 }
 
 void HHandleDrawPoly::mouseReleaseEvent(HBoard *board, QMouseEvent *event) {
+  HHandleMove::mouseReleaseEvent(board, event);
   if (board && event) {
     _points.push_back(_points.first());
     board->drawNodePoint(_node, _points);
@@ -64,12 +65,11 @@ void HHandleDrawPoly::mouseReleaseEvent(HBoard *board, QMouseEvent *event) {
   _points.clear();
 }
 
-void HHandleDrawPoly::wheelEvent(HBoard *, QWheelEvent *) {}
-
 HHandleDrawLine::HHandleDrawLine() {}
 
 void HHandleDrawLine::mousePressEvent(HBoard *board, QMouseEvent *event) {
-  if (board && event) {
+  HHandleMove::mousePressEvent(board, event);
+  if (board && event && leftButtonPress(event)) {
     _point = board->WCS2LCS(event->pos());
     QList<QPoint> list{_point};
     auto node = new HFillNode(list, Qt::GlobalColor::red, GL_LINES);
@@ -79,7 +79,8 @@ void HHandleDrawLine::mousePressEvent(HBoard *board, QMouseEvent *event) {
 }
 
 void HHandleDrawLine::mouseMoveEvent(HBoard *board, QMouseEvent *event) {
-  if (board && event) {
+  HHandleMove::mouseMoveEvent(board, event);
+  if (board && event && leftButtonPress(event)) {
     auto point = board->WCS2LCS(event->pos());
     QList<QPoint> list{_point, point};
     board->drawNodePoint(_node, list);
@@ -88,12 +89,11 @@ void HHandleDrawLine::mouseMoveEvent(HBoard *board, QMouseEvent *event) {
 
 void HHandleDrawLine::mouseReleaseEvent(HBoard *, QMouseEvent *) {}
 
-void HHandleDrawLine::wheelEvent(HBoard *, QWheelEvent *) {}
-
 HHandleDrawCurve::HHandleDrawCurve() {}
 
 void HHandleDrawCurve::mousePressEvent(HBoard *board, QMouseEvent *event) {
-  if (board && event) {
+  HHandleMove::mousePressEvent(board, event);
+  if (board && event && leftButtonPress(event)) {
     auto point = board->WCS2LCS(event->pos());
     auto node = new HFillNode(QRect(point, QSize(1, 1)), Qt::GlobalColor::red,
                               GL_LINE_STRIP);
@@ -104,7 +104,8 @@ void HHandleDrawCurve::mousePressEvent(HBoard *board, QMouseEvent *event) {
 }
 
 void HHandleDrawCurve::mouseMoveEvent(HBoard *board, QMouseEvent *event) {
-  if (board && event) {
+  HHandleMove::mouseMoveEvent(board, event);
+  if (board && event && leftButtonPress(event)) {
     auto point = board->WCS2LCS(event->pos());
     _points.push_back(point);
     board->drawNodePoint(_node, _points);
@@ -115,4 +116,30 @@ void HHandleDrawCurve::mouseReleaseEvent(HBoard *, QMouseEvent *) {
   _points.clear();
 }
 
-void HHandleDrawCurve::wheelEvent(HBoard *, QWheelEvent *) {}
+HHandleDrawFillRect::HHandleDrawFillRect() {}
+
+void HHandleDrawFillRect::mousePressEvent(HBoard *board, QMouseEvent *event) {
+  HHandleMove::mousePressEvent(board, event);
+  if (board && event && leftButtonPress(event)) {
+    _point = board->WCS2LCS(event->pos());
+    DEBUG << _point;
+    auto node = new HFillNode(QRect(_point, QSize(1, 1)), Qt::GlobalColor::red,
+                              GL_QUADS);
+    board->pushNode(node);
+    _node = node->id();
+  }
+}
+
+HHandleDrawFillPoly::HHandleDrawFillPoly() {}
+
+void HHandleDrawFillPoly::mousePressEvent(HBoard *board, QMouseEvent *event) {
+  HHandleMove::mousePressEvent(board, event);
+  if (board && event && leftButtonPress(event)) {
+    auto point = board->WCS2LCS(event->pos());
+    auto node = new HFillNode(QRect(point, QSize(1, 1)), Qt::GlobalColor::red,
+                              GL_POLYGON);
+    _points = {point};
+    board->pushNode(node);
+    _node = node->id();
+  }
+}

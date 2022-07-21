@@ -21,6 +21,7 @@ class HBOARD_EXPORT HHandleBase {
 
  protected:
   bool middleButtonPress(QMouseEvent* event);
+  bool leftButtonPress(QMouseEvent* event);
 
  protected:
   QUuid _node;

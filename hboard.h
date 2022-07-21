@@ -27,7 +27,7 @@ class HBOARD_EXPORT HBoard : public QQuickItem {
 
  public:
   void pushTransform(const QTransform& trans);
-  void pushNode(HNodeBase* node);
+  void pushNode(HNodeBase* node, bool flag = true);
   void setHandle(HHandleBase* handle);
   QSGTransformNode* transformNode();
   QTransform transform();
@@ -66,6 +66,7 @@ class HBOARD_EXPORT HBoard : public QQuickItem {
   void pushTask(const task& t);
  signals:
   void nameChanged();
+  void hoverPoint(int x, int y);
 
  private:
   QSGTransformNode* _trans_node;

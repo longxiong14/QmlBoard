@@ -21,6 +21,7 @@ SOURCES += \
     Common/hcommons.cpp \
     Handles/hhandlearrow.cpp \
     Handles/hhandlebase.cpp \
+    Handles/hhandleflyweight.cpp \
     Handles/hhandlemove.cpp \
     Handles/hhandlepaint.cpp \
     Nodes/hfillnode.cpp \
@@ -35,6 +36,7 @@ HEADERS += \
     HBoard_global.h \
     Handles/hhandlearrow.h \
     Handles/hhandlebase.h \
+    Handles/hhandleflyweight.h \
     Handles/hhandlemove.h \
     Handles/hhandlepaint.h \
     Nodes/hfillnode.h \

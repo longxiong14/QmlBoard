@@ -3,6 +3,7 @@
 #include <QMouseEvent>
 
 #include "hboard.h"
+#define DEBUG qDebug() << __FUNCTION__ << " " << __LINE__ << " "
 HHandleBase::HHandleBase() {}
 
 HHandleBase::~HHandleBase() {}
@@ -16,6 +17,13 @@ void HHandleBase::mouseReleaseEvent(HBoard *, QMouseEvent *) {}
 void HHandleBase::wheelEvent(HBoard *, QWheelEvent *) {}
 
 bool HHandleBase::middleButtonPress(QMouseEvent *event) {
-  return (Qt::MouseButton::MiddleButton ==
-          (Qt::MouseButton::MiddleButton & event->buttons()));
+  bool flag = (Qt::MouseButton::MiddleButton ==
+               (Qt::MouseButton::MiddleButton & event->buttons()));
+  return flag;
+}
+
+bool HHandleBase::leftButtonPress(QMouseEvent *event) {
+  bool flag = (Qt::MouseButton::LeftButton ==
+               (Qt::MouseButton::LeftButton & event->buttons()));
+  return flag;
 }

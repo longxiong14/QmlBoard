@@ -7,6 +7,8 @@ HNodeBase::HNodeBase() : _select(false) { _id = QUuid::createUuid(); }
 
 HNodeBase::~HNodeBase() {}
 
+QList<QPoint> HNodeBase::getPointList() { return {}; }
+
 QUuid HNodeBase::id() { return _id; }
 
 QJsonObject HNodeBase::param() { return _param; }

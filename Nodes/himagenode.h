@@ -9,6 +9,7 @@ class HBOARD_EXPORT HImageNode : public HNodeBase, public QSGSimpleTextureNode {
 
   virtual QSGNode* build(HBoard* board) override;
   virtual QRect getBoundRect() override;
+  virtual QList<QPoint> getPointList() override;
   virtual void changedSelectStatus() override;
   virtual void move(const QPoint&) override;
 

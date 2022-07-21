@@ -2,6 +2,7 @@
 
 #include <QDebug>
 
+#include "../Common/hcommons.h"
 #include "Nodes/hnodebase.h"
 #include "hboard.h"
 #include "hhandlemove.h"
@@ -15,10 +16,12 @@ static bool pointInRect(const QPoint &point, const QRect &rect) {
   return false;
 }
 
-HHandleArrow::HHandleArrow() : HHandleMove() {}
+HHandleArrow::HHandleArrow() : HHandleMove(), _move(false) {}
 
 void HHandleArrow::mousePressEvent(HBoard *board, QMouseEvent *event) {
   HHandleMove::mousePressEvent(board, event);
+  if (board && event) {
+  }
 }
 
 void HHandleArrow::mouseMoveEvent(HBoard *board, QMouseEvent *event) {
@@ -32,14 +35,10 @@ void HHandleArrow::mouseMoveEvent(HBoard *board, QMouseEvent *event) {
         auto nodes = board->nodes();
         auto pos = board->WCS2LCS(event->pos());
         for (const auto &s : selects) {
-          if (nodes.contains(s)) {
+          if (nodes.contains(s) && _move) {
             auto node = nodes[s];
-            if (pointInRect(pos, node->getBoundRect())) {
-              auto dlt = pos - _last_point - board->WCS2LCS(QPoint());
-              board->moveNode(node->id(), dlt);
-            } else {
-              DEBUG << pos << " not in " << node->getBoundRect();
-            }
+            auto dlt = pos - _last_point - board->WCS2LCS(QPoint());
+            board->moveNode(node->id(), dlt);
           } else {
             DEBUG << nodes.keys() << " " << s;
           }
@@ -57,12 +56,10 @@ void HHandleArrow::mouseReleaseEvent(HBoard *board, QMouseEvent *event) {
     } else {
       auto pos = board->WCS2LCS(event->pos());
       auto nodes = board->nodes();
-      board->clearSelect();
-      for (const auto &n : nodes) {
-        auto r = n->getBoundRect();
-        if (pointInRect(pos, r)) {
+      for (const auto &n : nodes.values()) {
+        auto points = n->getPointList();
+        if (HCommon::PointInContour(pos, points)) {
           board->changeSelectStatus(n->id());
-          DEBUG << n->id() << r;
         }
       }
     }

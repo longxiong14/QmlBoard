@@ -55,7 +55,6 @@ void HBoard::home() {
     QTransform trans;
     auto x = (w - rect.width() * scale) / 2;
     auto y = (h - rect.height() * scale) / 2;
-    DEBUG << scale << " " << x << " " << y;
     trans.translate(x, y);
     trans.scale(scale, scale);
     if (_trans_node) _trans_node->setMatrix(trans);
@@ -68,11 +67,11 @@ void HBoard::pushTransform(const QTransform &trans) {
   });
 }
 
-void HBoard::pushNode(HNodeBase *node) {
+void HBoard::pushNode(HNodeBase *node, bool flag) {
   pushTask([=]() {
     if (node) {
       _trans_node->appendChildNode(node->build(this));
-      _nodes.insert(node->id(), node);
+      if (flag) _nodes.insert(node->id(), node);
     }
   });
 }
@@ -232,7 +231,8 @@ void HBoard::wheelEvent(QWheelEvent *event) {
 }
 
 void HBoard::hoverMoveEvent(QHoverEvent *event) {
-  //    DEBUG << WCS2LCS(event->pos());
+  auto pos = WCS2LCS(event->pos());
+  hoverPoint(pos.x(), pos.y());
 }
 
 void HBoard::pushTask(const HBoard::task &t) {

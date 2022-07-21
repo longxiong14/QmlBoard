@@ -1,7 +1,8 @@
 ﻿#include "hfillnode.h"
 
+#include <QDebug>
 #include <QSGFlatColorMaterial>
-
+#define DEBUG qDebug() << __FUNCTION__ << " " << __LINE__ << " "
 HFillNode::HFillNode(const QList<QPoint> &points, const QColor &color,
                      unsigned long type) {
   setOurGeometry(points, type);
@@ -40,6 +41,19 @@ QRect HFillNode::getBoundRect() {
   return r;
 }
 
+QList<QPoint> HFillNode::getPointList() {
+  QList<QPoint> list;
+  auto geo = geometry();
+  if (!geo) return list;
+  auto count = geo->vertexCount();
+  auto point_list = static_cast<QSGGeometry::Point2D *>(geo->vertexData());
+  for (int i = 0; i < count; i++) {
+    auto p = point_list[i];
+    list.push_back(QPoint(static_cast<int>(p.x), static_cast<int>(p.y)));
+  }
+  return list;
+}
+
 void HFillNode::move(const QPoint &p) {
   auto geo = geometry();
   if (!geo) return;
@@ -59,6 +73,8 @@ void HFillNode::moveTo(const QPoint &p) {}
 void HFillNode::changedSelectStatus() {
   HNodeBase::changedSelectStatus();
   if (_select) {
+    setColor(Qt::GlobalColor::blue);
+  } else {
     setColor(Qt::GlobalColor::red);
   }
 }
