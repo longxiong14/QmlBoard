@@ -64,6 +64,9 @@ void HHandleArrow::mouseReleaseEvent(HBoard *board, QMouseEvent *event) {
     if (middleButtonPress(event)) {
       HHandleMove::mouseReleaseEvent(board, event);
     } else {
+      if (!ctrlKeyPress(board->keys())) {
+        board->clearSelect();
+      }
       auto pos = board->WCS2LCS(event->pos());
       auto nodes = board->nodes();
       for (const auto &n : nodes.values()) {

@@ -23,11 +23,12 @@ HBoard::HBoard(QQuickItem *parent)
       _trans_node(nullptr),
       _handle(new HHandleArrow()),
       _name("") {
-  setFlags(QQuickItem::ItemHasContents);
+  setFlag(QQuickItem::ItemHasContents, true);
   setClip(true);
   setAcceptHoverEvents(true);
   setSmooth(true);
   setAntialiasing(true);
+  setFocus(true);
   setAcceptedMouseButtons(Qt::MouseButton::LeftButton |
                           Qt::MouseButton::RightButton |
                           Qt::MouseButton::MiddleButton);
@@ -134,6 +135,8 @@ QSet<QUuid> HBoard::selects() {
   return set;
 }
 
+QSet<int> HBoard::keys() { return _keys; }
+
 QHash<QUuid, HNodeBase *> HBoard::nodes() { return _nodes; }
 
 void HBoard::moveNode(const QUuid &n, QPoint dlt) {
@@ -230,9 +233,26 @@ void HBoard::wheelEvent(QWheelEvent *event) {
   update();
 }
 
+void HBoard::hoverEnterEvent(QHoverEvent *) { setFocus(true); }
+
 void HBoard::hoverMoveEvent(QHoverEvent *event) {
   auto pos = WCS2LCS(event->pos());
   hoverPoint(pos.x(), pos.y());
+}
+
+void HBoard::hoverLeaveEvent(QHoverEvent *) { _keys.clear(); }
+
+void HBoard::keyPressEvent(QKeyEvent *event) {
+  if (event) {
+    DEBUG << event->key();
+    _keys.insert(event->key());
+  }
+}
+
+void HBoard::keyReleaseEvent(QKeyEvent *event) {
+  if (event) {
+    _keys.remove(event->key());
+  }
 }
 
 void HBoard::pushTask(const HBoard::task &t) {

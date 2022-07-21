@@ -46,6 +46,9 @@ class HBOARD_EXPORT HBoard : public QQuickItem {
   void changeSelectStatus(const QUuid& s);
   QSet<QUuid> selects();
 
+ public:  // keys
+  QSet<int> keys();
+
  public:
   QString name();
   void setName(const QString& name);
@@ -60,7 +63,12 @@ class HBOARD_EXPORT HBoard : public QQuickItem {
   virtual void mouseMoveEvent(QMouseEvent* event) override;
   virtual void mouseReleaseEvent(QMouseEvent* event) override;
   virtual void wheelEvent(QWheelEvent* event) override;
+  virtual void hoverEnterEvent(QHoverEvent* event) override;
   virtual void hoverMoveEvent(QHoverEvent* event) override;
+  virtual void hoverLeaveEvent(QHoverEvent* event) override;
+
+  virtual void keyPressEvent(QKeyEvent* event) override;
+  virtual void keyReleaseEvent(QKeyEvent* event) override;
 
  protected:
   void pushTask(const task& t);
@@ -76,6 +84,7 @@ class HBOARD_EXPORT HBoard : public QQuickItem {
   QString _name;
   //    QSet<QUuid>                 _selects;
   QQueue<task> _tasks;
+  QSet<int> _keys;
 };
 
 #endif  // HBOARD_H
