@@ -37,11 +37,4 @@ QJsonArray HBoardUIControl::handleList() {
   return list;
 }
 
-void HBoardUIControl::test() {
-  auto point1 = QPoint(1, 1);
-  auto point2 = QPoint(5, 20);
-  auto point3 = QPoint(3, 12);
-  auto L1 = Line(point3, point1);
-  auto L2 = Line(point3, point2);
-  DEBUG << L1 * L2;
-}
+void HBoardUIControl::test() {}

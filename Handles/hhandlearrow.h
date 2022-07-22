@@ -3,6 +3,7 @@
 #include <memory>
 
 #include "hhandlemove.h"
+class HNodeBase;
 class HBOARD_EXPORT HHandleArrow : public HHandleMove {
  public:
   HHandleArrow();
@@ -12,8 +13,16 @@ class HBOARD_EXPORT HHandleArrow : public HHandleMove {
   virtual void mouseReleaseEvent(HBoard* board, QMouseEvent* event);
   virtual void wheelEvent(HBoard* board, QWheelEvent* event);
 
+ public:
+  void setDistance(int dis);
+  int getDistance();
+
+ protected:
+  virtual bool canSelect(HNodeBase* node, const QPoint& pos, double scale);
+
  protected:
   bool _move;
+  int _distance;
 };
 
 #endif  // HHANDLEARROW_H

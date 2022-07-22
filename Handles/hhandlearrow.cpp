@@ -1,22 +1,17 @@
 ﻿#include "hhandlearrow.h"
 
 #include <QDebug>
+#include <QMatrix>
+#include <QSGNode>
 
 #include "../Common/hcommons.h"
+#include "../Common/hplanvector.h"
 #include "Nodes/hnodebase.h"
 #include "hboard.h"
 #include "hhandlemove.h"
 #define DEBUG qDebug() << __FUNCTION__ << " " << __LINE__ << " "
-static bool pointInRect(const QPoint &point, const QRect &rect) {
-  if (rect.x() <= point.x() && rect.y() <= point.y() &&
-      rect.bottomRight().x() >= point.x() &&
-      rect.bottomRight().y() >= point.y()) {
-    return true;
-  }
-  return false;
-}
 
-HHandleArrow::HHandleArrow() : HHandleMove(), _move(false) {}
+HHandleArrow::HHandleArrow() : HHandleMove(), _move(false), _distance(5) {}
 
 void HHandleArrow::mousePressEvent(HBoard *board, QMouseEvent *event) {
   HHandleMove::mousePressEvent(board, event);
@@ -24,11 +19,12 @@ void HHandleArrow::mousePressEvent(HBoard *board, QMouseEvent *event) {
     _move = false;
     auto pos = board->WCS2LCS(event->pos());
     auto nodes = board->nodes();
+    double scale = board->getScale();
+    HPlanVector vec;
     for (const auto &n : nodes.values()) {
-      auto points = n->getPointList();
-      if (HCommon::PointInContour(pos, points)) {
+      if (canSelect(n, pos, scale)) {
         _move = true;
-        return;
+        break;
       }
     }
   }
@@ -69,11 +65,9 @@ void HHandleArrow::mouseReleaseEvent(HBoard *board, QMouseEvent *event) {
       }
       auto pos = board->WCS2LCS(event->pos());
       auto nodes = board->nodes();
+      double scale = board->getScale();
       for (const auto &n : nodes.values()) {
-        auto points = n->getPointList();
-        if (HCommon::PointInContour(pos, points)) {
-          board->changeSelectStatus(n->id());
-        }
+        if (canSelect(n, pos, scale)) board->changeSelectStatus(n->id());
       }
     }
   }
@@ -81,4 +75,29 @@ void HHandleArrow::mouseReleaseEvent(HBoard *board, QMouseEvent *event) {
 
 void HHandleArrow::wheelEvent(HBoard *board, QWheelEvent *event) {
   HHandleMove::wheelEvent(board, event);
+}
+
+void HHandleArrow::setDistance(int dis) { _distance = dis; }
+
+int HHandleArrow::getDistance() { return _distance; }
+
+bool HHandleArrow::canSelect(HNodeBase *node, const QPoint &pos, double scale) {
+  auto type = node->selectType();
+  auto points = node->getPointList();
+  HPlanVector vec;
+  switch (type) {
+    case HNodeBase::INAREA:
+      if (HCommon::PointInContour(pos, points)) {
+        return true;
+      }
+      break;
+    case HNodeBase::DISTANCE: {
+      auto min = vec.ptmPoly(pos, points);
+      DEBUG << min << " " << scale;
+      if (std::fabs(min) < (_distance / scale)) {
+        return true;
+      }
+    } break;
+  }
+  return false;
 }

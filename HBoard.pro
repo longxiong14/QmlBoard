@@ -19,6 +19,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
     Common/hcommons.cpp \
+    Common/hplanvector.cpp \
     Handles/hhandlearrow.cpp \
     Handles/hhandlebase.cpp \
     Handles/hhandleflyweight.cpp \
@@ -33,6 +34,7 @@ SOURCES += \
 
 HEADERS += \
     Common/hcommons.h \
+    Common/hplanvector.h \
     HBoard_global.h \
     Handles/hhandlearrow.h \
     Handles/hhandlebase.h \

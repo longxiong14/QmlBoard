@@ -11,6 +11,12 @@ class QSGNode;
 class HBoard;
 class HBOARD_EXPORT HNodeBase {
  public:
+  typedef enum {
+    DISTANCE,    //距离判断（按照点与轮廓的最近距离判断）
+    INAREA       //点在封闭形状内的判断
+  } SELECTTYPE;  //点选的判断方式
+
+ public:
   HNodeBase();
   HNodeBase(const HNodeBase& other) = default;
   virtual ~HNodeBase();
@@ -27,6 +33,7 @@ class HBOARD_EXPORT HNodeBase {
   virtual bool isSelect() { return _select; }
   virtual void drawPoints(const QList<QPoint>&) {}
   virtual void setColor(const QColor&) {}
+  virtual SELECTTYPE selectType() { return DISTANCE; }
 
  public:
   QJsonObject param();

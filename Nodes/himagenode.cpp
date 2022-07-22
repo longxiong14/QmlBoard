@@ -10,8 +10,8 @@
 #include "hboard.h"
 #define DEBUG qDebug() << __FUNCTION__ << " " << __LINE__ << " "
 
-HImageNode::HImageNode(const QString &path, const QRect &rect)
-    : HNodeBase(), _path(path) {}
+HImageNode::HImageNode(const QString &path, const QRectF &rect)
+    : HNodeBase(), _path(path), _rect(rect) {}
 
 QSGNode *HImageNode::build(HBoard *board) {
   if (board) {
@@ -48,8 +48,10 @@ void HImageNode::move(const QPoint &p) {
   auto r = rect();
   auto tl = r.topLeft();
   tl += p;
-  QRectF s = QRectF();
-  s.setTopLeft(tl);
-  s.setSize(r.size());
-  setRect(s);
+  _rect = QRectF();
+  _rect.setTopLeft(tl);
+  _rect.setSize(r.size());
+  setRect(_rect);
 }
+
+HNodeBase::SELECTTYPE HImageNode::selectType() { return INAREA; }

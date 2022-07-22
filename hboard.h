@@ -55,6 +55,8 @@ class HBOARD_EXPORT HBoard : public QQuickItem {
 
  public:
   QPoint WCS2LCS(const QPoint& point);
+  QPoint LCS2WCS(const QPoint& point);
+  double getScale();
 
  public:
   virtual QSGNode* updatePaintNode(QSGNode* node,

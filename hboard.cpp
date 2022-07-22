@@ -187,6 +187,22 @@ QPoint HBoard::WCS2LCS(const QPoint &point) {
   return pt;
 }
 
+QPoint HBoard::LCS2WCS(const QPoint &point) {
+  QPoint pt;
+  if (_trans_node) {
+    auto trans_form = _trans_node->matrix().toTransform();
+    pt = trans_form.map(point);
+  }
+  return pt;
+}
+
+double HBoard::getScale() {
+  auto w = width();
+  auto h = height();
+  auto pt = WCS2LCS(QPoint(static_cast<int>(w), static_cast<int>(h)));
+  return ((1.0 * w / pt.x()) + (1.0 * h / pt.y())) / 2;
+}
+
 QSGTransformNode *HBoard::transformNode() { return _trans_node; }
 
 QTransform HBoard::transform() {
@@ -220,6 +236,8 @@ void HBoard::mousePressEvent(QMouseEvent *event) {
 
 void HBoard::mouseMoveEvent(QMouseEvent *event) {
   if (_handle) _handle->mouseMoveEvent(this, event);
+  auto pos = WCS2LCS(event->pos());
+  hoverPoint(pos.x(), pos.y());
   update();
 }
 
@@ -244,7 +262,6 @@ void HBoard::hoverLeaveEvent(QHoverEvent *) { _keys.clear(); }
 
 void HBoard::keyPressEvent(QKeyEvent *event) {
   if (event) {
-    DEBUG << event->key();
     _keys.insert(event->key());
   }
 }
