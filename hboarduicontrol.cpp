@@ -3,7 +3,11 @@
 #include <QDebug>
 
 #include "Common/hcommons.h"
+#include "Common/hplanvector.h"
 #include "Handles/hhandleflyweight.h"
+#include "Nodes/hfillnode.h"
+#include "Nodes/himagenode.h"
+#include "Nodes/hnodebase.h"
 #include "hboard.h"
 #include "hboardmanager.h"
 #define DEBUG qDebug() << __FUNCTION__ << " " << __LINE__ << " "
@@ -37,4 +41,11 @@ QJsonArray HBoardUIControl::handleList() {
   return list;
 }
 
-void HBoardUIControl::test() {}
+void HBoardUIControl::test() {
+  auto board = HBoardManager::getInstance()->getBoard("test_board");
+  auto nodes = board->nodes();
+  HPlanVector vec;
+  for (const auto &node : nodes.values()) {
+    auto points = node->getPointList();
+  }
+}

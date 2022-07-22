@@ -7,8 +7,9 @@
 class HBOARD_EXPORT HFillNode : public HNodeBase, public QSGGeometryNode {
  public:
   HFillNode(const QList<QPoint>& points, const QColor& color,
-            unsigned long type = 0);
-  HFillNode(const QRect& rect, const QColor& color, unsigned long type = 0);
+            unsigned long type = GL_LINE_LOOP);
+  HFillNode(const QRect& rect, const QColor& color,
+            unsigned long type = GL_LINE_LOOP);
 
   virtual QSGNode* get() override;
   virtual QSGNode* build(HBoard*) override;

@@ -2,6 +2,8 @@
 
 #include <math.h>
 
+#include <QDebug>
+#define DEBUG qDebug() << __FUNCTION__ << " " << __LINE__ << " "
 const double esp = 1e-6;
 
 HPlanVector::HPlanVector() {}
@@ -18,7 +20,7 @@ double HPlanVector::dis(const QPoint& a, const QPoint& b) {
 }
 
 double HPlanVector::cmult(const QPoint& a, const QPoint& b,
-                          const QPoint& c)  ///叉积
+                          const QPoint& c)  //叉积
 {
   return (b.x() - a.x()) * (c.y() - a.y()) - (c.x() - a.x()) * (b.y() - a.y());
 }
@@ -53,4 +55,15 @@ double HPlanVector::ptmPoly(const QPoint& point, const QList<QPoint>& list) {
     distance = std::min(distance, pldis(point, list[j], list[i]));
   }
   return distance;
+}
+
+double HPlanVector::area(const QList<QPoint>& list) {
+  //
+  double area = 0.0;
+  if (list.size() < 3) return 0;
+  auto first = list[0];
+  for (int j = 1, i = 2; i < list.size(); j = i, i++) {
+    area += (cmult(first, list[j], list[i])) / 2.0;
+  }
+  return area;
 }

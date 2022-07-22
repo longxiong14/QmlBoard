@@ -16,6 +16,7 @@ class HPlanVector {
                const QPoint& c);  //点a，线段起点b，线段终点c
   double ptmPoly(const QPoint& point,
                  const QList<QPoint>& list);  //点到多边形的最小距离
+  double area(const QList<QPoint>& list);
 };
 
 #endif  // HPLANVECTOR_H

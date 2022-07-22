@@ -36,7 +36,6 @@ void HHandleArrow::mouseMoveEvent(HBoard *board, QMouseEvent *event) {
       HHandleMove::mouseMoveEvent(board, event);
     } else {
       auto selects = board->selects();
-      DEBUG << selects;
       if (!selects.empty()) {
         auto nodes = board->nodes();
         auto pos = board->WCS2LCS(event->pos());
@@ -93,7 +92,6 @@ bool HHandleArrow::canSelect(HNodeBase *node, const QPoint &pos, double scale) {
       break;
     case HNodeBase::DISTANCE: {
       auto min = vec.ptmPoly(pos, points);
-      DEBUG << min << " " << scale;
       if (std::fabs(min) < (_distance / scale)) {
         return true;
       }

@@ -2,6 +2,8 @@
 
 #include <QDebug>
 #include <QSGFlatColorMaterial>
+
+#include "../Common/hcommons.h"
 #define DEBUG qDebug() << __FUNCTION__ << " " << __LINE__ << " "
 HFillNode::HFillNode(const QList<QPoint> &points, const QColor &color,
                      unsigned long type) {
@@ -11,10 +13,9 @@ HFillNode::HFillNode(const QList<QPoint> &points, const QColor &color,
 
 HFillNode::HFillNode(const QRect &rect, const QColor &color,
                      unsigned long type) {
-  QList<QPoint> list{{rect.left(), rect.top()},
-                     {rect.right(), rect.top()},
-                     {rect.right(), rect.bottom()},
-                     {rect.left(), rect.bottom()}};
+  QList<QPoint> list =
+      HCommon::BuildRectList(rect.topLeft(), rect.bottomRight());
+  DEBUG << type;
   setOurGeometry(list, type);
   setColor(color);
 }
