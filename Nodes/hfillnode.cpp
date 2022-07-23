@@ -6,13 +6,14 @@
 #include "../Common/hcommons.h"
 #define DEBUG qDebug() << __FUNCTION__ << " " << __LINE__ << " "
 HFillNode::HFillNode(const QList<QPoint> &points, const QColor &color,
-                     unsigned long type) {
+                     unsigned long type)
+    : _material(nullptr) {
   setOurGeometry(points, type);
   setColor(color);
 }
 
-HFillNode::HFillNode(const QRect &rect, const QColor &color,
-                     unsigned long type) {
+HFillNode::HFillNode(const QRect &rect, const QColor &color, unsigned long type)
+    : _material(nullptr) {
   QList<QPoint> list =
       HCommon::BuildRectList(rect.topLeft(), rect.bottomRight());
   setOurGeometry(list, type);
@@ -88,10 +89,32 @@ void HFillNode::drawPoints(const QList<QPoint> &points) {
 }
 
 void HFillNode::setColor(const QColor &color) {
-  QSGFlatColorMaterial *material = new QSGFlatColorMaterial;
-  material->setColor(color);
-  setMaterial(material);
+  if (!_material) _material = new QSGFlatColorMaterial();
+  _material->setColor(color);
+  setMaterial(_material);
   setFlag(QSGNode::OwnsMaterial);
+}
+
+void HFillNode::setVisible(bool flag) {
+  if (_material) {
+    auto color = _material->color();
+    if (flag) {
+      color = QColor(color.red(), color.green(), color.blue(), 255);
+    } else {
+      if (_select) changedSelectStatus();
+      color = QColor(color.red(), color.green(), color.blue(), 0);
+    }
+    _material->setColor(color);
+    setMaterial(_material);
+  }
+}
+
+bool HFillNode::visible() {
+  if (_material) {
+    auto color = _material->color();
+    return color.alpha();
+  }
+  return false;
 }
 
 QSGGeometry *HFillNode::buildGeometry(const QList<QPoint> &points,

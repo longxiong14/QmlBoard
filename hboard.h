@@ -23,6 +23,10 @@ class HBOARD_EXPORT HBoard : public QQuickItem {
   explicit HBoard(QQuickItem* parent = nullptr);
 
  public:
+  Q_INVOKABLE
+  void visibleNode(bool flag);
+
+ public:
   void home();
 
  public:
@@ -37,6 +41,7 @@ class HBOARD_EXPORT HBoard : public QQuickItem {
   void drawNodePoint(const QUuid& node,
                      const QList<QPoint> points);  // draw handle move event
   bool hasNode(const QUuid& node);
+  void visibleNode(const QUuid& id, bool visible);
 
  public:
   void setSelect(const QUuid& s);

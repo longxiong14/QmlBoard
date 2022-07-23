@@ -31,18 +31,17 @@ QSGNode *HImageNode::build(HBoard *board) {
   return this;
 }
 
-QRect HImageNode::getBoundRect() {
-  auto r = rect();
-  return QRect(static_cast<int>(r.x()), static_cast<int>(r.y()),
-               static_cast<int>(r.width()), static_cast<int>(r.height()));
-}
+QRect HImageNode::getBoundRect() { return _rect.toRect(); }
 
 QList<QPoint> HImageNode::getPointList() {
   auto r = getBoundRect();
   return HCommon::BuildRectList(r.topLeft(), r.bottomRight());
 }
 
-void HImageNode::changedSelectStatus() { _select = !_select; }
+void HImageNode::changedSelectStatus() {
+  _select = !_select;
+  DEBUG << _select;
+}
 
 void HImageNode::move(const QPoint &p) {
   auto r = rect();
@@ -55,3 +54,20 @@ void HImageNode::move(const QPoint &p) {
 }
 
 HNodeBase::SELECTTYPE HImageNode::selectType() { return INAREA; }
+
+void HImageNode::setVisible(bool flag) {
+  DEBUG << flag;
+  if (flag) {
+    setRect(0, 0, 0, 0);
+  } else {
+    if (_select) changedSelectStatus();
+    setRect(_rect);
+  }
+}
+
+bool HImageNode::visible() {
+  auto r = rect().toRect();
+  auto s = _rect.toRect();
+  return r.x() == s.x() && r.y() == s.y() && r.width() == s.width() &&
+         r.height() == s.height();
+}

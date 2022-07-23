@@ -34,6 +34,13 @@ HBoard::HBoard(QQuickItem *parent)
                           Qt::MouseButton::MiddleButton);
 }
 
+void HBoard::visibleNode(bool flag) {
+  auto list = selects();
+  for (const auto &id : list) {
+    visibleNode(id, flag);
+  }
+}
+
 void HBoard::home() {
   pushTask([=]() {
     QRect rect(INT_MAX, INT_MAX, INT_MIN, INT_MIN);
@@ -166,6 +173,14 @@ void HBoard::drawNodePoint(const QUuid &node, const QList<QPoint> points) {
 }
 
 bool HBoard::hasNode(const QUuid &node) { return _nodes.contains(node); }
+
+void HBoard::visibleNode(const QUuid &id, bool visible) {
+  if (_nodes.contains(id)) {
+    auto node = _nodes[id];
+    pushTask([=]() { node->setVisible(visible); });
+    update();
+  }
+}
 
 QString HBoard::name() { return _name; }
 

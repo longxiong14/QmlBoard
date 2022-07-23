@@ -27,13 +27,15 @@ class HBOARD_EXPORT HNodeBase {
   virtual QRect getBoundRect() { return QRect(); }
   virtual QList<QPoint> getPointList();
   virtual QUuid id();
-  virtual void changedSelectStatus() { _select = !_select; }
+  virtual void changedSelectStatus();
   virtual void move(const QPoint&) {}    // move delta
   virtual void moveTo(const QPoint&) {}  // move to point
-  virtual bool isSelect() { return _select; }
+  virtual bool isSelect();
   virtual void drawPoints(const QList<QPoint>&) {}
   virtual void setColor(const QColor&) {}
-  virtual SELECTTYPE selectType() { return DISTANCE; }
+  virtual SELECTTYPE selectType();
+  virtual void setVisible(bool) {}
+  virtual bool visible();
 
  public:
   QJsonObject param();

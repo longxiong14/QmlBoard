@@ -4,6 +4,7 @@
 #include <QSGGeometryNode>
 
 #include "hnodebase.h"
+class QSGFlatColorMaterial;
 class HBOARD_EXPORT HFillNode : public HNodeBase, public QSGGeometryNode {
  public:
   HFillNode(const QList<QPoint>& points, const QColor& color,
@@ -20,11 +21,16 @@ class HBOARD_EXPORT HFillNode : public HNodeBase, public QSGGeometryNode {
   virtual void changedSelectStatus() override;
   virtual void drawPoints(const QList<QPoint>& points) override;
   virtual void setColor(const QColor& color) override;
+  virtual void setVisible(bool) override;
+  virtual bool visible() override;
 
  protected:
   QSGGeometry* buildGeometry(const QList<QPoint>& points,
                              unsigned long type = false);
   void setOurGeometry(const QList<QPoint>& points, unsigned long type = false);
+
+ protected:
+  QSGFlatColorMaterial* _material;
 };
 
 #endif  // HFILLNODE_H

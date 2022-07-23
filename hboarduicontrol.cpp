@@ -46,7 +46,6 @@ void HBoardUIControl::test() {
   auto nodes = board->nodes();
   HPlanVector vec;
   for (const auto &node : nodes.values()) {
-    auto points = node->getPointList();
-    DEBUG << vec.area(points);
+    node->setVisible(true);
   }
 }

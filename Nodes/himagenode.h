@@ -13,6 +13,8 @@ class HBOARD_EXPORT HImageNode : public HNodeBase, public QSGSimpleTextureNode {
   virtual void changedSelectStatus() override;
   virtual void move(const QPoint&) override;
   virtual SELECTTYPE selectType() override;
+  virtual void setVisible(bool) override;
+  virtual bool visible() override;
 
  private:
   QString _path;
