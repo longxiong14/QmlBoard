@@ -15,7 +15,6 @@ HFillNode::HFillNode(const QRect &rect, const QColor &color,
                      unsigned long type) {
   QList<QPoint> list =
       HCommon::BuildRectList(rect.topLeft(), rect.bottomRight());
-  DEBUG << type;
   setOurGeometry(list, type);
   setColor(color);
 }
