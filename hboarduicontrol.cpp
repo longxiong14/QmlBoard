@@ -43,10 +43,11 @@ QJsonArray HBoardUIControl::handleList() {
 
 void HBoardUIControl::test() {
   auto board = HBoardManager::getInstance()->getBoard("test_board");
-  auto nodes = board->nodes();
-  HPlanVector vec;
-  for (const auto &node : nodes.values()) {
-    auto points = node->getPointList();
-    DEBUG << vec.area(points);
-  }
+  board->showAll();
+  //  auto nodes = board->nodes();
+  //  HPlanVector vec;
+  //  for (const auto &node : nodes.values()) {
+  //    auto points = node->getPointList();
+  //    DEBUG << vec.area(points);
+  //  }
 }

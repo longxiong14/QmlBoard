@@ -34,6 +34,8 @@ class HBOARD_EXPORT HNodeBase {
   virtual void drawPoints(const QList<QPoint>&) {}
   virtual void setColor(const QColor&) {}
   virtual SELECTTYPE selectType() { return DISTANCE; }
+  virtual void setVisible(bool flag);
+  virtual bool visible();
 
  public:
   QJsonObject param();
@@ -43,6 +45,7 @@ class HBOARD_EXPORT HNodeBase {
   QJsonObject _param;
   QUuid _id;
   bool _select;
+  bool _visible;
 };
 
 #endif  // HNODEBASE_H

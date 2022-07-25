@@ -31,6 +31,8 @@ QSGNode *HImageNode::build(HBoard *board) {
   return this;
 }
 
+QSGNode *HImageNode::get() { return this; }
+
 QRect HImageNode::getBoundRect() {
   auto r = rect();
   return QRect(static_cast<int>(r.x()), static_cast<int>(r.y()),

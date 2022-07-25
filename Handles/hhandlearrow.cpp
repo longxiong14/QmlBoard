@@ -18,7 +18,7 @@ void HHandleArrow::mousePressEvent(HBoard *board, QMouseEvent *event) {
   if (board && event) {
     _move = false;
     auto pos = board->WCS2LCS(event->pos());
-    auto nodes = board->nodes();
+    auto nodes = board->visibleNodes();
     double scale = board->getScale();
     HPlanVector vec;
     for (const auto &n : nodes.values()) {
@@ -37,7 +37,7 @@ void HHandleArrow::mouseMoveEvent(HBoard *board, QMouseEvent *event) {
     } else {
       auto selects = board->selects();
       if (!selects.empty()) {
-        auto nodes = board->nodes();
+        auto nodes = board->visibleNodes();
         auto pos = board->WCS2LCS(event->pos());
         for (const auto &s : selects) {
           if (nodes.contains(s) && _move) {
@@ -63,7 +63,7 @@ void HHandleArrow::mouseReleaseEvent(HBoard *board, QMouseEvent *event) {
         board->clearSelect();
       }
       auto pos = board->WCS2LCS(event->pos());
-      auto nodes = board->nodes();
+      auto nodes = board->visibleNodes();
       double scale = board->getScale();
       for (const auto &n : nodes.values()) {
         if (canSelect(n, pos, scale)) board->changeSelectStatus(n->id());

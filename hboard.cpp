@@ -34,6 +34,27 @@ HBoard::HBoard(QQuickItem *parent)
                           Qt::MouseButton::MiddleButton);
 }
 
+void HBoard::visibleNode(bool flag) {
+  auto sel = selects();
+  for (const auto &k : sel) {
+    visibleNode(k, flag);
+  }
+}
+
+void HBoard::showAll() {
+  for (const auto &node : _nodes) {
+    if (!node->visible()) {
+      node->setVisible(true);
+      pushTask([=]() {
+        if (node) {
+          _trans_node->appendChildNode(node->get());
+        }
+      });
+    }
+  }
+  update();
+}
+
 void HBoard::home() {
   pushTask([=]() {
     QRect rect(INT_MAX, INT_MAX, INT_MIN, INT_MIN);
@@ -75,6 +96,18 @@ void HBoard::pushNode(HNodeBase *node, bool flag) {
       if (flag) _nodes.insert(node->id(), node);
     }
   });
+}
+
+void HBoard::removeNode(const QUuid &id) {
+  if (_nodes.contains(id)) {
+    auto node = _nodes[id];
+    _nodes.remove(id);
+    pushTask([=]() {
+      if (node) {
+        _trans_node->removeChildNode(node->get());
+      }
+    });
+  }
 }
 
 void HBoard::setHandle(HHandleBase *handle) { _handle = handle; }
@@ -139,6 +172,16 @@ QSet<int> HBoard::keys() { return _keys; }
 
 QHash<QUuid, HNodeBase *> HBoard::nodes() { return _nodes; }
 
+QHash<QUuid, HNodeBase *> HBoard::visibleNodes() {
+  QHash<QUuid, HNodeBase *> node;
+  for (const auto &k : _nodes.keys()) {
+    if (_nodes.value(k)->visible()) {
+      node.insert(k, _nodes.value(k));
+    }
+  }
+  return node;
+}
+
 void HBoard::moveNode(const QUuid &n, QPoint dlt) {
   pushTask([=]() {
     if (_nodes.contains(n)) {
@@ -166,6 +209,27 @@ void HBoard::drawNodePoint(const QUuid &node, const QList<QPoint> points) {
 }
 
 bool HBoard::hasNode(const QUuid &node) { return _nodes.contains(node); }
+
+void HBoard::visibleNode(const QUuid &node, bool flag) {
+  if (_nodes.contains(node)) {
+    auto n = _nodes[node];
+    if (flag == n->visible()) return;
+    n->setVisible(flag);
+    if (n->visible()) {
+      pushTask([=]() {
+        if (n) _trans_node->appendChildNode(n->get());
+      });
+    } else {
+      pushTask([=]() {
+        if (n) {
+          if (n->isSelect()) n->changedSelectStatus();
+          _trans_node->removeChildNode(n->get());
+        }
+      });
+    }
+    update();
+  }
+}
 
 QString HBoard::name() { return _name; }
 

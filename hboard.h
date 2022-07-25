@@ -23,20 +23,30 @@ class HBOARD_EXPORT HBoard : public QQuickItem {
   explicit HBoard(QQuickItem* parent = nullptr);
 
  public:
+  Q_INVOKABLE
+  void visibleNode(bool flag);
+
+  Q_INVOKABLE
+  void showAll();
+
+ public:
   void home();
 
  public:
   void pushTransform(const QTransform& trans);
   void pushNode(HNodeBase* node, bool flag = true);
+  void removeNode(const QUuid& id);
   void setHandle(HHandleBase* handle);
   QSGTransformNode* transformNode();
   QTransform transform();
   QHash<QUuid, HNodeBase*> nodes();
+  QHash<QUuid, HNodeBase*> visibleNodes();
   void moveNode(const QUuid& n, QPoint dlt);      // move node delta
   void nodeMoveTo(const QUuid& n, QPoint point);  // move node to point
   void drawNodePoint(const QUuid& node,
                      const QList<QPoint> points);  // draw handle move event
   bool hasNode(const QUuid& node);
+  void visibleNode(const QUuid& node, bool flag);
 
  public:
   void setSelect(const QUuid& s);
@@ -84,7 +94,6 @@ class HBOARD_EXPORT HBoard : public QQuickItem {
   QMutex _mutex;
   QHash<QUuid, HNodeBase*> _nodes;
   QString _name;
-  //    QSet<QUuid>                 _selects;
   QQueue<task> _tasks;
   QSet<int> _keys;
 };
