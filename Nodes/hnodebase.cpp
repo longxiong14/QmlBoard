@@ -17,6 +17,8 @@ void HNodeBase::setVisible(bool flag) { _visible = flag; }
 
 bool HNodeBase::visible() { return _visible; }
 
+void HNodeBase::timeOut() {}
+
 QJsonObject HNodeBase::param() { return _param; }
 
 void HNodeBase::setParam(const QJsonObject &p) { _param = p; }

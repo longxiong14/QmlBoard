@@ -5,6 +5,7 @@
 #include <QQueue>
 #include <QSet>
 #include <QString>
+#include <QTimer>
 #include <QTransform>
 #include <QUuid>
 #include <QtQuick/QQuickItem>
@@ -96,6 +97,8 @@ class HBOARD_EXPORT HBoard : public QQuickItem {
   QString _name;
   QQueue<task> _tasks;
   QSet<int> _keys;
+  QHash<QUuid, HNodeBase*> _dash_nodes;
+  QTimer _timer;
 };
 
 #endif  // HBOARD_H

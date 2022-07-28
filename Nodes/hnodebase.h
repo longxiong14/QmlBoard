@@ -36,6 +36,7 @@ class HBOARD_EXPORT HNodeBase {
   virtual SELECTTYPE selectType() { return DISTANCE; }
   virtual void setVisible(bool flag);
   virtual bool visible();
+  virtual void timeOut();
 
  public:
   QJsonObject param();

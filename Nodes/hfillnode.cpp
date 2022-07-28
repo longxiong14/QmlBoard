@@ -5,6 +5,23 @@
 
 #include "../Common/hcommons.h"
 #define DEBUG qDebug() << __FUNCTION__ << " " << __LINE__ << " "
+/*
+QSGGeometry *geometry =
+    new QSGGeometry(QSGGeometry::defaultAttributes_TexturedPoint2D(), int(sz));
+auto vertices = geometry -> vertexDataAsTexturedPoint2D();
+if (aStyle == "dash") {
+  float dis = 0;
+  auto rt = 1;
+  if (m_trans_node) m_trans_node->matrix().data()[0];
+  for (auto i = 0; i < aPointList.size(); ++i) {
+    if (i > 0) {
+      auto del = aPointList[i] - aPointList[i - 1];
+      dis += sqrt(QPointF::dotProduct(del, del));
+    }
+    vertices[i].set(aPointList[i].x(), aPointList[i].y(), dis * rt / 10, 0);
+  }
+}
+*/
 HFillNode::HFillNode(const QList<QPoint> &points, const QColor &color,
                      unsigned long type) {
   setOurGeometry(points, type);
@@ -96,14 +113,32 @@ void HFillNode::setColor(const QColor &color) {
 
 QSGGeometry *HFillNode::buildGeometry(const QList<QPoint> &points,
                                       unsigned long type) {
-  QSGGeometry *geometry =
-      new QSGGeometry(QSGGeometry::defaultAttributes_Point2D(), points.size());
-  GL_LINE_LOOP;
-  geometry->setDrawingMode(static_cast<unsigned long>(type));
-  for (int i = 0; i < points.size(); i++) {
-    geometry->vertexDataAsPoint2D()[i].set(points[i].x(), points[i].y());
+  if (true) {
+    QSGGeometry *geometry = new QSGGeometry(
+        QSGGeometry::defaultAttributes_Point2D(), points.size());
+    GL_LINE_LOOP;
+    geometry->setDrawingMode(type);
+    for (int i = 0; i < points.size(); i++) {
+      geometry->vertexDataAsPoint2D()[i].set(points[i].x(), points[i].y());
+    }
+    return geometry;
+  } else {
+    QSGGeometry *geometry = new QSGGeometry(
+        QSGGeometry::defaultAttributes_TexturedPoint2D(), points.size());
+    geometry->setDrawingMode(type);
+    auto vertices = geometry->vertexDataAsTexturedPoint2D();
+    float dis = 0;
+    auto rt = 1;
+    //        if (m_trans_node) m_trans_node->matrix().data()[0];
+    for (auto i = 0; i < points.size(); ++i) {
+      if (i > 0) {
+        auto del = points[i] - points[i - 1];
+        dis += sqrt(QPointF::dotProduct(del, del));
+      }
+      vertices[i].set(points[i].x(), points[i].y(), dis * rt / 10, 0);
+    }
+    return geometry;
   }
-  return geometry;
 }
 
 void HFillNode::setOurGeometry(const QList<QPoint> &points,

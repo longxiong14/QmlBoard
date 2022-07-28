@@ -32,6 +32,18 @@ HBoard::HBoard(QQuickItem *parent)
   setAcceptedMouseButtons(Qt::MouseButton::LeftButton |
                           Qt::MouseButton::RightButton |
                           Qt::MouseButton::MiddleButton);
+  _timer.start(200);
+  connect(&_timer, &QTimer::timeout, [this]() {
+    DEBUG << "timeout";
+    if (_trans_node)
+      for (auto dash : _dash_nodes) {
+        pushTask([=]() {
+          _trans_node->removeChildNode(dash->get());
+          dash->timeOut();
+          _trans_node->appendChildNode(dash->get());
+        });
+      }
+  });
 }
 
 void HBoard::visibleNode(bool flag) {
