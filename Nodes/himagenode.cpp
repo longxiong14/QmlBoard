@@ -10,6 +10,8 @@
 #include "hboard.h"
 #define DEBUG qDebug() << __FUNCTION__ << " " << __LINE__ << " "
 
+HImageNode::HImageNode() {}
+
 HImageNode::HImageNode(const QString &path, const QRectF &rect)
     : HNodeBase(), _path(path), _rect(rect) {}
 
@@ -44,8 +46,6 @@ QList<QPoint> HImageNode::getPointList() {
   return HCommon::BuildRectList(r.topLeft(), r.bottomRight());
 }
 
-void HImageNode::changedSelectStatus() { _select = !_select; }
-
 void HImageNode::move(const QPoint &p) {
   auto r = rect();
   auto tl = r.topLeft();
@@ -57,3 +57,7 @@ void HImageNode::move(const QPoint &p) {
 }
 
 HNodeBase::SELECTTYPE HImageNode::selectType() { return INAREA; }
+
+void HImageNode::setPath(const QString &path) { _path = path; }
+
+QString HImageNode::getPath() { return _path; }

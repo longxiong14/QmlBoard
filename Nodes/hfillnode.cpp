@@ -22,6 +22,8 @@ if (aStyle == "dash") {
   }
 }
 */
+HFillNode::HFillNode() {}
+
 HFillNode::HFillNode(const QList<QPoint> &points, const QColor &color,
                      unsigned long type) {
   setOurGeometry(points, type);

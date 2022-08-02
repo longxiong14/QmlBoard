@@ -6,6 +6,7 @@
 #include "hnodebase.h"
 class HBOARD_EXPORT HFillNode : public HNodeBase, public QSGGeometryNode {
  public:
+  HFillNode();
   HFillNode(const QList<QPoint>& points, const QColor& color,
             unsigned long type = GL_LINE_LOOP);
   HFillNode(const QRect& rect, const QColor& color,

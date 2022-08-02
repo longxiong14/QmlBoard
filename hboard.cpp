@@ -1,7 +1,6 @@
 ﻿#include "hboard.h"
 
 #include <QDebug>
-#include <QGraphicsScene>
 #include <QQmlEngine>
 #include <QQuickWindow>
 #include <QSGImageNode>
@@ -34,15 +33,24 @@ HBoard::HBoard(QQuickItem *parent)
                           Qt::MouseButton::MiddleButton);
   _timer.start(200);
   connect(&_timer, &QTimer::timeout, [this]() {
-    DEBUG << "timeout";
-    if (_trans_node)
-      for (auto dash : _dash_nodes) {
-        pushTask([=]() {
-          _trans_node->removeChildNode(dash->get());
-          dash->timeOut();
-          _trans_node->appendChildNode(dash->get());
-        });
+    if (_trans_node) {
+      for (const auto &node : _nodes) {
+        if (node->isSelect()) {
+          if (_dash_nodes.contains(node->id())) {
+          } else {
+          }
+        }
       }
+    }
+    //    DEBUG << "timeout";
+    //    if (_trans_node)
+    //      for (auto dash : _dash_nodes) {
+    //        pushTask([=]() {
+    //          _trans_node->removeChildNode(dash->get());
+    //          dash->timeOut();
+    //          _trans_node->appendChildNode(dash->get());
+    //        });
+    //      }
   });
 }
 
@@ -108,6 +116,13 @@ void HBoard::pushNode(HNodeBase *node, bool flag) {
       if (flag) _nodes.insert(node->id(), node);
     }
   });
+}
+
+void HBoard::pushDashNode(HNodeBase *node) {
+  if (node) {
+    QMutexLocker lock(&_mutex);
+    _dash_nodes.insert(node->id(), node);
+  }
 }
 
 void HBoard::removeNode(const QUuid &id) {

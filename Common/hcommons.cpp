@@ -48,6 +48,10 @@ QList<QPoint> HCommon::BuildRectList(const QPoint &f, const QPoint &s) {
   auto tl = TopLeft(f, s);
   auto br = BottomRight(f, s);
   QRect rect(tl, br);
+  return BuildRectList(rect);
+}
+
+QList<QPoint> HCommon::BuildRectList(const QRect &rect) {
   QList<QPoint> list{{rect.left(), rect.top()},
                      {rect.right(), rect.top()},
                      {rect.right(), rect.bottom()},

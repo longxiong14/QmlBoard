@@ -58,7 +58,7 @@ void HHandleDrawPoly::mouseMoveEvent(HBoard *board, QMouseEvent *event) {
 
 void HHandleDrawPoly::mouseReleaseEvent(HBoard *board, QMouseEvent *event) {
   HHandleMove::mouseReleaseEvent(board, event);
-  if (board && event) {
+  if (board && event && !_points.empty() && leftButtonPress(event)) {
     _points.push_back(_points.first());
     board->drawNodePoint(_node, _points);
   }

@@ -36,6 +36,7 @@ class HBOARD_EXPORT HBoard : public QQuickItem {
  public:
   void pushTransform(const QTransform& trans);
   void pushNode(HNodeBase* node, bool flag = true);
+  void pushDashNode(HNodeBase* node);
   void removeNode(const QUuid& id);
   void setHandle(HHandleBase* handle);
   QSGTransformNode* transformNode();

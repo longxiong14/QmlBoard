@@ -25,6 +25,7 @@ SOURCES += \
     Handles/hhandleflyweight.cpp \
     Handles/hhandlemove.cpp \
     Handles/hhandlepaint.cpp \
+    Nodes/hdashnode.cpp \
     Nodes/hfillnode.cpp \
     Nodes/himagenode.cpp \
     Nodes/hnodebase.cpp \
@@ -41,6 +42,7 @@ HEADERS += \
     Handles/hhandleflyweight.h \
     Handles/hhandlemove.h \
     Handles/hhandlepaint.h \
+    Nodes/hdashnode.h \
     Nodes/hfillnode.h \
     Nodes/himagenode.h \
     Nodes/hnodebase.h \
