@@ -87,6 +87,7 @@ void HFillNode::move(const QPointF &p) {
     geo->vertexDataAsPoint2D()[i] = pt;
   }
   setGeometry(geo);
+  HNodeBase::move(p);
 }
 
 void HFillNode::moveTo(const QPointF &p) {}

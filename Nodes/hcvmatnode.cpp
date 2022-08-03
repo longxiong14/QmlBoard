@@ -20,14 +20,16 @@ HCVMatNode::HCVMatNode(const QString &path, const QPointF &start_point)
       _start_point(start_point) {
   _mat = cv::imread(path.toStdString());
   if (!_mat.empty()) {
-    _bound_rect = QRectF(0, 0, _mat.cols, _mat.rows);
+    _bound_rect =
+        QRectF(start_point.x(), start_point.y(), _mat.cols, _mat.rows);
   }
 }
 
 HCVMatNode::HCVMatNode(const cv::Mat &mat, const QPointF &start_point)
     : HNodeBase(), _mat(mat), _start_point(start_point) {
   if (!_mat.empty()) {
-    _bound_rect = QRectF(0, 0, _mat.cols, _mat.rows);
+    _bound_rect =
+        QRectF(start_point.x(), start_point.y(), _mat.cols, _mat.rows);
   }
 }
 
@@ -40,11 +42,11 @@ QSGNode *HCVMatNode::build(HBoard *board) {
     for (int i = 0; i < col; i++) {
       for (int j = 0; j < row; j++) {
         cv::Rect rect =
-            src & cv::Rect(i * _split_size.width + int(_start_point.x()),
-                           j *_split_size.height + int(_start_point.y()),
+            src & cv::Rect(i * _split_size.width, j * _split_size.height,
                            _split_size.width, _split_size.height);
         auto image = CVMat2Qimage(_mat(rect));
-        auto r = QRectF(rect.x, rect.y, rect.width, rect.height);
+        auto r = QRectF(rect.x + _start_point.x(), rect.y + _start_point.y(),
+                        rect.width, rect.height);
         auto n = BuildQImageNode(image, board, r);
         if (n) {
           _node->appendChildNode(n);
@@ -85,6 +87,7 @@ void HCVMatNode::move(const QPointF &point) {
       }
     }
   }
+  HNodeBase::move(point);
 }
 
 HNodeBase::NODETYPE HCVMatNode::nodeType() { return NODETYPE::RECTANGLE; }

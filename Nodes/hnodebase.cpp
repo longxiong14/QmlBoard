@@ -29,6 +29,13 @@ void HNodeBase::changedSelectStatus() {
   }
 }
 
+void HNodeBase::move(const QPointF& p) {
+  // move _dash
+  for (int i = 0; i < _dash_list.size(); i++) {
+    _dash_list[i] += p;
+  }
+}
+
 void HNodeBase::setVisible(bool flag) { _visible = flag; }
 
 bool HNodeBase::visible() { return _visible; }

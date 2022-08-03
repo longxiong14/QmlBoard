@@ -37,8 +37,7 @@ QSGNode *HImageNode::get() { return this; }
 
 QRectF HImageNode::getBoundRect() {
   auto r = rect();
-  return QRectF((r.x()), (r.y()),
-               (r.width()), (r.height()));
+  return QRectF((r.x()), (r.y()), (r.width()), (r.height()));
 }
 
 QList<QPointF> HImageNode::getPointList() {
@@ -54,6 +53,8 @@ void HImageNode::move(const QPointF &p) {
   _rect.setTopLeft(tl);
   _rect.setSize(r.size());
   setRect(_rect);
+
+  HNodeBase::move(p);
 }
 
 HNodeBase::NODETYPE HImageNode::nodeType() { return RECTANGLE; }

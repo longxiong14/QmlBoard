@@ -29,7 +29,7 @@ class HBOARD_EXPORT HNodeBase {
   virtual QList<QPointF> getPointList();
   virtual QUuid id();
   virtual void changedSelectStatus();
-  virtual void move(const QPointF&) {}    // move delta
+  virtual void move(const QPointF&);
   virtual void moveTo(const QPointF&) {}  // move to point
   virtual bool isSelect() { return _select; }
   virtual void drawPoints(const QList<QPointF>&) {}

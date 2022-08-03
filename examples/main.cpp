@@ -36,8 +36,9 @@ int main(int argc, char *argv[]) {
     auto board = HBoardManager::getInstance()->getBoard("test_board");
     //    board->pushNode(new
     //    HImageNode("C:\\Users\\xiaolong\\Pictures\\ttt.png"));
-    //    auto node = new HCVMatNode("C:\\Users\\xiaolong\\Pictures\\ttt.png");
-    auto node = new HCVMatNode(path);
+    auto node = new HCVMatNode("C:\\Users\\xiaolong\\Pictures\\ttt.png",
+                               QPointF(100, 100));
+    //    auto node = new HCVMatNode(path);
     board->pushNode(node);
     board->home();
   }
