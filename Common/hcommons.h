@@ -2,23 +2,24 @@
 #define HCOMMONS_H
 
 #include <QList>
-#include <QPoint>
-#include <QRect>
+#include <QPointF>
+#include <QRectF>
 
 namespace HCommon {
 
-QPoint TopLeft(const QPoint& f, const QPoint& s);
-QPoint TopRight(const QPoint& f, const QPoint& s);
-QPoint BottomLeft(const QPoint& f, const QPoint& s);
-QPoint BottomRight(const QPoint& f, const QPoint& s);
+QPointF TopLeft(const QPointF& f, const QPointF& s);
+QPointF TopRight(const QPointF& f, const QPointF& s);
+QPointF BottomLeft(const QPointF& f, const QPointF& s);
+QPointF BottomRight(const QPointF& f, const QPointF& s);
 
-QRect BuildRect(const QPoint& f, const QPoint& s);
-QList<QPoint> BuildRectList(const QPoint& f, const QPoint& s);
-QList<QPoint> BuildRectList(const QRect& rect);
+QRectF BuildRect(const QPointF& f, const QPointF& s);
+QList<QPointF> BuildRectList(const QPointF& f, const QPointF& s);
+QList<QPointF> BuildRectList(const QRectF& rect);
 
-bool PointInContour(const QPoint& point, const QList<QPoint>& contour);
+bool PointInContour(const QPointF& point, const QList<QPointF>& contour);
 
-QList<QPoint> BuildRectLinesList(const QRect& rect);
+QList<QPointF> BuildRectLinesList(const QRectF& rect);
+QList<QPointF> BuildPolyLinesList(const QList<QPointF>& list);
 
 }  // namespace HCommon
 

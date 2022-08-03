@@ -24,7 +24,7 @@ class HBOARD_EXPORT HHandleArrow : public HHandleMove {
   int getDistance();
 
  protected:
-  virtual bool canSelect(HNodeBase* node, const QPoint& pos, double scale);
+  virtual bool canSelect(HNodeBase* node, const QPointF& pos, double scale);
 
  protected:
   bool _move;

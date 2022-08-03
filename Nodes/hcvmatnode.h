@@ -6,15 +6,15 @@
 #include "himagenode.h"
 class HBOARD_EXPORT HCVMatNode : public HNodeBase {
  public:
-  HCVMatNode(const QString& path, const QPoint& start_point = QPoint());
-  HCVMatNode(const cv::Mat& mat, const QPoint& start_point = QPoint());
+  HCVMatNode(const QString& path, const QPointF& start_point = QPointF());
+  HCVMatNode(const cv::Mat& mat, const QPointF& start_point = QPointF());
 
   virtual QSGNode* build(HBoard*) override;
   virtual QSGNode* get() override;
-  virtual QRect getBoundRect() override;
-  virtual QList<QPoint> getPointList() override;
-  virtual void move(const QPoint&) override;
-  virtual SELECTTYPE selectType() override;
+  virtual QRectF getBoundRect() override;
+  virtual QList<QPointF> getPointList() override;
+  virtual void move(const QPointF&) override;
+  virtual NODETYPE nodeType() override;
 
  public:
   void setSplitSize(const cv::Size& size);
@@ -26,14 +26,14 @@ class HBOARD_EXPORT HCVMatNode : public HNodeBase {
  public:
   QImage CVMat2Qimage(const cv::Mat& mat);
   QSGNode* BuildQImageNode(const QImage& image, HBoard* board,
-                           const QRect& rect);
+                           const QRectF& rect);
 
  protected:
   cv::Mat _mat;
   cv::Size _split_size;
   QSGNode* _node;
-  QRect _bound_rect;
-  QPoint _start_point;
+  QRectF _bound_rect;
+  QPointF _start_point;
 };
 
 #endif  // HCVMATNODE_H

@@ -15,22 +15,22 @@ int HPlanVector::sign(double x) {
 
 bool HPlanVector::equal(double x, double y) { return fabs(x - y) < esp; }
 
-double HPlanVector::dis(const QPoint& a, const QPoint& b) {
+double HPlanVector::dis(const QPointF& a, const QPointF& b) {
   return std::sqrt(pow(a.x() - b.x(), 2) + pow(a.y() - b.y(), 2));
 }
 
-double HPlanVector::cmult(const QPoint& a, const QPoint& b,
-                          const QPoint& c)  //叉积
+double HPlanVector::cmult(const QPointF& a, const QPointF& b,
+                          const QPointF& c)  //叉积
 {
   return (b.x() - a.x()) * (c.y() - a.y()) - (c.x() - a.x()) * (b.y() - a.y());
 }
 
-double HPlanVector::pmult(const QPoint& a, const QPoint& b) {
+double HPlanVector::pmult(const QPointF& a, const QPointF& b) {
   return a.x() * b.x() + a.y() * b.y();
 }
 
-double HPlanVector::pldis(const QPoint& a, const QPoint& b, const QPoint& c) {
-  QPoint s1, s2, s3;
+double HPlanVector::pldis(const QPointF& a, const QPointF& b, const QPointF& c) {
+  QPointF s1, s2, s3;
   s1.setX(c.x() - b.x());
   s1.setY(c.y() - b.y());
   s2.setX(a.x() - b.x());
@@ -49,7 +49,7 @@ double HPlanVector::pldis(const QPoint& a, const QPoint& b, const QPoint& c) {
   }
 }
 
-double HPlanVector::ptmPoly(const QPoint& point, const QList<QPoint>& list) {
+double HPlanVector::ptmPoly(const QPointF& point, const QList<QPointF>& list) {
   double distance = INT_MAX;
   for (int i = 0, j = list.size() - 1; i < list.size(); j = i, i++) {
     distance = std::min(distance, pldis(point, list[j], list[i]));
@@ -57,7 +57,7 @@ double HPlanVector::ptmPoly(const QPoint& point, const QList<QPoint>& list) {
   return distance;
 }
 
-double HPlanVector::area(const QList<QPoint>& list) {
+double HPlanVector::area(const QList<QPointF>& list) {
   //
   double area = 0.0;
   if (list.size() < 3) return 0;

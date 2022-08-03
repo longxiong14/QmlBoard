@@ -2,11 +2,11 @@
 #define HSGNODECOMMON_H
 
 #include <QList>
-#include <QPoint>
+#include <QPointF>
 #include <QSGFlatColorMaterial>
 #include <QSGGeometry>
 namespace HSGNodeCommon {
-QSGGeometry *buildGeometry(const QList<QPoint> &points, unsigned long type);
+QSGGeometry *buildGeometry(const QList<QPointF> &points, unsigned long type);
 QSGFlatColorMaterial *buildColor(const QColor &color);
 
 }  // namespace HSGNodeCommon

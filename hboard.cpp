@@ -33,7 +33,7 @@ HBoard::HBoard(QQuickItem *parent)
   setAcceptedMouseButtons(Qt::MouseButton::LeftButton |
                           Qt::MouseButton::RightButton |
                           Qt::MouseButton::MiddleButton);
-  _timer.start(500);
+  _timer.start(200);
   connect(&_timer, &QTimer::timeout, [this]() {
     if (_trans_node) {
       bool flag = false;
@@ -50,7 +50,7 @@ HBoard::HBoard(QQuickItem *parent)
 
 void HBoard::home() {
   pushTask([=]() {
-    QRect rect(INT_MAX, INT_MAX, INT_MIN, INT_MIN);
+    QRectF rect(INT_MAX, INT_MAX, INT_MIN, INT_MIN);
     for (const auto &key : _nodes.keys()) {
       auto node = _nodes.value(key);
       if (node) {
@@ -175,7 +175,7 @@ QHash<QUuid, HNodeBase *> HBoard::visibleNodes() {
   return node;
 }
 
-void HBoard::moveNode(const QUuid &n, QPoint dlt) {
+void HBoard::moveNode(const QUuid &n, QPointF dlt) {
   pushTask([=]() {
     if (_nodes.contains(n)) {
       _nodes[n]->move(dlt);
@@ -184,7 +184,7 @@ void HBoard::moveNode(const QUuid &n, QPoint dlt) {
   update();
 }
 
-void HBoard::nodeMoveTo(const QUuid &n, QPoint point) {
+void HBoard::nodeMoveTo(const QUuid &n, QPointF point) {
   pushTask([=]() {
     if (_nodes.contains(n)) {
       _nodes[n]->moveTo(point);
@@ -193,7 +193,7 @@ void HBoard::nodeMoveTo(const QUuid &n, QPoint point) {
   update();
 }
 
-void HBoard::drawNodePoint(const QUuid &node, const QList<QPoint> points) {
+void HBoard::drawNodePoint(const QUuid &node, const QList<QPointF> points) {
   if (_nodes.contains(node))
     pushTask([=]() { _nodes[node]->drawPoints(points); });
   else
@@ -235,8 +235,8 @@ void HBoard::setName(const QString &name) {
   }
 }
 
-QPoint HBoard::WCS2LCS(const QPoint &point) {
-  QPoint pt;
+QPointF HBoard::WCS2LCS(const QPointF &point) {
+  QPointF pt;
   if (_trans_node) {
     auto trans_form = _trans_node->matrix().toTransform();
     pt = trans_form.inverted().map(point);
@@ -244,8 +244,8 @@ QPoint HBoard::WCS2LCS(const QPoint &point) {
   return pt;
 }
 
-QPoint HBoard::LCS2WCS(const QPoint &point) {
-  QPoint pt;
+QPointF HBoard::LCS2WCS(const QPointF &point) {
+  QPointF pt;
   if (_trans_node) {
     auto trans_form = _trans_node->matrix().toTransform();
     pt = trans_form.map(point);
@@ -256,7 +256,7 @@ QPoint HBoard::LCS2WCS(const QPoint &point) {
 double HBoard::getScale() {
   auto w = width();
   auto h = height();
-  auto pt = WCS2LCS(QPoint(static_cast<int>(w), static_cast<int>(h)));
+  auto pt = WCS2LCS(QPointF((w), (h)));
   return ((1.0 * w / pt.x()) + (1.0 * h / pt.y())) / 2;
 }
 

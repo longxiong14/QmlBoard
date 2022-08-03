@@ -23,17 +23,16 @@ if (aStyle == "dash") {
   }
 }
 */
-HFillNode::HFillNode() : _flag(false) {}
+HFillNode::HFillNode() {}
 
-HFillNode::HFillNode(const QList<QPoint> &points, const QColor &color,
-                     unsigned long type)
-    : _flag(false) {
+HFillNode::HFillNode(const QList<QPointF> &points, const QColor &color,
+                     unsigned long type) {
   setOurGeometry(points, type);
   setColor(color);
 }
 
-HFillNode::HFillNode(const QRect &rect, const QColor &color, unsigned long type)
-    : _flag(false) {
+HFillNode::HFillNode(const QRectF &rect, const QColor &color,
+                     unsigned long type) {
   auto list = HCommon::BuildRectList(rect);
   setOurGeometry(list, type);
   setColor(color);
@@ -43,61 +42,56 @@ QSGNode *HFillNode::get() { return this; }
 
 QSGNode *HFillNode::build(HBoard *) { return this; }
 
-QRect HFillNode::getBoundRect() {
-  QRect r;
+QRectF HFillNode::getBoundRect() {
+  QRectF r;
   auto geo = geometry();
   if (!geo) return r;
   auto count = geo->vertexCount();
   auto point_list = static_cast<QSGGeometry::Point2D *>(geo->vertexData());
-  int left = INT_MAX, right = INT_MIN, bottom = INT_MIN, top = INT_MAX;
+  float left = float(INT_MAX), right = float(INT_MIN), bottom = float(INT_MIN),
+        top = float(INT_MAX);
   for (int i = 0; i < count; i++) {
     auto p = point_list[i];
-    left = std::min(static_cast<int>(p.x), left);
-    right = std::max(static_cast<int>(p.x), right);
-    bottom = std::max(static_cast<int>(p.y), bottom);
-    top = std::min(static_cast<int>(p.y), top);
+    left = std::min(p.x, left);
+    right = std::max(p.x, right);
+    bottom = std::max(p.y, bottom);
+    top = std::min(p.y, top);
   }
-  r = QRect(left, top, right - left, bottom - top);
+  r = QRectF(double(left), double(top), double(right - left),
+             double(bottom - top));
   return r;
 }
 
-QList<QPoint> HFillNode::getPointList() {
-  QList<QPoint> list;
+QList<QPointF> HFillNode::getPointList() {
+  QList<QPointF> list;
   auto geo = geometry();
   if (!geo) return list;
   auto count = geo->vertexCount();
   auto point_list = static_cast<QSGGeometry::Point2D *>(geo->vertexData());
   for (int i = 0; i < count; i++) {
     auto p = point_list[i];
-    list.push_back(QPoint(static_cast<int>(p.x), static_cast<int>(p.y)));
+    list.push_back(QPointF(double(p.x), double(p.y)));
   }
   return list;
 }
 
-void HFillNode::move(const QPoint &p) {
+void HFillNode::move(const QPointF &p) {
   auto geo = geometry();
   if (!geo) return;
   auto count = geo->vertexCount();
   auto point_list = static_cast<QSGGeometry::Point2D *>(geo->vertexData());
   for (int i = 0; i < count; i++) {
     QSGGeometry::Point2D pt = point_list[i];
-    pt.set(pt.x + p.x(), pt.y + p.y());
+    pt.set(float(double(pt.x) + p.x()), float(double(pt.y) + p.y()));
     point_list[i] = pt;
     geo->vertexDataAsPoint2D()[i] = pt;
   }
   setGeometry(geo);
 }
 
-void HFillNode::moveTo(const QPoint &p) {}
+void HFillNode::moveTo(const QPointF &p) {}
 
-void HFillNode::changedSelectStatus() {
-  HNodeBase::changedSelectStatus();
-  if (!_select && _flag) {
-    timeOut();
-  }
-}
-
-void HFillNode::drawPoints(const QList<QPoint> &points) {
+void HFillNode::drawPoints(const QList<QPointF> &points) {
   auto ptr = geometry();
   if (ptr)
     setOurGeometry(points, ptr->drawingMode());
@@ -111,39 +105,39 @@ void HFillNode::setColor(const QColor &color) {
   setFlag(QSGNode::OwnsMaterial);
 }
 
-void HFillNode::timeOut() {
-  if (false) {
-    QSGFlatColorMaterial *m = static_cast<QSGFlatColorMaterial *>(material());
-    if (m) {
-      auto color = m->color();
-      auto r = color.red() ^ 0x000000ff;
-      auto g = color.green() ^ 0x000000ff;
-      auto b = color.blue() ^ 0x000000ff;
-      QColor results(r, g, b);
-      setColor(results);
-      _flag = !_flag;
-    }
-  } else {
-    if (!childCount()) {
-      auto list = getPointList();
-      for (int i = 0, j = list.size() - 1; i < list.size(); j = i, i++) {
-        std::swap(list[i], list[j]);
-      }
-      auto g = HSGNodeCommon::buildGeometry(list, GL_LINES);
-      QSGGeometryNode *node = new QSGGeometryNode();
-      node->setGeometry(g);
-      node->setMaterial(HSGNodeCommon::buildColor(Qt::blue));
-      appendChildNode(node);
-    }
-  }
-}
+// void HFillNode::timeOut() {
+//  if (false) {
+//    QSGFlatColorMaterial *m = static_cast<QSGFlatColorMaterial *>(material());
+//    if (m) {
+//      auto color = m->color();
+//      auto r = color.red() ^ 0x000000ff;
+//      auto g = color.green() ^ 0x000000ff;
+//      auto b = color.blue() ^ 0x000000ff;
+//      QColor results(r, g, b);
+//      setColor(results);
+//      _flag = !_flag;
+//    }
+//  } else {
+//    if (!childCount()) {
+//      auto list = getPointList();
+//      for (int i = 0, j = list.size() - 1; i < list.size(); j = i, i++) {
+//        std::swap(list[i], list[j]);
+//      }
+//      auto g = HSGNodeCommon::buildGeometry(list, GL_LINES);
+//      QSGGeometryNode *node = new QSGGeometryNode();
+//      node->setGeometry(g);
+//      node->setMaterial(HSGNodeCommon::buildColor(Qt::blue));
+//      appendChildNode(node);
+//    }
+//  }
+//}
 
-QSGGeometry *HFillNode::buildGeometry(const QList<QPoint> &points,
+QSGGeometry *HFillNode::buildGeometry(const QList<QPointF> &points,
                                       unsigned long type) {
   return HSGNodeCommon::buildGeometry(points, type);
 }
 
-void HFillNode::setOurGeometry(const QList<QPoint> &points,
+void HFillNode::setOurGeometry(const QList<QPointF> &points,
                                unsigned long type) {
   QSGGeometry *geometry = buildGeometry(points, type);
   setGeometry(geometry);

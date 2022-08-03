@@ -39,10 +39,10 @@ class HBOARD_EXPORT HBoard : public QQuickItem {
   QTransform transform();
   QHash<QUuid, HNodeBase*> nodes();
   QHash<QUuid, HNodeBase*> visibleNodes();
-  void moveNode(const QUuid& n, QPoint dlt);      // move node delta
-  void nodeMoveTo(const QUuid& n, QPoint point);  // move node to point
+  void moveNode(const QUuid& n, QPointF dlt);      // move node delta
+  void nodeMoveTo(const QUuid& n, QPointF point);  // move node to point
   void drawNodePoint(const QUuid& node,
-                     const QList<QPoint> points);  // draw handle move event
+                     const QList<QPointF> points);  // draw handle move event
   bool hasNode(const QUuid& node);
   void visibleNode(const QUuid& node, bool flag);
 
@@ -62,8 +62,8 @@ class HBOARD_EXPORT HBoard : public QQuickItem {
   void setName(const QString& name);
 
  public:
-  QPoint WCS2LCS(const QPoint& point);
-  QPoint LCS2WCS(const QPoint& point);
+  QPointF WCS2LCS(const QPointF& point);
+  QPointF LCS2WCS(const QPointF& point);
   double getScale();
 
  public:

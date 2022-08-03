@@ -8,26 +8,26 @@
 #include <opencv2/imgcodecs.hpp>
 #include <opencv2/imgproc.hpp>
 
-#include "../common/hcommons.h"
+#include "../Common/hcommons.h"
 #include "../hboard.h"
 
 #define DEBUG qDebug() << __FUNCTION__ << " " << __LINE__ << " "
 
-HCVMatNode::HCVMatNode(const QString &path, const QPoint &start_point)
+HCVMatNode::HCVMatNode(const QString &path, const QPointF &start_point)
     : HNodeBase(),
       _split_size(1920, 1080),
       _node(nullptr),
       _start_point(start_point) {
   _mat = cv::imread(path.toStdString());
   if (!_mat.empty()) {
-    _bound_rect = QRect(0, 0, _mat.cols, _mat.rows);
+    _bound_rect = QRectF(0, 0, _mat.cols, _mat.rows);
   }
 }
 
-HCVMatNode::HCVMatNode(const cv::Mat &mat, const QPoint &start_point)
+HCVMatNode::HCVMatNode(const cv::Mat &mat, const QPointF &start_point)
     : HNodeBase(), _mat(mat), _start_point(start_point) {
   if (!_mat.empty()) {
-    _bound_rect = QRect(0, 0, _mat.cols, _mat.rows);
+    _bound_rect = QRectF(0, 0, _mat.cols, _mat.rows);
   }
 }
 
@@ -40,11 +40,11 @@ QSGNode *HCVMatNode::build(HBoard *board) {
     for (int i = 0; i < col; i++) {
       for (int j = 0; j < row; j++) {
         cv::Rect rect =
-            src & cv::Rect(i * _split_size.width + _start_point.x(),
-                           j * _split_size.height + _start_point.y(),
+            src & cv::Rect(i * _split_size.width + int(_start_point.x()),
+                           j *_split_size.height + int(_start_point.y()),
                            _split_size.width, _split_size.height);
         auto image = CVMat2Qimage(_mat(rect));
-        auto r = QRect(rect.x, rect.y, rect.width, rect.height);
+        auto r = QRectF(rect.x, rect.y, rect.width, rect.height);
         auto n = BuildQImageNode(image, board, r);
         if (n) {
           _node->appendChildNode(n);
@@ -58,21 +58,23 @@ QSGNode *HCVMatNode::build(HBoard *board) {
 
 QSGNode *HCVMatNode::get() { return _node; }
 
-QRect HCVMatNode::getBoundRect() { return _bound_rect; }
+QRectF HCVMatNode::getBoundRect() { return _bound_rect; }
 
-QList<QPoint> HCVMatNode::getPointList() {
+QList<QPointF> HCVMatNode::getPointList() {
   return HCommon::BuildRectList(_bound_rect);
 }
 
-void HCVMatNode::move(const QPoint &point) {
+void HCVMatNode::move(const QPointF &point) {
   if (_node) {
     _start_point += point;
-    _bound_rect.setTopLeft(_start_point);
+    auto rect = QRectF(_start_point, _bound_rect.size());
+    _bound_rect = rect;
+
     auto size = _node->childCount();
     for (int i = 0; i < size; i++) {
       auto node = _node->childAtIndex(i);
       if (node) {
-        auto texture = static_cast<QSGSimpleTextureNode *>(node);
+        auto texture = dynamic_cast<QSGSimpleTextureNode *>(node);
         if (texture) {
           auto rect = texture->rect();
           auto tl = rect.topLeft();
@@ -85,7 +87,7 @@ void HCVMatNode::move(const QPoint &point) {
   }
 }
 
-HNodeBase::SELECTTYPE HCVMatNode::selectType() { return SELECTTYPE::INAREA; }
+HNodeBase::NODETYPE HCVMatNode::nodeType() { return NODETYPE::RECTANGLE; }
 
 void HCVMatNode::setSplitSize(const cv::Size &size) { _split_size = size; }
 
@@ -111,13 +113,13 @@ QImage HCVMatNode::CVMat2Qimage(const cv::Mat &mat) {
     return image;
   } else if (mat.type() == CV_8UC3) {
     const uchar *pSrc = const_cast<const uchar *>(mat.data);
-    QImage image(pSrc, mat.cols, mat.rows, static_cast<int>(mat.step),
+    QImage image(pSrc, mat.cols, mat.rows, int(mat.step),
                  QImage::Format_RGB888);
 
     return image.rgbSwapped();
   } else if (mat.type() == CV_8UC4) {
     const uchar *pSrc = const_cast<const uchar *>(mat.data);
-    QImage image(pSrc, mat.cols, mat.rows, static_cast<int>(mat.step),
+    QImage image(pSrc, mat.cols, mat.rows, int(mat.step),
                  QImage::Format_ARGB32);
     return image.copy();
   }
@@ -125,7 +127,7 @@ QImage HCVMatNode::CVMat2Qimage(const cv::Mat &mat) {
 }
 
 QSGNode *HCVMatNode::BuildQImageNode(const QImage &image, HBoard *board,
-                                     const QRect &rect) {
+                                     const QRectF &rect) {
   if (image.isNull()) {
     DEBUG << "image is null";
     return nullptr;

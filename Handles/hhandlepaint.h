@@ -2,7 +2,7 @@
 #define HHANDLEPAINT_H
 
 #include <QList>
-#include <QPoint>
+#include <QPointF>
 #include <QUuid>
 
 #include "hhandlebase.h"
@@ -22,7 +22,7 @@ class HBOARD_EXPORT HHandleDrawRect : public HHandleMove {
       const QJsonObject& object = QJsonObject()) override;
 
  protected:
-  QPoint _point;
+  QPointF _point;
 };
 
 class HBOARD_EXPORT HHandleDrawPoly : public HHandleMove {
@@ -40,7 +40,7 @@ class HBOARD_EXPORT HHandleDrawPoly : public HHandleMove {
       const QJsonObject& object = QJsonObject()) override;
 
  protected:
-  QList<QPoint> _points;
+  QList<QPointF> _points;
 };
 
 class HBOARD_EXPORT HHandleDrawLine : public HHandleMove {
@@ -58,7 +58,7 @@ class HBOARD_EXPORT HHandleDrawLine : public HHandleMove {
       const QJsonObject& object = QJsonObject()) override;
 
  protected:
-  QPoint _point;
+  QPointF _point;
 };
 
 class HBOARD_EXPORT HHandleDrawCurve : public HHandleMove {
@@ -76,7 +76,7 @@ class HBOARD_EXPORT HHandleDrawCurve : public HHandleMove {
       const QJsonObject& object = QJsonObject()) override;
 
  protected:
-  QList<QPoint> _points;
+  QList<QPointF> _points;
 };
 
 class HBOARD_EXPORT HHandleDrawFillRect : public HHandleDrawRect {

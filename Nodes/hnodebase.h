@@ -3,18 +3,19 @@
 
 #include <QColor>
 #include <QJsonObject>
-#include <QRect>
+#include <QRectF>
 #include <QUuid>
 
 #include "../HBoard_global.h"
 class QSGNode;
 class HBoard;
+class QSGGeometryNode;
 class HBOARD_EXPORT HNodeBase {
  public:
   typedef enum {
-    DISTANCE,    //距离判断（按照点与轮廓的最近距离判断）
-    INAREA       //点在封闭形状内的判断
-  } SELECTTYPE;  //点选的判断方式
+    POLY,      //距离判断（按照点与轮廓的最近距离判断）
+    RECTANGLE  //点在封闭形状内的判断
+  } NODETYPE;  //点选的判断方式
 
  public:
   HNodeBase();
@@ -24,16 +25,16 @@ class HBOARD_EXPORT HNodeBase {
 
   virtual QSGNode* get() { return nullptr; }
   virtual QSGNode* build(HBoard*) { return nullptr; }
-  virtual QRect getBoundRect() { return QRect(); }
-  virtual QList<QPoint> getPointList();
+  virtual QRectF getBoundRect() { return QRectF(); }
+  virtual QList<QPointF> getPointList();
   virtual QUuid id();
-  virtual void changedSelectStatus() { _select = !_select; }
-  virtual void move(const QPoint&) {}    // move delta
-  virtual void moveTo(const QPoint&) {}  // move to point
+  virtual void changedSelectStatus();
+  virtual void move(const QPointF&) {}    // move delta
+  virtual void moveTo(const QPointF&) {}  // move to point
   virtual bool isSelect() { return _select; }
-  virtual void drawPoints(const QList<QPoint>&) {}
+  virtual void drawPoints(const QList<QPointF>&) {}
   virtual void setColor(const QColor&) {}
-  virtual SELECTTYPE selectType() { return DISTANCE; }
+  virtual NODETYPE nodeType() { return POLY; }
   virtual void setVisible(bool flag);
   virtual bool visible();
   virtual void timeOut();
@@ -47,6 +48,8 @@ class HBOARD_EXPORT HNodeBase {
   QUuid _id;
   bool _select;
   bool _visible;
+  QList<QPointF> _dash_list;
+  QSGGeometryNode* _dash;
 };
 
 #endif  // HNODEBASE_H

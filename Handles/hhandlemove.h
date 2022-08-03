@@ -1,6 +1,6 @@
 ﻿#ifndef HHANDLEMOVE_H
 #define HHANDLEMOVE_H
-#include <QPoint>
+#include <QPointF>
 #include <QTransform>
 
 #include "hhandlebase.h"
@@ -21,7 +21,7 @@ class HBOARD_EXPORT HHandleMove : public HHandleBase {
   virtual void wheelEvent(HBoard* board, QWheelEvent* event) override;
 
  protected:
-  QPoint _last_point;
+  QPointF _last_point;
   QTransform _last_trans;
   double _scale;
 };

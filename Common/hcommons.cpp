@@ -7,60 +7,62 @@
 #include "../hboardmanager.h"
 #define DEBUG qDebug() << __FUNCTION__ << " " << __LINE__ << " "
 #define DCODE true
+#define D 1e-7
 
-QUuid drawLine(const QPoint &f, const QPoint &s) {
+QUuid drawLine(const QPointF &f, const QPointF &s) {
   auto board = HBoardManager::getInstance()->getBoard("test_board");
-  auto list = QList<QPoint>({f, s});
+  auto list = QList<QPointF>({f, s});
   auto node = new HFillNode(list, QColor(255, 255, 0, 255), GL_LINES);
   board->pushNode(node, false);
   return node->id();
 }
 
-QPoint HCommon::TopLeft(const QPoint &f, const QPoint &s) {
+QPointF HCommon::TopLeft(const QPointF &f, const QPointF &s) {
   auto x = std::min(f.x(), s.x());
   auto y = std::min(f.y(), s.y());
-  return QPoint(x, y);
+  return QPointF(x, y);
 }
 
-QPoint HCommon::BottomRight(const QPoint &f, const QPoint &s) {
+QPointF HCommon::BottomRight(const QPointF &f, const QPointF &s) {
   auto x = std::max(f.x(), s.x());
   auto y = std::max(f.y(), s.y());
-  return QPoint(x, y);
+  return QPointF(x, y);
 }
 
-QRect HCommon::BuildRect(const QPoint &f, const QPoint &s) {
-  return QRect(TopLeft(f, s), BottomRight(f, s));
+QRectF HCommon::BuildRect(const QPointF &f, const QPointF &s) {
+  return QRectF(TopLeft(f, s), BottomRight(f, s));
 }
 
-QPoint HCommon::TopRight(const QPoint &f, const QPoint &s) {
+QPointF HCommon::TopRight(const QPointF &f, const QPointF &s) {
   auto x = std::min(f.x(), s.x());
   auto y = std::max(f.y(), s.y());
-  return QPoint(x, y);
+  return QPointF(x, y);
 }
 
-QPoint HCommon::BottomLeft(const QPoint &f, const QPoint &s) {
+QPointF HCommon::BottomLeft(const QPointF &f, const QPointF &s) {
   auto x = std::min(f.x(), s.x());
   auto y = std::max(f.y(), s.y());
-  return QPoint(x, y);
+  return QPointF(x, y);
 }
 
-QList<QPoint> HCommon::BuildRectList(const QPoint &f, const QPoint &s) {
+QList<QPointF> HCommon::BuildRectList(const QPointF &f, const QPointF &s) {
   auto tl = TopLeft(f, s);
   auto br = BottomRight(f, s);
-  QRect rect(tl, br);
+  QRectF rect(tl, br);
   return BuildRectList(rect);
 }
 
-QList<QPoint> HCommon::BuildRectList(const QRect &rect) {
-  QList<QPoint> list{{rect.left(), rect.top()},
-                     {rect.right(), rect.top()},
-                     {rect.right(), rect.bottom()},
-                     {rect.left(), rect.bottom()}};
+QList<QPointF> HCommon::BuildRectList(const QRectF &rect) {
+  QList<QPointF> list{{rect.left(), rect.top()},
+                      {rect.right(), rect.top()},
+                      {rect.right(), rect.bottom()},
+                      {rect.left(), rect.bottom()},
+                      {rect.left(), rect.top()}};
   return list;
 }
 
-bool HCommon::PointInContour(const QPoint &vtPoint,
-                             const QList<QPoint> &vecPoints) {
+bool HCommon::PointInContour(const QPointF &vtPoint,
+                             const QList<QPointF> &vecPoints) {
   if (true) {
     bool bResult =
         false;  //判断结果（true；点落在多边形内；false:点未落在多边形内）
@@ -113,22 +115,78 @@ bool HCommon::PointInContour(const QPoint &vtPoint,
   }
 }
 
-QList<QPoint> HCommon::BuildRectLinesList(const QRect &rect) {
+QList<QPointF> HCommon::BuildRectLinesList(const QRectF &rect) {
+  DEBUG << rect;
   auto tl = rect.topLeft(), br = rect.bottomRight();
-  QList<QPoint> h_line1, h_line2, v_line1, v_line2;
-  for (int i = tl.x(), j = br.x(); i <= br.x() && j >= tl.x(); i++, j--) {
-    h_line1.push_back(QPoint(i, tl.y()));
-    h_line2.push_back(QPoint(j, br.y()));
+  QList<QPointF> h_line1, h_line2, v_line1, v_line2;
+  int x_min = int(tl.x()), x_max = int(br.x() + 1), y_min = int(tl.y()),
+      y_max = int(br.y() + 1);
+  DEBUG << x_max << " " << x_min << " " << y_max << " " << y_min;
+  for (int i = x_min, j = x_max; i <= x_max && j >= x_min; i++, j--) {
+    h_line1.push_back(QPointF(i, y_min));
+    h_line2.push_back(QPointF(j, y_max));
   }
 
-  for (int i = tl.y(), j = br.y(); i <= br.y() && j >= tl.y(); i++, j--) {
-    v_line1.push_back(QPoint(tl.x(), i));
-    v_line2.push_back(QPoint(br.x(), j));
+  for (int i = y_min, j = y_max; i <= y_max && j >= y_min; i++, j--) {
+    v_line1.push_back(QPointF(x_max, i));
+    v_line2.push_back(QPointF(x_min, j));
   }
-  QList<QPoint> list;
+  QList<QPointF> list;
   list.append(h_line1);
-  list.append(v_line2);
-  list.append(h_line2);
   list.append(v_line1);
+  list.append(h_line2);
+  list.append(v_line2);
+  DEBUG << list.size();
+  if (!list.empty()) {
+    list.push_back(list.first());
+  }
   return list;
+}
+
+QList<QPointF> HCommon::BuildPolyLinesList(const QList<QPointF> &list) {
+  QList<QPointF> out;
+  for (int i = 1, j = 0; i < list.size(); j = i, i++) {
+    auto p1 = list[j], p2 = list[i];
+    if (std::fabs(p1.x() - p2.x()) < D) {
+      int num = 1;
+      if (p2.y() < p1.y()) {
+        num = -1;
+      }
+      for (int idx = int(p1.y()); (num * idx) <= (num * p2.y()); idx += num) {
+        out.push_back(QPointF(p1.x(), idx));
+      }
+    } else if (std::fabs(p1.y() - p2.y()) < D) {
+      int num = 1;
+      if (p2.x() < p1.x()) {
+        num = -1;
+      }
+      for (int idx = int(p1.x()); (num * idx) <= (num * p2.x()); idx += num) {
+        out.push_back(QPointF(idx, p1.y()));
+      }
+    } else {
+      double k = 1.0 * (p2.y() - p1.y()) / (p2.x() - p1.x());
+      double b = p2.y() - k * p2.x();
+      auto func = [=](int x) { return 1.0 * x * k + b; };
+      auto func2 = [=](int y) { return 1.0 * (y - b) / k; };
+      if (std::abs(p2.x() - p1.x()) > std::abs(p2.y() - p1.y())) {
+        int num = 1;
+        if (p2.x() < p1.x()) {
+          num = -1;
+        }
+        for (int idx = int(p1.x()); (num * idx) < (num * p2.x()); idx += num) {
+          out.push_back(QPointF(idx, func(idx)));
+        }
+      } else {
+        int num = 1;
+        if (p2.y() < p1.y()) {
+          num = -1;
+        }
+        for (int idx = int(p1.y()); (num * idx) < (num * p2.y()); idx += num) {
+          out.push_back(QPointF(func2(idx), idx));
+        }
+      }
+    }
+  }
+
+  return out;
 }

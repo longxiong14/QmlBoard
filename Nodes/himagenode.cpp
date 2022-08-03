@@ -35,18 +35,18 @@ QSGNode *HImageNode::build(HBoard *board) {
 
 QSGNode *HImageNode::get() { return this; }
 
-QRect HImageNode::getBoundRect() {
+QRectF HImageNode::getBoundRect() {
   auto r = rect();
-  return QRect(static_cast<int>(r.x()), static_cast<int>(r.y()),
-               static_cast<int>(r.width()), static_cast<int>(r.height()));
+  return QRectF((r.x()), (r.y()),
+               (r.width()), (r.height()));
 }
 
-QList<QPoint> HImageNode::getPointList() {
+QList<QPointF> HImageNode::getPointList() {
   auto r = getBoundRect();
   return HCommon::BuildRectList(r.topLeft(), r.bottomRight());
 }
 
-void HImageNode::move(const QPoint &p) {
+void HImageNode::move(const QPointF &p) {
   auto r = rect();
   auto tl = r.topLeft();
   tl += p;
@@ -56,7 +56,7 @@ void HImageNode::move(const QPoint &p) {
   setRect(_rect);
 }
 
-HNodeBase::SELECTTYPE HImageNode::selectType() { return INAREA; }
+HNodeBase::NODETYPE HImageNode::nodeType() { return RECTANGLE; }
 
 void HImageNode::setPath(const QString &path) { _path = path; }
 

@@ -44,13 +44,13 @@ void HHandleArrow::mouseMoveEvent(HBoard *board, QMouseEvent *event,
         for (const auto &s : selects) {
           if (nodes.contains(s) && _move) {
             auto node = nodes[s];
-            auto dlt = pos - _last_point - board->WCS2LCS(QPoint());
+            auto dlt = pos - _last_point - board->WCS2LCS(QPointF());
             board->moveNode(node->id(), dlt);
           } else {
             DEBUG << nodes.keys() << " " << s;
           }
         }
-        _last_point = pos - board->WCS2LCS(QPoint(0, 0));
+        _last_point = pos - board->WCS2LCS(QPointF(0, 0));
       }
     }
   }
@@ -83,17 +83,17 @@ void HHandleArrow::setDistance(int dis) { _distance = dis; }
 
 int HHandleArrow::getDistance() { return _distance; }
 
-bool HHandleArrow::canSelect(HNodeBase *node, const QPoint &pos, double scale) {
-  auto type = node->selectType();
+bool HHandleArrow::canSelect(HNodeBase *node, const QPointF &pos, double scale) {
+  auto type = node->nodeType();
   auto points = node->getPointList();
   HPlanVector vec;
   switch (type) {
-    case HNodeBase::INAREA:
+    case HNodeBase::RECTANGLE:
       if (HCommon::PointInContour(pos, points)) {
         return true;
       }
       break;
-    case HNodeBase::DISTANCE: {
+    case HNodeBase::POLY: {
       auto min = vec.ptmPoly(pos, points);
       if (std::fabs(min) < (_distance / scale)) {
         return true;

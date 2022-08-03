@@ -11,7 +11,7 @@ HHandleMove::HHandleMove() : _scale(0.05) {}
 void HHandleMove::mousePressEvent(HBoard *board, QMouseEvent *event,
                                   const QJsonObject &) {
   if (board && event) {
-    _last_point = board->WCS2LCS(event->pos()) - board->WCS2LCS(QPoint(0, 0));
+    _last_point = board->WCS2LCS(event->pos()) - board->WCS2LCS(QPointF(0, 0));
     _last_trans = board->transform();
   }
 }
@@ -19,7 +19,7 @@ void HHandleMove::mousePressEvent(HBoard *board, QMouseEvent *event,
 void HHandleMove::mouseMoveEvent(HBoard *board, QMouseEvent *event,
                                  const QJsonObject &) {
   if (board && event && middleButtonPress(event)) {
-    QPointF ds = board->WCS2LCS(event->pos()) - board->WCS2LCS(QPoint(0, 0));
+    QPointF ds = board->WCS2LCS(event->pos()) - board->WCS2LCS(QPointF(0, 0));
     QTransform trans;
     trans.translate(ds.x() - _last_point.x(), ds.y() - _last_point.y());
     board->pushTransform(trans * _last_trans);
@@ -29,7 +29,7 @@ void HHandleMove::mouseMoveEvent(HBoard *board, QMouseEvent *event,
 void HHandleMove::mouseReleaseEvent(HBoard *board, QMouseEvent *event,
                                     const QJsonObject &) {
   if (board && event) {
-    _last_point = QPoint();
+    _last_point = QPointF();
     _last_trans = QTransform();
   }
 }
