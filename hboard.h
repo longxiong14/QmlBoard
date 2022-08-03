@@ -1,6 +1,7 @@
 ﻿#ifndef HBOARD_H
 #define HBOARD_H
 #include <QHash>
+#include <QJsonObject>
 #include <QMutex>
 #include <QQueue>
 #include <QSet>
@@ -16,6 +17,7 @@ class QSGNode;
 class QSGTransformNode;
 class HHandleBase;
 class HNodeBase;
+class HFillNode;
 class HBOARD_EXPORT HBoard : public QQuickItem {
   using task = std::function<void(void)>;
   Q_OBJECT
@@ -24,19 +26,13 @@ class HBOARD_EXPORT HBoard : public QQuickItem {
   explicit HBoard(QQuickItem* parent = nullptr);
 
  public:
-  Q_INVOKABLE
-  void visibleNode(bool flag);
-
-  Q_INVOKABLE
-  void showAll();
-
- public:
   void home();
+  void setHandleParam(const QJsonObject& param);
 
  public:
   void pushTransform(const QTransform& trans);
   void pushNode(HNodeBase* node, bool flag = true);
-  void pushDashNode(HNodeBase* node);
+  //  void pushDashNode(HNodeBase* node);
   void removeNode(const QUuid& id);
   void setHandle(HHandleBase* handle);
   QSGTransformNode* transformNode();
@@ -98,8 +94,8 @@ class HBOARD_EXPORT HBoard : public QQuickItem {
   QString _name;
   QQueue<task> _tasks;
   QSet<int> _keys;
-  QHash<QUuid, HNodeBase*> _dash_nodes;
   QTimer _timer;
+  QJsonObject _handle_param;
 };
 
 #endif  // HBOARD_H

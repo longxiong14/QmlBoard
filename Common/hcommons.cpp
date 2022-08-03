@@ -112,3 +112,23 @@ bool HCommon::PointInContour(const QPoint &vtPoint,
     return bResult;
   }
 }
+
+QList<QPoint> HCommon::BuildRectLinesList(const QRect &rect) {
+  auto tl = rect.topLeft(), br = rect.bottomRight();
+  QList<QPoint> h_line1, h_line2, v_line1, v_line2;
+  for (int i = tl.x(), j = br.x(); i <= br.x() && j >= tl.x(); i++, j--) {
+    h_line1.push_back(QPoint(i, tl.y()));
+    h_line2.push_back(QPoint(j, br.y()));
+  }
+
+  for (int i = tl.y(), j = br.y(); i <= br.y() && j >= tl.y(); i++, j--) {
+    v_line1.push_back(QPoint(tl.x(), i));
+    v_line2.push_back(QPoint(br.x(), j));
+  }
+  QList<QPoint> list;
+  list.append(h_line1);
+  list.append(v_line2);
+  list.append(h_line2);
+  list.append(v_line1);
+  return list;
+}

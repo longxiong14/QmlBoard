@@ -4,6 +4,7 @@
 #include <QSGFlatColorMaterial>
 
 #include "../Common/hcommons.h"
+#include "../Common/hsgnodecommon.h"
 #define DEBUG qDebug() << __FUNCTION__ << " " << __LINE__ << " "
 /*
 QSGGeometry *geometry =
@@ -22,18 +23,18 @@ if (aStyle == "dash") {
   }
 }
 */
-HFillNode::HFillNode() {}
+HFillNode::HFillNode() : _flag(false) {}
 
 HFillNode::HFillNode(const QList<QPoint> &points, const QColor &color,
-                     unsigned long type) {
+                     unsigned long type)
+    : _flag(false) {
   setOurGeometry(points, type);
   setColor(color);
 }
 
-HFillNode::HFillNode(const QRect &rect, const QColor &color,
-                     unsigned long type) {
-  QList<QPoint> list =
-      HCommon::BuildRectList(rect.topLeft(), rect.bottomRight());
+HFillNode::HFillNode(const QRect &rect, const QColor &color, unsigned long type)
+    : _flag(false) {
+  auto list = HCommon::BuildRectList(rect);
   setOurGeometry(list, type);
   setColor(color);
 }
@@ -91,10 +92,8 @@ void HFillNode::moveTo(const QPoint &p) {}
 
 void HFillNode::changedSelectStatus() {
   HNodeBase::changedSelectStatus();
-  if (_select) {
-    setColor(Qt::GlobalColor::blue);
-  } else {
-    setColor(Qt::GlobalColor::red);
+  if (!_select && _flag) {
+    timeOut();
   }
 }
 
@@ -107,40 +106,27 @@ void HFillNode::drawPoints(const QList<QPoint> &points) {
 }
 
 void HFillNode::setColor(const QColor &color) {
-  QSGFlatColorMaterial *material = new QSGFlatColorMaterial;
-  material->setColor(color);
+  QSGFlatColorMaterial *material = HSGNodeCommon::buildColor(color);
   setMaterial(material);
   setFlag(QSGNode::OwnsMaterial);
 }
 
+void HFillNode::timeOut() {
+  QSGFlatColorMaterial *m = static_cast<QSGFlatColorMaterial *>(material());
+  if (m) {
+    auto color = m->color();
+    auto r = color.red() ^ 0x000000ff;
+    auto g = color.green() ^ 0x000000ff;
+    auto b = color.blue() ^ 0x000000ff;
+    QColor results(r, g, b);
+    setColor(results);
+    _flag = !_flag;
+  }
+}
+
 QSGGeometry *HFillNode::buildGeometry(const QList<QPoint> &points,
                                       unsigned long type) {
-  if (true) {
-    QSGGeometry *geometry = new QSGGeometry(
-        QSGGeometry::defaultAttributes_Point2D(), points.size());
-    GL_LINE_LOOP;
-    geometry->setDrawingMode(type);
-    for (int i = 0; i < points.size(); i++) {
-      geometry->vertexDataAsPoint2D()[i].set(points[i].x(), points[i].y());
-    }
-    return geometry;
-  } else {
-    QSGGeometry *geometry = new QSGGeometry(
-        QSGGeometry::defaultAttributes_TexturedPoint2D(), points.size());
-    geometry->setDrawingMode(type);
-    auto vertices = geometry->vertexDataAsTexturedPoint2D();
-    float dis = 0;
-    auto rt = 1;
-    //        if (m_trans_node) m_trans_node->matrix().data()[0];
-    for (auto i = 0; i < points.size(); ++i) {
-      if (i > 0) {
-        auto del = points[i] - points[i - 1];
-        dis += sqrt(QPointF::dotProduct(del, del));
-      }
-      vertices[i].set(points[i].x(), points[i].y(), dis * rt / 10, 0);
-    }
-    return geometry;
-  }
+  return HSGNodeCommon::buildGeometry(points, type);
 }
 
 void HFillNode::setOurGeometry(const QList<QPoint> &points,

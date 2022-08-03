@@ -13,7 +13,8 @@
 
 HHandleArrow::HHandleArrow() : HHandleMove(), _move(false), _distance(5) {}
 
-void HHandleArrow::mousePressEvent(HBoard *board, QMouseEvent *event) {
+void HHandleArrow::mousePressEvent(HBoard *board, QMouseEvent *event,
+                                   const QJsonObject &) {
   HHandleMove::mousePressEvent(board, event);
   if (board && event) {
     _move = false;
@@ -30,7 +31,8 @@ void HHandleArrow::mousePressEvent(HBoard *board, QMouseEvent *event) {
   }
 }
 
-void HHandleArrow::mouseMoveEvent(HBoard *board, QMouseEvent *event) {
+void HHandleArrow::mouseMoveEvent(HBoard *board, QMouseEvent *event,
+                                  const QJsonObject &) {
   if (board && event) {
     if (middleButtonPress(event)) {
       HHandleMove::mouseMoveEvent(board, event);
@@ -54,7 +56,8 @@ void HHandleArrow::mouseMoveEvent(HBoard *board, QMouseEvent *event) {
   }
 }
 
-void HHandleArrow::mouseReleaseEvent(HBoard *board, QMouseEvent *event) {
+void HHandleArrow::mouseReleaseEvent(HBoard *board, QMouseEvent *event,
+                                     const QJsonObject &) {
   if (board && event) {
     if (middleButtonPress(event)) {
       HHandleMove::mouseReleaseEvent(board, event);

@@ -34,11 +34,11 @@ int main(int argc, char *argv[]) {
   QString path = "C:\\Users\\xiaolong\\Pictures\\test.jpg";
   {
     auto board = HBoardManager::getInstance()->getBoard("test_board");
-    board->pushNode(new HCVMatNode(path));
-    //    board->pushNode(new
-    //    HCVMatNode("C:\\Users\\xiaolong\\Pictures\\ttt.png"));
-    //    board->pushNode(new
-    //    HImageNode("C:\\Users\\xiaolong\\Pictures\\ttt.png"));
+    //    board->pushNode(new HCVMatNode(path));
+    auto node = new HCVMatNode("C:\\Users\\xiaolong\\Pictures\\ttt.png");
+    board->pushNode(node);
+    board->pushNode(new HFillNode(QRect(0, 0, 100, 100), Qt::red));
+
     board->setHandle(new HHandleArrow());
     board->home();
   }

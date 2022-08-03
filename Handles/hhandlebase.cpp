@@ -8,11 +8,14 @@ HHandleBase::HHandleBase() {}
 
 HHandleBase::~HHandleBase() {}
 
-void HHandleBase::mousePressEvent(HBoard *, QMouseEvent *) {}
+void HHandleBase::mousePressEvent(HBoard *, QMouseEvent *,
+                                  const QJsonObject &) {}
 
-void HHandleBase::mouseMoveEvent(HBoard *, QMouseEvent *) {}
+void HHandleBase::mouseMoveEvent(HBoard *, QMouseEvent *, const QJsonObject &) {
+}
 
-void HHandleBase::mouseReleaseEvent(HBoard *, QMouseEvent *) {}
+void HHandleBase::mouseReleaseEvent(HBoard *, QMouseEvent *,
+                                    const QJsonObject &) {}
 
 void HHandleBase::wheelEvent(HBoard *, QWheelEvent *) {}
 

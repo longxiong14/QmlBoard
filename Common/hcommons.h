@@ -18,6 +18,8 @@ QList<QPoint> BuildRectList(const QRect& rect);
 
 bool PointInContour(const QPoint& point, const QList<QPoint>& contour);
 
+QList<QPoint> BuildRectLinesList(const QRect& rect);
+
 }  // namespace HCommon
 
 #endif  // HCOMMONS_H

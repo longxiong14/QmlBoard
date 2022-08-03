@@ -1,6 +1,7 @@
 ﻿#ifndef HHANDLEBASE_H
 #define HHANDLEBASE_H
 
+#include <QJsonObject>
 #include <QUuid>
 
 #include "../HBoard_global.h"
@@ -14,9 +15,12 @@ class HBOARD_EXPORT HHandleBase {
   HHandleBase(const HHandleBase& other) = default;
   HHandleBase& operator=(const HHandleBase& other) = default;
 
-  virtual void mousePressEvent(HBoard* board, QMouseEvent* event);
-  virtual void mouseMoveEvent(HBoard* board, QMouseEvent* event);
-  virtual void mouseReleaseEvent(HBoard* board, QMouseEvent* event);
+  virtual void mousePressEvent(HBoard* board, QMouseEvent* event,
+                               const QJsonObject& object = QJsonObject());
+  virtual void mouseMoveEvent(HBoard* board, QMouseEvent* event,
+                              const QJsonObject& object = QJsonObject());
+  virtual void mouseReleaseEvent(HBoard* board, QMouseEvent* event,
+                                 const QJsonObject& object = QJsonObject());
   virtual void wheelEvent(HBoard* board, QWheelEvent* event);
 
  protected:

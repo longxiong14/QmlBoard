@@ -9,9 +9,11 @@
 #include <QSGSimpleTextureNode>
 #include <QSGTexture>
 
+#include "Common/hcommons.h"
 #include "Handles/hhandlearrow.h"
 #include "Handles/hhandlebase.h"
 #include "Handles/hhandlemove.h"
+#include "Nodes/hfillnode.h"
 #include "Nodes/himagenode.h"
 #include "Nodes/hnodebase.h"
 #include "hboardmanager.h"
@@ -31,48 +33,19 @@ HBoard::HBoard(QQuickItem *parent)
   setAcceptedMouseButtons(Qt::MouseButton::LeftButton |
                           Qt::MouseButton::RightButton |
                           Qt::MouseButton::MiddleButton);
-  _timer.start(200);
+  _timer.start(500);
   connect(&_timer, &QTimer::timeout, [this]() {
     if (_trans_node) {
-      for (const auto &node : _nodes) {
-        if (node->isSelect()) {
-          if (_dash_nodes.contains(node->id())) {
-          } else {
-          }
+      bool flag = false;
+      for (auto n : _nodes) {
+        if (n->isSelect()) {
+          flag = true;
+          pushTask([=]() { n->timeOut(); });
         }
       }
+      if (flag) update();
     }
-    //    DEBUG << "timeout";
-    //    if (_trans_node)
-    //      for (auto dash : _dash_nodes) {
-    //        pushTask([=]() {
-    //          _trans_node->removeChildNode(dash->get());
-    //          dash->timeOut();
-    //          _trans_node->appendChildNode(dash->get());
-    //        });
-    //      }
   });
-}
-
-void HBoard::visibleNode(bool flag) {
-  auto sel = selects();
-  for (const auto &k : sel) {
-    visibleNode(k, flag);
-  }
-}
-
-void HBoard::showAll() {
-  for (const auto &node : _nodes) {
-    if (!node->visible()) {
-      node->setVisible(true);
-      pushTask([=]() {
-        if (node) {
-          _trans_node->appendChildNode(node->get());
-        }
-      });
-    }
-  }
-  update();
 }
 
 void HBoard::home() {
@@ -103,6 +76,8 @@ void HBoard::home() {
   });
 }
 
+void HBoard::setHandleParam(const QJsonObject &param) { _handle_param = param; }
+
 void HBoard::pushTransform(const QTransform &trans) {
   pushTask([=]() {
     if (_trans_node) _trans_node->setMatrix(trans);
@@ -116,13 +91,6 @@ void HBoard::pushNode(HNodeBase *node, bool flag) {
       if (flag) _nodes.insert(node->id(), node);
     }
   });
-}
-
-void HBoard::pushDashNode(HNodeBase *node) {
-  if (node) {
-    QMutexLocker lock(&_mutex);
-    _dash_nodes.insert(node->id(), node);
-  }
 }
 
 void HBoard::removeNode(const QUuid &id) {
@@ -154,13 +122,11 @@ void HBoard::clearSelect() {
 }
 
 void HBoard::pushSelect(const QUuid &s) {
-  pushTask([=]() {
-    if (_nodes.contains(s)) {
-      if (!_nodes[s]->isSelect()) {
-        _nodes[s]->changedSelectStatus();
-      }
+  if (_nodes.contains(s)) {
+    if (!_nodes[s]->isSelect()) {
+      _nodes[s]->changedSelectStatus();
     }
-  });
+  }
   update();
 }
 
@@ -321,19 +287,19 @@ QSGNode *HBoard::updatePaintNode(QSGNode *node,
 }
 
 void HBoard::mousePressEvent(QMouseEvent *event) {
-  if (_handle) _handle->mousePressEvent(this, event);
+  if (_handle) _handle->mousePressEvent(this, event, _handle_param);
   update();
 }
 
 void HBoard::mouseMoveEvent(QMouseEvent *event) {
-  if (_handle) _handle->mouseMoveEvent(this, event);
+  if (_handle) _handle->mouseMoveEvent(this, event, _handle_param);
   auto pos = WCS2LCS(event->pos());
   hoverPoint(pos.x(), pos.y());
   update();
 }
 
 void HBoard::mouseReleaseEvent(QMouseEvent *event) {
-  if (_handle) _handle->mouseReleaseEvent(this, event);
+  if (_handle) _handle->mouseReleaseEvent(this, event, _handle_param);
   update();
 }
 

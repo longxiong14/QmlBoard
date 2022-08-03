@@ -21,13 +21,18 @@ int HBoardUIControl::setBoardHandle(const QString &board,
     DEBUG << "hasn't this board " << board;
     return -1;
   }
-  auto h = HHandleFlyWeight::getInstance()->getHandle(handle);
-  DEBUG << h.get();
+  auto weight = HHandleFlyWeight::getInstance();
+  if (!weight) {
+    DEBUG << "HHandleFlyWeight::getInstance() nullptr";
+    return -1;
+  }
+  auto h = weight->getHandle(handle);
   if (!h) {
     DEBUG << "hasn't this handle " << handle;
     return -1;
   }
   ptr->setHandle(h.get());
+  ptr->setHandleParam(weight->getBoardHandleParam(board, handle));
   return 0;
 }
 
@@ -43,7 +48,7 @@ QJsonArray HBoardUIControl::handleList() {
 
 void HBoardUIControl::test() {
   auto board = HBoardManager::getInstance()->getBoard("test_board");
-  board->showAll();
+  //  board->showAll();
   //  auto nodes = board->nodes();
   //  HPlanVector vec;
   //  for (const auto &node : nodes.values()) {

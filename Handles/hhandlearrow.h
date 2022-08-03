@@ -8,10 +8,16 @@ class HBOARD_EXPORT HHandleArrow : public HHandleMove {
  public:
   HHandleArrow();
 
-  virtual void mousePressEvent(HBoard* board, QMouseEvent* event);
-  virtual void mouseMoveEvent(HBoard* board, QMouseEvent* event);
-  virtual void mouseReleaseEvent(HBoard* board, QMouseEvent* event);
-  virtual void wheelEvent(HBoard* board, QWheelEvent* event);
+  virtual void mousePressEvent(
+      HBoard* board, QMouseEvent* event,
+      const QJsonObject& object = QJsonObject()) override;
+  virtual void mouseMoveEvent(
+      HBoard* board, QMouseEvent* event,
+      const QJsonObject& object = QJsonObject()) override;
+  virtual void mouseReleaseEvent(
+      HBoard* board, QMouseEvent* event,
+      const QJsonObject& object = QJsonObject()) override;
+  virtual void wheelEvent(HBoard* board, QWheelEvent* event) override;
 
  public:
   void setDistance(int dis);

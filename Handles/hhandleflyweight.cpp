@@ -33,6 +33,16 @@ std::shared_ptr<HHandleBase> HHandleFlyWeight::getHandle(const QString &key) {
   return nullptr;
 }
 
+QJsonObject HHandleFlyWeight::getBoardHandleParam(const QString &board,
+                                                  const QString &handle) {
+  QJsonObject object;
+  if (_handles_params.contains(board) &&
+      _handles_params[board].contains(handle)) {
+    object = _handles_params[board][handle];
+  }
+  return object;
+}
+
 HHandleFlyWeight::HHandleFlyWeight() {
   _handles = {{"arrow", std::make_shared<HHandleArrow>()},
               {"ploy", std::make_shared<HHandleDrawPoly>()},

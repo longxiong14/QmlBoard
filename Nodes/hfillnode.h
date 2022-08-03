@@ -21,11 +21,15 @@ class HBOARD_EXPORT HFillNode : public HNodeBase, public QSGGeometryNode {
   virtual void changedSelectStatus() override;
   virtual void drawPoints(const QList<QPoint>& points) override;
   virtual void setColor(const QColor& color) override;
+  virtual void timeOut() override;
 
  protected:
   QSGGeometry* buildGeometry(const QList<QPoint>& points,
                              unsigned long type = false);
   void setOurGeometry(const QList<QPoint>& points, unsigned long type = false);
+
+ private:
+  bool _flag;
 };
 
 #endif  // HFILLNODE_H
