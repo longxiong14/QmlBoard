@@ -112,15 +112,29 @@ void HFillNode::setColor(const QColor &color) {
 }
 
 void HFillNode::timeOut() {
-  QSGFlatColorMaterial *m = static_cast<QSGFlatColorMaterial *>(material());
-  if (m) {
-    auto color = m->color();
-    auto r = color.red() ^ 0x000000ff;
-    auto g = color.green() ^ 0x000000ff;
-    auto b = color.blue() ^ 0x000000ff;
-    QColor results(r, g, b);
-    setColor(results);
-    _flag = !_flag;
+  if (false) {
+    QSGFlatColorMaterial *m = static_cast<QSGFlatColorMaterial *>(material());
+    if (m) {
+      auto color = m->color();
+      auto r = color.red() ^ 0x000000ff;
+      auto g = color.green() ^ 0x000000ff;
+      auto b = color.blue() ^ 0x000000ff;
+      QColor results(r, g, b);
+      setColor(results);
+      _flag = !_flag;
+    }
+  } else {
+    if (!childCount()) {
+      auto list = getPointList();
+      for (int i = 0, j = list.size() - 1; i < list.size(); j = i, i++) {
+        std::swap(list[i], list[j]);
+      }
+      auto g = HSGNodeCommon::buildGeometry(list, GL_LINES);
+      QSGGeometryNode *node = new QSGGeometryNode();
+      node->setGeometry(g);
+      node->setMaterial(HSGNodeCommon::buildColor(Qt::blue));
+      appendChildNode(node);
+    }
   }
 }
 

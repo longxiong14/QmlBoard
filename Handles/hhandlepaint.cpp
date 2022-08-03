@@ -64,9 +64,10 @@ void HHandleDrawPoly::mouseMoveEvent(HBoard *board, QMouseEvent *event,
 void HHandleDrawPoly::mouseReleaseEvent(HBoard *board, QMouseEvent *event,
                                         const QJsonObject &) {
   HHandleMove::mouseReleaseEvent(board, event);
-  if (board && event && !_points.empty() && leftButtonPress(event)) {
+  if (board && event && !_points.empty()) {
     _points.push_back(_points.first());
     board->drawNodePoint(_node, _points);
+    DEBUG << _points.size();
   }
   _points.clear();
 }
