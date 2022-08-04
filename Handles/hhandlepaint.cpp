@@ -28,13 +28,8 @@ void HHandleDrawRect::mouseMoveEvent(HBoard *board, QMouseEvent *event,
     auto pos = board->WCS2LCS(event->pos());
     QList<QPointF> points = HCommon::BuildRectList(_point, pos);
     board->drawNodePoint(_node, points);
-  } else {
-    DEBUG << "board or event or node is null";
   }
 }
-
-void HHandleDrawRect::mouseReleaseEvent(HBoard *, QMouseEvent *,
-                                        const QJsonObject &) {}
 
 HHandleDrawPoly::HHandleDrawPoly() {}
 
@@ -67,7 +62,6 @@ void HHandleDrawPoly::mouseReleaseEvent(HBoard *board, QMouseEvent *event,
   if (board && event && !_points.empty()) {
     _points.push_back(_points.first());
     board->drawNodePoint(_node, _points);
-    DEBUG << _points.size();
   }
   _points.clear();
 }
@@ -96,9 +90,6 @@ void HHandleDrawLine::mouseMoveEvent(HBoard *board, QMouseEvent *event,
   }
 }
 
-void HHandleDrawLine::mouseReleaseEvent(HBoard *, QMouseEvent *,
-                                        const QJsonObject &) {}
-
 HHandleDrawCurve::HHandleDrawCurve() {}
 
 void HHandleDrawCurve::mousePressEvent(HBoard *board, QMouseEvent *event,
@@ -124,9 +115,10 @@ void HHandleDrawCurve::mouseMoveEvent(HBoard *board, QMouseEvent *event,
   }
 }
 
-void HHandleDrawCurve::mouseReleaseEvent(HBoard *, QMouseEvent *,
-                                         const QJsonObject &) {
+void HHandleDrawCurve::mouseReleaseEvent(HBoard *b, QMouseEvent *e,
+                                         const QJsonObject &o) {
   _points.clear();
+  HHandleMove::mouseReleaseEvent(b, e, o);
 }
 
 HHandleDrawFillRect::HHandleDrawFillRect() {}
@@ -136,7 +128,6 @@ void HHandleDrawFillRect::mousePressEvent(HBoard *board, QMouseEvent *event,
   HHandleMove::mousePressEvent(board, event);
   if (board && event && leftButtonPress(event)) {
     _point = board->WCS2LCS(event->pos());
-    DEBUG << _point;
     auto node = new HFillNode(QRectF(_point, QSize(1, 1)), Qt::GlobalColor::red,
                               GL_QUADS);
     board->pushNode(node);

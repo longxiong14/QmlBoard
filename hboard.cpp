@@ -105,6 +105,22 @@ void HBoard::removeNode(const QUuid &id) {
   }
 }
 
+void HBoard::clearNode() {
+  pushTask([=]() {
+    int count = _trans_node->childCount();
+    for (int i = 0; i < count; i++) {
+      _trans_node->removeChildNode(_trans_node->childAtIndex(0));
+    }
+    for (auto ptr : _nodes.values()) {
+      if (ptr) {
+        delete ptr;
+        ptr = nullptr;
+      }
+    }
+    _nodes.clear();
+  });
+}
+
 void HBoard::setHandle(HHandleBase *handle) { _handle = handle; }
 
 void HBoard::setSelect(const QUuid &s) {
@@ -294,7 +310,7 @@ void HBoard::mousePressEvent(QMouseEvent *event) {
 void HBoard::mouseMoveEvent(QMouseEvent *event) {
   if (_handle) _handle->mouseMoveEvent(this, event, _handle_param);
   auto pos = WCS2LCS(event->pos());
-  hoverPoint(pos.x(), pos.y());
+  hoverPoint(int(pos.x()), int(pos.y()));
   update();
 }
 
@@ -312,7 +328,7 @@ void HBoard::hoverEnterEvent(QHoverEvent *) { setFocus(true); }
 
 void HBoard::hoverMoveEvent(QHoverEvent *event) {
   auto pos = WCS2LCS(event->pos());
-  hoverPoint(pos.x(), pos.y());
+  hoverPoint(int(pos.x()), int(pos.y()));
 }
 
 void HBoard::hoverLeaveEvent(QHoverEvent *) { _keys.clear(); }

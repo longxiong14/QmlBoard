@@ -8,21 +8,23 @@ HHandleBase::HHandleBase() {}
 
 HHandleBase::~HHandleBase() {}
 
-void HHandleBase::mousePressEvent(HBoard *, QMouseEvent *,
-                                  const QJsonObject &) {}
+void HHandleBase::mousePressEvent(HBoard *, QMouseEvent *event,
+                                  const QJsonObject &) {
+  _buttons.insert(event->button());
+}
 
 void HHandleBase::mouseMoveEvent(HBoard *, QMouseEvent *, const QJsonObject &) {
 }
 
-void HHandleBase::mouseReleaseEvent(HBoard *, QMouseEvent *,
-                                    const QJsonObject &) {}
+void HHandleBase::mouseReleaseEvent(HBoard *, QMouseEvent *e,
+                                    const QJsonObject &) {
+  _buttons.remove(e->button());
+}
 
 void HHandleBase::wheelEvent(HBoard *, QWheelEvent *) {}
 
-bool HHandleBase::middleButtonPress(QMouseEvent *event) {
-  bool flag = (Qt::MouseButton::MiddleButton ==
-               (Qt::MouseButton::MiddleButton & event->buttons()));
-  return flag;
+bool HHandleBase::middleButtonPress(QMouseEvent *) {
+  return _buttons.contains(Qt::MouseButton::MidButton);
 }
 
 bool HHandleBase::leftButtonPress(QMouseEvent *event) {

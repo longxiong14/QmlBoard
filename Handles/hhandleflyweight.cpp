@@ -45,7 +45,7 @@ QJsonObject HHandleFlyWeight::getBoardHandleParam(const QString &board,
 
 HHandleFlyWeight::HHandleFlyWeight() {
   _handles = {{"arrow", std::make_shared<HHandleArrow>()},
-              {"ploy", std::make_shared<HHandleDrawPoly>()},
+              {"poly", std::make_shared<HHandleDrawPoly>()},
               {"rect", std::make_shared<HHandleDrawRect>()},
               {"line", std::make_shared<HHandleDrawLine>()},
               {"curve", std::make_shared<HHandleDrawCurve>()},

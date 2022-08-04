@@ -2,6 +2,7 @@
 #define HHANDLEBASE_H
 
 #include <QJsonObject>
+#include <QMouseEvent>
 #include <QUuid>
 
 #include "../HBoard_global.h"
@@ -30,6 +31,7 @@ class HBOARD_EXPORT HHandleBase {
 
  protected:
   QUuid _node;
+  QSet<Qt::MouseButton> _buttons;
 };
 
 #endif  // HHANDLEBASE_H

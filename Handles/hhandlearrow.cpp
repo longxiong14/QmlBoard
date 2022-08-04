@@ -47,7 +47,6 @@ void HHandleArrow::mouseMoveEvent(HBoard *board, QMouseEvent *event,
             auto dlt = pos - _last_point - board->WCS2LCS(QPointF());
             board->moveNode(node->id(), dlt);
           } else {
-            DEBUG << nodes.keys() << " " << s;
           }
         }
         _last_point = pos - board->WCS2LCS(QPointF(0, 0));
@@ -59,9 +58,7 @@ void HHandleArrow::mouseMoveEvent(HBoard *board, QMouseEvent *event,
 void HHandleArrow::mouseReleaseEvent(HBoard *board, QMouseEvent *event,
                                      const QJsonObject &) {
   if (board && event) {
-    if (middleButtonPress(event)) {
-      HHandleMove::mouseReleaseEvent(board, event);
-    } else {
+    if (!middleButtonPress(event)) {
       if (!ctrlKeyPress(board->keys())) {
         board->clearSelect();
       }
@@ -73,6 +70,7 @@ void HHandleArrow::mouseReleaseEvent(HBoard *board, QMouseEvent *event,
       }
     }
   }
+  HHandleMove::mouseReleaseEvent(board, event);
 }
 
 void HHandleArrow::wheelEvent(HBoard *board, QWheelEvent *event) {
@@ -83,7 +81,8 @@ void HHandleArrow::setDistance(int dis) { _distance = dis; }
 
 int HHandleArrow::getDistance() { return _distance; }
 
-bool HHandleArrow::canSelect(HNodeBase *node, const QPointF &pos, double scale) {
+bool HHandleArrow::canSelect(HNodeBase *node, const QPointF &pos,
+                             double scale) {
   auto type = node->nodeType();
   auto points = node->getPointList();
   HPlanVector vec;
