@@ -10,7 +10,7 @@ set(CMAKE_AUTORCC ON)
 
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(OpenCV_DIR  "${CMAKE_SOURCE_DIR}/Install/opencv/${CMAKE_BUILD_TYPE}" )
+#set(OpenCV_DIR  "${CMAKE_SOURCE_DIR}/Install/opencv/${CMAKE_BUILD_TYPE}" )
 
 find_package(Qt5 COMPONENTS Core Quick  REQUIRED)
 find_package(OpenCV REQUIRED)
@@ -42,18 +42,18 @@ add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
         COMMENT "Copying  ${data_dir} =>
             $<TARGET_FILE_DIR:${PROJECT_NAME}>/${data_dir}.")
 
-set(opencv_install_dir ${CMAKE_SOURCE_DIR}/Install/opencv/${CMAKE_BUILD_TYPE}/x64/vc15/bin)
-message("opencv_install_dir "  ${opencv_install_dir})
-FILE(GLOB_RECURSE install_dlls RELATIVE ${opencv_install_dir} *.dll)
-foreach(install_dll ${install_dlls})
-    message("install_dll "  ${install_dll})
-    add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
-        COMMAND ${CMAKE_COMMAND} -E copy_if_different
-        "${opencv_install_dir}/${install_dll}"
-        ${CMAKE_BINARY_DIR}/examples/${install_dll}
-        COMMENT "Copying  ${install_dll} =>
-        $<TARGET_FILE_DIR:${PROJECT_NAME}>/${install_dll}.")
-endforeach()
+#set(opencv_install_dir ${CMAKE_SOURCE_DIR}/Install/opencv/${CMAKE_BUILD_TYPE}/x64/vc15/bin)
+#message("opencv_install_dir "  ${opencv_install_dir})
+#FILE(GLOB_RECURSE install_dlls RELATIVE ${opencv_install_dir} *.dll)
+#foreach(install_dll ${install_dlls})
+#    message("install_dll "  ${install_dll})
+#    add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
+#        COMMAND ${CMAKE_COMMAND} -E copy_if_different
+#        "${opencv_install_dir}/${install_dll}"
+#        ${CMAKE_BINARY_DIR}/examples/${install_dll}
+#        COMMENT "Copying  ${install_dll} =>
+#        $<TARGET_FILE_DIR:${PROJECT_NAME}>/${install_dll}.")
+#endforeach()
 
 
 add_subdirectory(examples)
