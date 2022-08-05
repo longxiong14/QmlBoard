@@ -22,12 +22,13 @@ class HBOARD_EXPORT HBoard : public QQuickItem {
   using task = std::function<void(void)>;
   Q_OBJECT
   Q_PROPERTY(QString name READ name WRITE setName NOTIFY nameChanged)
+  Q_PROPERTY(QJsonObject items READ items WRITE setItems NOTIFY itemsChanged)
  public:
   explicit HBoard(QQuickItem* parent = nullptr);
 
  public:
   void home();
-  void setHandleParam(const QJsonObject& param);
+  void checkItems();
 
  public:
   void pushTransform(const QTransform& trans);
@@ -53,6 +54,7 @@ class HBOARD_EXPORT HBoard : public QQuickItem {
   void pushSelect(const QUuid& s);
   void removdSelect(const QUuid& s);
   void changeSelectStatus(const QUuid& s);
+  void changeSelectParam(const QString& key, const QJsonValue& value);
   QSet<QUuid> selects();
 
  public:  // keys
@@ -61,6 +63,8 @@ class HBOARD_EXPORT HBoard : public QQuickItem {
  public:
   QString name();
   void setName(const QString& name);
+  QJsonObject items();
+  void setItems(const QJsonObject& item);
 
  public:
   QPointF WCS2LCS(const QPointF& point);
@@ -83,9 +87,11 @@ class HBOARD_EXPORT HBoard : public QQuickItem {
 
  protected:
   void pushTask(const task& t);
+  QJsonObject getHandleParam();
  signals:
   void nameChanged();
   void hoverPoint(int x, int y);
+  void itemsChanged();
 
  private:
   QSGTransformNode* _trans_node;
@@ -96,7 +102,7 @@ class HBOARD_EXPORT HBoard : public QQuickItem {
   QQueue<task> _tasks;
   QSet<int> _keys;
   QTimer _timer;
-  QJsonObject _handle_param;
+  QJsonObject _items;
 };
 
 #endif  // HBOARD_H

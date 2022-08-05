@@ -18,6 +18,8 @@ class HBOARD_EXPORT HHandleDrawRect : public HHandleMove {
       HBoard* board, QMouseEvent* event,
       const QJsonObject& object = QJsonObject()) override;
 
+  virtual QJsonObject getDefaultParam() override;
+
  protected:
   QPointF _point;
 };
@@ -36,6 +38,8 @@ class HBOARD_EXPORT HHandleDrawPoly : public HHandleMove {
       HBoard* board, QMouseEvent* event,
       const QJsonObject& object = QJsonObject()) override;
 
+  virtual QJsonObject getDefaultParam() override;
+
  protected:
   QList<QPointF> _points;
 };
@@ -50,6 +54,8 @@ class HBOARD_EXPORT HHandleDrawLine : public HHandleMove {
   virtual void mouseMoveEvent(
       HBoard* board, QMouseEvent* event,
       const QJsonObject& object = QJsonObject()) override;
+
+  virtual QJsonObject getDefaultParam() override;
 
  protected:
   QPointF _point;
@@ -68,6 +74,8 @@ class HBOARD_EXPORT HHandleDrawCurve : public HHandleMove {
   virtual void mouseReleaseEvent(
       HBoard* board, QMouseEvent* event,
       const QJsonObject& object = QJsonObject()) override;
+
+  virtual QJsonObject getDefaultParam() override;
 
  protected:
   QList<QPointF> _points;

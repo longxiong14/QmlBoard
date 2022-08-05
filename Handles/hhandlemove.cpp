@@ -6,7 +6,7 @@
 #include "hboard.h"
 
 #define DEBUG qDebug() << __FUNCTION__ << " " << __LINE__ << " "
-HHandleMove::HHandleMove() : _scale(0.05) {}
+HHandleMove::HHandleMove() : _scale(0.05) { _name = "none"; }
 
 void HHandleMove::mousePressEvent(HBoard *board, QMouseEvent *event,
                                   const QJsonObject &o) {

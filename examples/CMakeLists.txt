@@ -1,6 +1,6 @@
 ﻿file(GLOB_RECURSE CPPS  ./*.cpp )
 
-add_executable(example2 ${CPPS} qml.qrc)
+add_executable(example ${CPPS} qml.qrc)
 
-target_link_libraries(example2 QmlBoard ${OpenCV_LIBS} Qt5::Core Qt5::Quick)
+target_link_libraries(example QmlBoard ${OpenCV_LIBS} Qt5::Core Qt5::Quick)
 

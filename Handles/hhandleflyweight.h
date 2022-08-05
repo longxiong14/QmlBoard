@@ -17,6 +17,9 @@ class HBOARD_EXPORT HHandleFlyWeight {
 
   QJsonObject getBoardHandleParam(const QString& board, const QString& handle);
 
+  int setBoardHandleParam(const QString& board, const QString& handle,
+                          const QString& key, const QJsonValue& value);
+
  protected:
   HHandleFlyWeight();
 

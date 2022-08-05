@@ -23,19 +23,19 @@ if (aStyle == "dash") {
   }
 }
 */
-HFillNode::HFillNode() {}
-
-HFillNode::HFillNode(const QList<QPointF> &points, const QColor &color,
-                     unsigned long type) {
+HFillNode::HFillNode(const QList<QPointF> &points, unsigned long type,
+                     const QJsonObject &p) {
+  _param = p;
   setOurGeometry(points, type);
-  setColor(color);
+  setColor(getColor(p));
 }
 
-HFillNode::HFillNode(const QRectF &rect, const QColor &color,
-                     unsigned long type) {
+HFillNode::HFillNode(const QRectF &rect, unsigned long type,
+                     const QJsonObject &p) {
+  _param = p;
   auto list = HCommon::BuildRectList(rect);
   setOurGeometry(list, type);
-  setColor(color);
+  setColor(getColor(p));
 }
 
 QSGNode *HFillNode::get() { return this; }
@@ -106,32 +106,27 @@ void HFillNode::setColor(const QColor &color) {
   setFlag(QSGNode::OwnsMaterial);
 }
 
-// void HFillNode::timeOut() {
-//  if (false) {
-//    QSGFlatColorMaterial *m = static_cast<QSGFlatColorMaterial *>(material());
-//    if (m) {
-//      auto color = m->color();
-//      auto r = color.red() ^ 0x000000ff;
-//      auto g = color.green() ^ 0x000000ff;
-//      auto b = color.blue() ^ 0x000000ff;
-//      QColor results(r, g, b);
-//      setColor(results);
-//      _flag = !_flag;
-//    }
-//  } else {
-//    if (!childCount()) {
-//      auto list = getPointList();
-//      for (int i = 0, j = list.size() - 1; i < list.size(); j = i, i++) {
-//        std::swap(list[i], list[j]);
-//      }
-//      auto g = HSGNodeCommon::buildGeometry(list, GL_LINES);
-//      QSGGeometryNode *node = new QSGGeometryNode();
-//      node->setGeometry(g);
-//      node->setMaterial(HSGNodeCommon::buildColor(Qt::blue));
-//      appendChildNode(node);
-//    }
-//  }
-//}
+void HFillNode::setParam(const QJsonObject &p) {
+  auto pr = p.value("r").toInt(), pg = p.value("g").toInt(),
+       pb = p.value("b").toInt(), pa = p.value("a").toInt(),
+       pline_width = p.value("line_width").toInt();
+
+  auto r = _param.value("r").toInt(), g = _param.value("g").toInt(),
+       b = _param.value("b").toInt(), a = _param.value("a").toInt(),
+       line_width = _param.value("line_width").toInt();
+
+  if (line_width != pline_width) {
+    if (geometry()) {
+      DEBUG << "set line width " << pline_width;
+      geometry()->setLineWidth(pline_width);
+    }
+  }
+  if (pr != r || pg != g || pb != b || pa != a) {
+    DEBUG << "set color " << getColor(p);
+    setColor(getColor(p));
+  }
+  HNodeBase::setParam(p);
+}
 
 QSGGeometry *HFillNode::buildGeometry(const QList<QPointF> &points,
                                       unsigned long type) {
@@ -141,6 +136,18 @@ QSGGeometry *HFillNode::buildGeometry(const QList<QPointF> &points,
 void HFillNode::setOurGeometry(const QList<QPointF> &points,
                                unsigned long type) {
   QSGGeometry *geometry = buildGeometry(points, type);
+  if (_param.contains("line_width")) {
+    geometry->setLineWidth(_param.value("line_width").toInt());
+  }
   setGeometry(geometry);
   setFlag(QSGNode::OwnsGeometry);
+}
+
+QColor HFillNode::getColor(const QJsonObject &p) {
+  if (p.empty()) {
+    return Qt::red;
+  }
+  auto color = QColor(p.value("r").toInt(), p.value("g").toInt(),
+                      p.value("b").toInt(), p.value("a").toInt());
+  return color;
 }

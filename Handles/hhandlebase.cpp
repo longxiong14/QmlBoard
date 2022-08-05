@@ -4,7 +4,7 @@
 
 #include "hboard.h"
 #define DEBUG qDebug() << __FUNCTION__ << " " << __LINE__ << " "
-HHandleBase::HHandleBase() {}
+HHandleBase::HHandleBase() : _name("base") {}
 
 HHandleBase::~HHandleBase() {}
 
@@ -22,6 +22,10 @@ void HHandleBase::mouseReleaseEvent(HBoard *, QMouseEvent *e,
 }
 
 void HHandleBase::wheelEvent(HBoard *, QWheelEvent *) {}
+
+QJsonObject HHandleBase::getDefaultParam() { return QJsonObject(); }
+
+QString HHandleBase::getName() { return _name; }
 
 bool HHandleBase::middleButtonPress(QMouseEvent *) {
   return _buttons.contains(Qt::MouseButton::MidButton);
