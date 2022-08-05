@@ -118,7 +118,11 @@ Tab {
                                     txt: String(items[index].value)
                                     onSigTextChanged: {
                                         if("" !== txt)
-                                            idUIControl.setBoardHandleParam(idMainBoard.boardName, mHandle, items[index].name.key, Number(txt))
+                                            idUIControl.setBoardHandleParam(
+                                                        idMainBoard.boardName,
+                                                        mHandle,
+                                                        items[index].key,
+                                                        Number(txt))
                                     }
                                 }
                             }
