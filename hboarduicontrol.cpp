@@ -5,6 +5,7 @@
 #include "Common/hcommons.h"
 #include "Common/hplanvector.h"
 #include "Handles/hhandleflyweight.h"
+#include "Nodes/hcvmatnode.h"
 #include "Nodes/hfillnode.h"
 #include "Nodes/himagenode.h"
 #include "Nodes/hnodebase.h"
@@ -32,7 +33,62 @@ int HBoardUIControl::setBoardHandle(const QString &board,
     return -1;
   }
   ptr->setHandle(h.get());
-  ptr->setHandleParam(weight->getBoardHandleParam(board, handle));
+  return 0;
+}
+
+int HBoardUIControl::openBoardPicture(const QString &board,
+                                      const QString &path) {
+  //
+  auto ptr = HBoardManager::getInstance()->getBoard(board);
+  if (!ptr) {
+    DEBUG << "hasn't this board " << board;
+    return -1;
+  }
+  ptr->pushNode(new HCVMatNode(path));
+  ptr->home();
+  return 0;
+}
+
+int HBoardUIControl::setBoardHandleParam(const QString &board,
+                                         const QString &handle,
+                                         const QString &key,
+                                         const QJsonValue &value) {
+  DEBUG << board << " " << handle << " " << key << " " << value;
+  auto weight = HHandleFlyWeight::getInstance();
+  if (!weight) {
+    DEBUG << "HHandleFlyWeight::getInstance() nullptr";
+    return -1;
+  }
+  return weight->setBoardHandleParam(board, handle, key, value);
+}
+
+QJsonObject HBoardUIControl::getBoardHandleParam(const QString &board,
+                                                 const QString &handle) {
+  QJsonObject o;
+  auto ptr = HBoardManager::getInstance()->getBoard(board);
+  if (!ptr) {
+    DEBUG << "hasn't this board " << board;
+    return o;
+  }
+  auto weight = HHandleFlyWeight::getInstance();
+  if (!weight) {
+    DEBUG << "HHandleFlyWeight::getInstance() nullptr";
+    return o;
+  }
+  o = weight->getBoardHandleParam(board, handle);
+  DEBUG << o;
+  return o;
+}
+
+int HBoardUIControl::setBoardNodeParam(const QString &board, const QString &key,
+                                       const QJsonValue &value) {
+  QJsonObject o;
+  auto ptr = HBoardManager::getInstance()->getBoard(board);
+  if (!ptr) {
+    DEBUG << "hasn't this board " << board;
+    return -1;
+  }
+  ptr->changeSelectParam(key, value);
   return 0;
 }
 
@@ -46,6 +102,23 @@ QJsonArray HBoardUIControl::handleList() {
   return list;
 }
 
+QJsonArray HBoardUIControl::paramToUIItems(const QJsonObject &object) {
+  QJsonArray array;
+  for (const QString &key : object.keys()) {
+    QJsonObject item;
+    item.insert("key", key);
+    item.insert("value", object.value(key));
+    // translate name to chinese
+    if (_translate_map.contains(key)) {
+      item.insert("name", _translate_map.value(key));
+    } else {
+      item.insert("name", "");
+    }
+    array.push_back(item);
+  }
+  return array;
+}
+
 void HBoardUIControl::test() {
   auto board = HBoardManager::getInstance()->getBoard("test_board");
   //  board->showAll();
@@ -55,4 +128,8 @@ void HBoardUIControl::test() {
   //    auto points = node->getPointList();
   //    DEBUG << vec.area(points);
   //  }
+}
+
+void HBoardUIControl::setTranslateMap(const QJsonObject &object) {
+  _translate_map = object;
 }

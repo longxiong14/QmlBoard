@@ -7,15 +7,25 @@
 #include "Nodes/hfillnode.h"
 #include "hboard.h"
 #define DEBUG qDebug() << __FUNCTION__ << " " << __LINE__ << " "
-HHandleDrawRect::HHandleDrawRect() {}
+
+QJsonObject defaultParam() {
+  QJsonObject object;
+  object.insert("line_width", 1);
+  object.insert("b", 0);
+  object.insert("g", 0);
+  object.insert("r", 255);
+  object.insert("a", 255);
+  return object;
+}
+
+HHandleDrawRect::HHandleDrawRect() { _name = "rect"; }
 
 void HHandleDrawRect::mousePressEvent(HBoard *board, QMouseEvent *event,
-                                      const QJsonObject &) {
+                                      const QJsonObject &o) {
   HHandleMove::mousePressEvent(board, event);
   if (board && event && leftButtonPress(event)) {
     _point = board->WCS2LCS(event->pos());
-    auto node = new HFillNode(QRectF(_point, QSize(1, 1)), Qt::GlobalColor::red,
-                              GL_LINE_LOOP);
+    auto node = new HFillNode(QRectF(_point, QSize(1, 1)), GL_LINE_LOOP, o);
     board->pushNode(node);
     _node = node->id();
   }
@@ -31,15 +41,16 @@ void HHandleDrawRect::mouseMoveEvent(HBoard *board, QMouseEvent *event,
   }
 }
 
-HHandleDrawPoly::HHandleDrawPoly() {}
+QJsonObject HHandleDrawRect::getDefaultParam() { return defaultParam(); }
+
+HHandleDrawPoly::HHandleDrawPoly() { _name = "poly"; }
 
 void HHandleDrawPoly::mousePressEvent(HBoard *board, QMouseEvent *event,
-                                      const QJsonObject &) {
+                                      const QJsonObject &o) {
   HHandleMove::mousePressEvent(board, event);
   if (board && event && leftButtonPress(event)) {
     auto point = board->WCS2LCS(event->pos());
-    auto node = new HFillNode(QRectF(point, QSize(1, 1)), Qt::GlobalColor::red,
-                              GL_LINE_STRIP);
+    auto node = new HFillNode(QRectF(point, QSize(1, 1)), GL_LINE_STRIP, o);
     _points = {point};
     board->pushNode(node);
     _node = node->id();
@@ -66,15 +77,17 @@ void HHandleDrawPoly::mouseReleaseEvent(HBoard *board, QMouseEvent *event,
   _points.clear();
 }
 
-HHandleDrawLine::HHandleDrawLine() {}
+QJsonObject HHandleDrawPoly::getDefaultParam() { return defaultParam(); }
+
+HHandleDrawLine::HHandleDrawLine() { _name = "line"; }
 
 void HHandleDrawLine::mousePressEvent(HBoard *board, QMouseEvent *event,
-                                      const QJsonObject &) {
+                                      const QJsonObject &o) {
   HHandleMove::mousePressEvent(board, event);
   if (board && event && leftButtonPress(event)) {
     _point = board->WCS2LCS(event->pos());
     QList<QPointF> list{_point};
-    auto node = new HFillNode(list, Qt::GlobalColor::red, GL_LINES);
+    auto node = new HFillNode(list, GL_LINES, o);
     board->pushNode(node);
     _node = node->id();
   }
@@ -90,15 +103,16 @@ void HHandleDrawLine::mouseMoveEvent(HBoard *board, QMouseEvent *event,
   }
 }
 
-HHandleDrawCurve::HHandleDrawCurve() {}
+QJsonObject HHandleDrawLine::getDefaultParam() { return defaultParam(); }
+
+HHandleDrawCurve::HHandleDrawCurve() { _name = "curve"; }
 
 void HHandleDrawCurve::mousePressEvent(HBoard *board, QMouseEvent *event,
-                                       const QJsonObject &) {
+                                       const QJsonObject &o) {
   HHandleMove::mousePressEvent(board, event);
   if (board && event && leftButtonPress(event)) {
     auto point = board->WCS2LCS(event->pos());
-    auto node = new HFillNode(QRectF(point, QSize(1, 1)), Qt::GlobalColor::red,
-                              GL_LINE_STRIP);
+    auto node = new HFillNode(QRectF(point, QSize(1, 1)), GL_LINE_STRIP, o);
     _points = {point};
     board->pushNode(node);
     _node = node->id();
@@ -121,29 +135,29 @@ void HHandleDrawCurve::mouseReleaseEvent(HBoard *b, QMouseEvent *e,
   HHandleMove::mouseReleaseEvent(b, e, o);
 }
 
-HHandleDrawFillRect::HHandleDrawFillRect() {}
+QJsonObject HHandleDrawCurve::getDefaultParam() { return defaultParam(); }
+
+HHandleDrawFillRect::HHandleDrawFillRect() { _name = "fill rect"; }
 
 void HHandleDrawFillRect::mousePressEvent(HBoard *board, QMouseEvent *event,
-                                          const QJsonObject &) {
+                                          const QJsonObject &o) {
   HHandleMove::mousePressEvent(board, event);
   if (board && event && leftButtonPress(event)) {
     _point = board->WCS2LCS(event->pos());
-    auto node = new HFillNode(QRectF(_point, QSize(1, 1)), Qt::GlobalColor::red,
-                              GL_QUADS);
+    auto node = new HFillNode(QRectF(_point, QSize(1, 1)), GL_QUADS, o);
     board->pushNode(node);
     _node = node->id();
   }
 }
 
-HHandleDrawFillPoly::HHandleDrawFillPoly() {}
+HHandleDrawFillPoly::HHandleDrawFillPoly() { _name = "fill poly"; }
 
 void HHandleDrawFillPoly::mousePressEvent(HBoard *board, QMouseEvent *event,
-                                          const QJsonObject &) {
+                                          const QJsonObject &o) {
   HHandleMove::mousePressEvent(board, event);
   if (board && event && leftButtonPress(event)) {
     auto point = board->WCS2LCS(event->pos());
-    auto node = new HFillNode(QRectF(point, QSize(1, 1)), Qt::GlobalColor::red,
-                              GL_POLYGON);
+    auto node = new HFillNode(QRectF(point, QSize(1, 1)), GL_POLYGON, o);
     _points = {point};
     board->pushNode(node);
     _node = node->id();

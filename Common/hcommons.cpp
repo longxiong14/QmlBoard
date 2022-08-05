@@ -9,14 +9,6 @@
 #define DCODE true
 #define D 1e-7
 
-QUuid drawLine(const QPointF &f, const QPointF &s) {
-  auto board = HBoardManager::getInstance()->getBoard("test_board");
-  auto list = QList<QPointF>({f, s});
-  auto node = new HFillNode(list, QColor(255, 255, 0, 255), GL_LINES);
-  board->pushNode(node, false);
-  return node->id();
-}
-
 QPointF HCommon::TopLeft(const QPointF &f, const QPointF &s) {
   auto x = std::min(f.x(), s.x());
   auto y = std::min(f.y(), s.y());
@@ -104,7 +96,6 @@ bool HCommon::PointInContour(const QPointF &vtPoint,
         DEBUG << value;
         if (value < 0) {
           bResult = !bResult;
-          drawLine(vecPoints[i], vecPoints[j]);
         }
       }
       //进行下一线段判断

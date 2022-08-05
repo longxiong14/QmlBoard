@@ -23,8 +23,11 @@ void HNodeBase::changedSelectStatus() {
   if (!_select) {
     auto n = get();
     if (n) {
-      if (_dash) delete _dash;
-      _dash = nullptr;
+      if (_dash) {
+        n->removeChildNode(_dash);
+        delete _dash;
+        _dash = nullptr;
+      }
     }
   }
 }

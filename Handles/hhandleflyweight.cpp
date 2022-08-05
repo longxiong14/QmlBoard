@@ -39,17 +39,65 @@ QJsonObject HHandleFlyWeight::getBoardHandleParam(const QString &board,
   if (_handles_params.contains(board) &&
       _handles_params[board].contains(handle)) {
     object = _handles_params[board][handle];
+  } else {
+    if (_handles.contains(handle)) {
+      object = _handles[handle]->getDefaultParam();
+    }
   }
   return object;
 }
 
+int HHandleFlyWeight::setBoardHandleParam(const QString &board,
+                                          const QString &handle,
+                                          const QString &key,
+                                          const QJsonValue &value) {
+  if (key.isEmpty()) return -1;
+  if (_handles_params.contains(board)) {
+    if (_handles_params[board].contains(handle)) {
+      _handles_params[board][handle].insert(key, value);
+    } else {
+      if (_handles.contains(handle)) {
+        auto object = _handles[handle]->getDefaultParam();
+        object.insert(key, value);
+        _handles_params[board][handle] = object;
+      } else {
+        QJsonObject object;
+        object.insert(key, value);
+        _handles_params[board][handle] = object;
+      }
+    }
+  } else {
+    if (_handles.contains(handle)) {
+      auto object = _handles[handle]->getDefaultParam();
+      object.insert(key, value);
+      _handles_params[board][handle] = object;
+    } else {
+      QJsonObject object;
+      object.insert(key, value);
+      _handles_params[board][handle] = object;
+    }
+  }
+  return 0;
+}
+
 HHandleFlyWeight::HHandleFlyWeight() {
-  _handles = {{"arrow", std::make_shared<HHandleArrow>()},
-              {"poly", std::make_shared<HHandleDrawPoly>()},
-              {"rect", std::make_shared<HHandleDrawRect>()},
-              {"line", std::make_shared<HHandleDrawLine>()},
-              {"curve", std::make_shared<HHandleDrawCurve>()},
-              {"none", std::make_shared<HHandleMove>()},
-              {"fill rect", std::make_shared<HHandleDrawFillRect>()},
-              {"fill poly", std::make_shared<HHandleDrawFillPoly>()}};
+  auto func = [=](std::shared_ptr<HHandleBase> ptr) {
+    _handles.insert(ptr->getName(), ptr);
+  };
+  func(std::make_shared<HHandleArrow>());
+  func(std::make_shared<HHandleDrawPoly>());
+  func(std::make_shared<HHandleDrawRect>());
+  func(std::make_shared<HHandleDrawLine>());
+  func(std::make_shared<HHandleDrawCurve>());
+  func(std::make_shared<HHandleMove>());
+  func(std::make_shared<HHandleDrawFillRect>());
+  func(std::make_shared<HHandleDrawFillPoly>());
+  //  _handles = {{"arrow", std::make_shared<HHandleArrow>()},
+  //              {"poly", std::make_shared<HHandleDrawPoly>()},
+  //              {"rect", std::make_shared<HHandleDrawRect>()},
+  //              {"line", std::make_shared<HHandleDrawLine>()},
+  //              {"curve", std::make_shared<HHandleDrawCurve>()},
+  //              {"none", std::make_shared<HHandleMove>()},
+  //              {"fill rect", std::make_shared<HHandleDrawFillRect>()},
+  //              {"fill poly", std::make_shared<HHandleDrawFillPoly>()}};
 }

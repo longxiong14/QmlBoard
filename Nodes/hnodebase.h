@@ -41,7 +41,7 @@ class HBOARD_EXPORT HNodeBase {
 
  public:
   QJsonObject param();
-  void setParam(const QJsonObject& p);
+  virtual void setParam(const QJsonObject& p);
 
  protected:
   QJsonObject _param;

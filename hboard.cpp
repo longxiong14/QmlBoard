@@ -12,6 +12,7 @@
 #include "Common/hcommons.h"
 #include "Handles/hhandlearrow.h"
 #include "Handles/hhandlebase.h"
+#include "Handles/hhandleflyweight.h"
 #include "Handles/hhandlemove.h"
 #include "Nodes/hfillnode.h"
 #include "Nodes/himagenode.h"
@@ -74,9 +75,20 @@ void HBoard::home() {
     trans.scale(scale, scale);
     if (_trans_node) _trans_node->setMatrix(trans);
   });
+  update();
 }
 
-void HBoard::setHandleParam(const QJsonObject &param) { _handle_param = param; }
+void HBoard::checkItems() {
+  pushTask([this]() {
+    auto sel = selects();
+    if (1 == sel.size()) {
+      auto node = *sel.begin();
+      if (_nodes.contains(node)) setItems(_nodes[node]->param());
+    } else {
+      setItems({});
+    }
+  });
+}
 
 void HBoard::pushTransform(const QTransform &trans) {
   pushTask([=]() {
@@ -91,6 +103,7 @@ void HBoard::pushNode(HNodeBase *node, bool flag) {
       if (flag) _nodes.insert(node->id(), node);
     }
   });
+  update();
 }
 
 void HBoard::removeNode(const QUuid &id) {
@@ -102,6 +115,7 @@ void HBoard::removeNode(const QUuid &id) {
         _trans_node->removeChildNode(node->get());
       }
     });
+    update();
   }
 }
 
@@ -119,6 +133,7 @@ void HBoard::clearNode() {
     }
     _nodes.clear();
   });
+  update();
 }
 
 void HBoard::setHandle(HHandleBase *handle) { _handle = handle; }
@@ -138,11 +153,13 @@ void HBoard::clearSelect() {
 }
 
 void HBoard::pushSelect(const QUuid &s) {
-  if (_nodes.contains(s)) {
-    if (!_nodes[s]->isSelect()) {
-      _nodes[s]->changedSelectStatus();
+  pushTask([=]() {
+    if (_nodes.contains(s)) {
+      if (!_nodes[s]->isSelect()) {
+        _nodes[s]->changedSelectStatus();
+      }
     }
-  }
+  });
   update();
 }
 
@@ -165,6 +182,21 @@ void HBoard::changeSelectStatus(const QUuid &s) {
       pushSelect(s);
     }
   }
+}
+
+void HBoard::changeSelectParam(const QString &key, const QJsonValue &value) {
+  pushTask([=]() {
+    auto sel = selects();
+    if (1 == sel.size()) {
+      auto node = *sel.begin();
+      if (_nodes.contains(node)) {
+        auto p = _nodes[node]->param();
+        p.insert(key, value);
+        _nodes[node]->setParam(p);
+      }
+    }
+  });
+  update();
 }
 
 QSet<QUuid> HBoard::selects() {
@@ -251,6 +283,14 @@ void HBoard::setName(const QString &name) {
   }
 }
 
+QJsonObject HBoard::items() { return _items; }
+
+void HBoard::setItems(const QJsonObject &item) {
+  DEBUG << _items;
+  _items = item;
+  itemsChanged();
+}
+
 QPointF HBoard::WCS2LCS(const QPointF &point) {
   QPointF pt;
   if (_trans_node) {
@@ -303,19 +343,19 @@ QSGNode *HBoard::updatePaintNode(QSGNode *node,
 }
 
 void HBoard::mousePressEvent(QMouseEvent *event) {
-  if (_handle) _handle->mousePressEvent(this, event, _handle_param);
+  if (_handle) _handle->mousePressEvent(this, event, getHandleParam());
   update();
 }
 
 void HBoard::mouseMoveEvent(QMouseEvent *event) {
-  if (_handle) _handle->mouseMoveEvent(this, event, _handle_param);
+  if (_handle) _handle->mouseMoveEvent(this, event, getHandleParam());
   auto pos = WCS2LCS(event->pos());
   hoverPoint(int(pos.x()), int(pos.y()));
   update();
 }
 
 void HBoard::mouseReleaseEvent(QMouseEvent *event) {
-  if (_handle) _handle->mouseReleaseEvent(this, event, _handle_param);
+  if (_handle) _handle->mouseReleaseEvent(this, event, getHandleParam());
   update();
 }
 
@@ -348,4 +388,13 @@ void HBoard::keyReleaseEvent(QKeyEvent *event) {
 void HBoard::pushTask(const HBoard::task &t) {
   QMutexLocker lock(&_mutex);
   _tasks.push_back(t);
+}
+
+QJsonObject HBoard::getHandleParam() {
+  QJsonObject object;
+  if (_handle) {
+    object = HHandleFlyWeight::getInstance()->getBoardHandleParam(
+        name(), _handle->getName());
+  }
+  return object;
 }

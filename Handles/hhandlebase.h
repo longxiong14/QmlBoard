@@ -24,6 +24,10 @@ class HBOARD_EXPORT HHandleBase {
                                  const QJsonObject& object = QJsonObject());
   virtual void wheelEvent(HBoard* board, QWheelEvent* event);
 
+  virtual QJsonObject getDefaultParam();
+
+  QString getName();
+
  protected:
   bool middleButtonPress(QMouseEvent* event);
   bool leftButtonPress(QMouseEvent* event);
@@ -32,6 +36,7 @@ class HBOARD_EXPORT HHandleBase {
  protected:
   QUuid _node;
   QSet<Qt::MouseButton> _buttons;
+  QString _name;
 };
 
 #endif  // HHANDLEBASE_H

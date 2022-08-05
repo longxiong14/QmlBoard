@@ -11,7 +11,9 @@
 #include "hhandlemove.h"
 #define DEBUG qDebug() << __FUNCTION__ << " " << __LINE__ << " "
 
-HHandleArrow::HHandleArrow() : HHandleMove(), _move(false), _distance(5) {}
+HHandleArrow::HHandleArrow() : HHandleMove(), _move(false), _distance(5) {
+  _name = "arrow";
+}
 
 void HHandleArrow::mousePressEvent(HBoard *board, QMouseEvent *event,
                                    const QJsonObject &) {
@@ -68,6 +70,7 @@ void HHandleArrow::mouseReleaseEvent(HBoard *board, QMouseEvent *event,
       for (const auto &n : nodes.values()) {
         if (canSelect(n, pos, scale)) board->changeSelectStatus(n->id());
       }
+      board->checkItems();
     }
   }
   HHandleMove::mouseReleaseEvent(board, event);
