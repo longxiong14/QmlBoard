@@ -32,7 +32,9 @@ public:
   int saveBoard(const QString &board, const QString &path);
 
   Q_INVOKABLE
-  QJsonArray handleList();
+  int loadBoard(const QString &board, const QString &path);
+
+  Q_INVOKABLE QJsonArray handleList();
 
   Q_INVOKABLE
   QJsonArray paramToUIItems(const QJsonObject &object);

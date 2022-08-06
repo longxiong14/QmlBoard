@@ -51,7 +51,7 @@ int HJsonCommon::readJsonArray(const QString &path, QJsonArray &a) {
     DEBUG << "read json document error : " << path;
     return -1;
   }
-  if (!doc.isObject()) {
+  if (!doc.isArray()) {
     DEBUG << "read json document isn't array " << path;
     return -1;
   }

@@ -115,7 +115,7 @@ int HBoard::load(const QString &path) {
   for (int i = 0; i < array.size(); i++) {
     QJsonObject o = array[i].toObject();
     HNodeBase::NODETYPE type =
-        static_cast<HNodeBase::NODETYPE>(o.value("type").toInt());
+        static_cast<HNodeBase::NODETYPE>(o.value("nodeType").toInt());
     switch (type) {
     case HNodeBase::NODETYPE::SHAPE: {
       auto node = std::make_shared<HFillNode>();

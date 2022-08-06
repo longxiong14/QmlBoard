@@ -22,7 +22,7 @@ HRectangle {
         HButton{
             text: "加载"
             onClicked: {
-                idFileDialog.openModel(["png文件 (*.png)", "所有文件 (*.*)"], 1)
+                idFileDialog.openModel(["所有文件 (*.*)"], 1)
             }
         }
 
@@ -41,6 +41,9 @@ HRectangle {
             switch(outModel){
             case 0:
                 idUIControl.openBoardPicture(idMainBoard.boardName, file)
+                break
+            case 1:
+                idUIControl.loadBoard(idMainBoard.boardName, file)
                 break
             }
         }

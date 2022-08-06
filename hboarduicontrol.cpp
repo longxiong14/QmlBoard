@@ -100,6 +100,15 @@ int HBoardUIControl::saveBoard(const QString &board, const QString &path) {
   return ptr->save(path);
 }
 
+int HBoardUIControl::loadBoard(const QString &board, const QString &path) {
+  auto ptr = HBoardManager::getInstance()->getBoard(board);
+  if (!ptr) {
+    DEBUG << "hasn't this board " << board;
+    return -1;
+  }
+  return ptr->load(path);
+}
+
 QJsonArray HBoardUIControl::handleList() {
   QJsonArray list;
   auto h = HHandleFlyWeight::getInstance();
