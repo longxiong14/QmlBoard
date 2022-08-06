@@ -1,10 +1,11 @@
 ﻿#include "hfillnode.h"
-
-#include <QDebug>
-#include <QSGFlatColorMaterial>
-
 #include "../Common/hcommons.h"
+#include "../Common/hjsoncommon.h"
 #include "../Common/hsgnodecommon.h"
+#include <QDebug>
+#include <QJsonArray>
+#include <QJsonObject>
+#include <QSGFlatColorMaterial>
 #define DEBUG qDebug() << __FUNCTION__ << " " << __LINE__ << " "
 /*
 QSGGeometry *geometry =
@@ -19,33 +20,40 @@ if (aStyle == "dash") {
       auto del = aPointList[i] - aPointList[i - 1];
       dis += sqrt(QPointF::dotProduct(del, del));
     }
-    vertices[i].set(aPointList[i].x(), aPointList[i].y(), dis * rt / 10, 0);
+    vertices[i].set(aPointList[i].x(), aPointList [i].y(), dis * rt / 10, 0);
   }
 }
 */
+HFillNode::HFillNode() : _node(new QSGGeometryNode()) {}
+
 HFillNode::HFillNode(const QList<QPointF> &points, unsigned long type,
-                     const QJsonObject &p) {
+                     const QJsonObject &p)
+    : _node(new QSGGeometryNode()) {
   _param = p;
   setOurGeometry(points, type);
   setColor(getColor(p));
 }
 
 HFillNode::HFillNode(const QRectF &rect, unsigned long type,
-                     const QJsonObject &p) {
+                     const QJsonObject &p)
+    : _node(new QSGGeometryNode()) {
   _param = p;
   auto list = HCommon::BuildRectList(rect);
   setOurGeometry(list, type);
   setColor(getColor(p));
 }
 
-QSGNode *HFillNode::get() { return this; }
+HFillNode::~HFillNode() {}
 
-QSGNode *HFillNode::build(HBoard *) { return this; }
+QSGNode *HFillNode::get() { return _node; }
+
+QSGNode *HFillNode::build(HBoard *) { return _node; }
 
 QRectF HFillNode::getBoundRect() {
   QRectF r;
-  auto geo = geometry();
-  if (!geo) return r;
+  auto geo = _node->geometry();
+  if (!geo)
+    return r;
   auto count = geo->vertexCount();
   auto point_list = static_cast<QSGGeometry::Point2D *>(geo->vertexData());
   float left = float(INT_MAX), right = float(INT_MIN), bottom = float(INT_MIN),
@@ -64,8 +72,9 @@ QRectF HFillNode::getBoundRect() {
 
 QList<QPointF> HFillNode::getPointList() {
   QList<QPointF> list;
-  auto geo = geometry();
-  if (!geo) return list;
+  auto geo = _node->geometry();
+  if (!geo)
+    return list;
   auto count = geo->vertexCount();
   auto point_list = static_cast<QSGGeometry::Point2D *>(geo->vertexData());
   for (int i = 0; i < count; i++) {
@@ -76,8 +85,9 @@ QList<QPointF> HFillNode::getPointList() {
 }
 
 void HFillNode::move(const QPointF &p) {
-  auto geo = geometry();
-  if (!geo) return;
+  auto geo = _node->geometry();
+  if (!geo)
+    return;
   auto count = geo->vertexCount();
   auto point_list = static_cast<QSGGeometry::Point2D *>(geo->vertexData());
   for (int i = 0; i < count; i++) {
@@ -86,14 +96,14 @@ void HFillNode::move(const QPointF &p) {
     point_list[i] = pt;
     geo->vertexDataAsPoint2D()[i] = pt;
   }
-  setGeometry(geo);
+  _node->setGeometry(geo);
   HNodeBase::move(p);
 }
 
 void HFillNode::moveTo(const QPointF &p) {}
 
 void HFillNode::drawPoints(const QList<QPointF> &points) {
-  auto ptr = geometry();
+  auto ptr = _node->geometry();
   if (ptr)
     setOurGeometry(points, ptr->drawingMode());
   else
@@ -102,8 +112,8 @@ void HFillNode::drawPoints(const QList<QPointF> &points) {
 
 void HFillNode::setColor(const QColor &color) {
   QSGFlatColorMaterial *material = HSGNodeCommon::buildColor(color);
-  setMaterial(material);
-  setFlag(QSGNode::OwnsMaterial);
+  _node->setMaterial(material);
+  _node->setFlag(QSGNode::OwnsMaterial);
 }
 
 void HFillNode::setParam(const QJsonObject &p) {
@@ -116,9 +126,9 @@ void HFillNode::setParam(const QJsonObject &p) {
        line_width = _param.value("line_width").toInt();
 
   if (line_width != pline_width) {
-    if (geometry()) {
+    if (_node->geometry()) {
       DEBUG << "set line width " << pline_width;
-      geometry()->setLineWidth(pline_width);
+      _node->geometry()->setLineWidth(pline_width);
     }
   }
   if (pr != r || pg != g || pb != b || pa != a) {
@@ -128,16 +138,66 @@ void HFillNode::setParam(const QJsonObject &p) {
   HNodeBase::setParam(p);
 }
 
-int HFillNode::save(QJsonObject &d) {
-  //    QJsonObject o =
+int HFillNode::save(QJsonObject &o) {
+  auto list = getPointList();
+  QJsonArray l;
+  for (int i = 0; i < list.size(); i++) {
+    QJsonObject p;
+    auto point = list[i];
+    p.insert("x", point.x());
+    p.insert("y", point.y());
+    l.push_back(p);
+  }
+  auto type = GL_LINE_LOOP;
+  if (_node->geometry()) {
+    type = _node->geometry()->drawingMode();
+  }
+  o.insert("drawingMode", type);
+  o.insert("param", _param);
+  o.insert("points", l);
+  o.insert("nodeType", nodeType());
+  o.insert("id", _id.toString());
   return 0;
 }
 
-int HFillNode::load(const QJsonObject &o) { return 0; }
+int HFillNode::load(const QJsonObject &o) {
+  if (!(o.contains("drawingMode") && o.value("drawingMode").isDouble() &&
+        o.contains("param") && o.value("param").isObject() &&
+        o.contains("points") && o.value("points").isArray() &&
+        o.contains("nodeType") && o.value("nodeType").isDouble() &&
+        o.value("nodeType").toInt() == nodeType() && o.contains("id") &&
+        o.value("id").isString())) {
+    DEBUG << "isn't type";
+    return -1;
+  }
+  auto points = o.value("points").toArray();
+  QList<QPointF> list;
+  for (int i = 0; i < points.size(); i++) {
+    QJsonObject t = points[i].toObject();
+    QPointF point(t.value("x").toDouble(), t.value("y").toDouble());
+    list.push_back(point);
+  }
+  HNodeBase::setParam(o.value("param").toObject());
+  _id = QUuid::fromString(o.value("id").toString());
+  setOurGeometry(list, unsigned long(o.value("drawingMode").toInt()));
+  setColor(getColor(o.value("param").toObject()));
+  return 0;
+}
 
-int HFillNode::save(const QString &path) { return 0; }
+int HFillNode::save(const QString &path) {
+  QJsonObject o;
+  save(o);
+  return HJsonCommon::writeJson(path, o);
+}
 
 int HFillNode::load(const QString &path) { return 0; }
+
+void HFillNode::clear() {
+  if (_node) {
+    delete _node;
+    _node = nullptr;
+  }
+}
 
 QSGGeometry *HFillNode::buildGeometry(const QList<QPointF> &points,
                                       unsigned long type) {
@@ -150,8 +210,8 @@ void HFillNode::setOurGeometry(const QList<QPointF> &points,
   if (_param.contains("line_width")) {
     geometry->setLineWidth(_param.value("line_width").toInt());
   }
-  setGeometry(geometry);
-  setFlag(QSGNode::OwnsGeometry);
+  _node->setGeometry(geometry);
+  _node->setFlag(QSGNode::OwnsGeometry);
 }
 
 QColor HFillNode::getColor(const QJsonObject &p) {

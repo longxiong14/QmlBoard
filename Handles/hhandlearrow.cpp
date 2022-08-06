@@ -25,7 +25,7 @@ void HHandleArrow::mousePressEvent(HBoard *board, QMouseEvent *event,
     double scale = board->getScale();
     HPlanVector vec;
     for (const auto &n : nodes.values()) {
-      if (canSelect(n, pos, scale)) {
+      if (canSelect(n.get(), pos, scale)) {
         _move = true;
         break;
       }
@@ -68,7 +68,8 @@ void HHandleArrow::mouseReleaseEvent(HBoard *board, QMouseEvent *event,
       auto nodes = board->visibleNodes();
       double scale = board->getScale();
       for (const auto &n : nodes.values()) {
-        if (canSelect(n, pos, scale)) board->changeSelectStatus(n->id());
+        if (canSelect(n.get(), pos, scale))
+          board->changeSelectStatus(n->id());
       }
       board->checkItems();
     }
@@ -90,17 +91,17 @@ bool HHandleArrow::canSelect(HNodeBase *node, const QPointF &pos,
   auto points = node->getPointList();
   HPlanVector vec;
   switch (type) {
-    case HNodeBase::RECTANGLE:
-      if (HCommon::PointInContour(pos, points)) {
-        return true;
-      }
-      break;
-    case HNodeBase::POLY: {
-      auto min = vec.ptmPoly(pos, points);
-      if (std::fabs(min) < (_distance / scale)) {
-        return true;
-      }
-    } break;
+  case HNodeBase::IMAGE:
+    if (HCommon::PointInContour(pos, points)) {
+      return true;
+    }
+    break;
+  case HNodeBase::SHAPE: {
+    auto min = vec.ptmPoly(pos, points);
+    if (std::fabs(min) < (_distance / scale)) {
+      return true;
+    }
+  } break;
   }
   return false;
 }

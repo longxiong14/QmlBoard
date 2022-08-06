@@ -7,7 +7,6 @@
 #include "Handles/hhandleflyweight.h"
 #include "Nodes/hcvmatnode.h"
 #include "Nodes/hfillnode.h"
-#include "Nodes/himagenode.h"
 #include "Nodes/hnodebase.h"
 #include "hboard.h"
 #include "hboardmanager.h"
@@ -44,7 +43,7 @@ int HBoardUIControl::openBoardPicture(const QString &board,
     DEBUG << "hasn't this board " << board;
     return -1;
   }
-  ptr->pushNode(new HCVMatNode(path));
+  ptr->pushNode(std::make_shared<HCVMatNode>(path));
   ptr->home();
   return 0;
 }
@@ -82,7 +81,6 @@ QJsonObject HBoardUIControl::getBoardHandleParam(const QString &board,
 
 int HBoardUIControl::setBoardNodeParam(const QString &board, const QString &key,
                                        const QJsonValue &value) {
-  QJsonObject o;
   auto ptr = HBoardManager::getInstance()->getBoard(board);
   if (!ptr) {
     DEBUG << "hasn't this board " << board;
@@ -90,6 +88,16 @@ int HBoardUIControl::setBoardNodeParam(const QString &board, const QString &key,
   }
   ptr->changeSelectParam(key, value);
   return 0;
+}
+
+int HBoardUIControl::saveBoard(const QString &board, const QString &path) {
+
+  auto ptr = HBoardManager::getInstance()->getBoard(board);
+  if (!ptr) {
+    DEBUG << "hasn't this board " << board;
+    return -1;
+  }
+  return ptr->save(path);
 }
 
 QJsonArray HBoardUIControl::handleList() {

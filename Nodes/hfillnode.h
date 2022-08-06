@@ -5,37 +5,41 @@
 
 #include "../Storage/hstoragebase.h"
 #include "hnodebase.h"
-class HBOARD_EXPORT HFillNode : public HNodeBase,
-                                public QSGGeometryNode,
-                                public HStorageBase<QJsonObject> {
- public:
-  HFillNode(const QList<QPointF>& points, unsigned long type = GL_LINE_LOOP,
-            const QJsonObject& p = QJsonObject());
-  HFillNode(const QRectF& rect, unsigned long type = GL_LINE_LOOP,
-            const QJsonObject& p = QJsonObject());
+class HBOARD_EXPORT HFillNode : public HNodeBase /*, public QSGGeometryNode*/ {
+public:
+  HFillNode();
+  HFillNode(const QList<QPointF> &points, unsigned long type = GL_LINE_LOOP,
+            const QJsonObject &p = QJsonObject());
+  HFillNode(const QRectF &rect, unsigned long type = GL_LINE_LOOP,
+            const QJsonObject &p = QJsonObject());
+  virtual ~HFillNode();
+  //  HFillNode(const HFillNode &o) = delete;
 
- public:
-  virtual QSGNode* get() override;
-  virtual QSGNode* build(HBoard*) override;
+public:
+  virtual QSGNode *get() override;
+  virtual QSGNode *build(HBoard *) override;
   virtual QRectF getBoundRect() override;
   virtual QList<QPointF> getPointList() override;
-  virtual void move(const QPointF& p) override;
-  virtual void moveTo(const QPointF& p) override;
-  virtual void drawPoints(const QList<QPointF>& points) override;
-  virtual void setColor(const QColor& color) override;
-  virtual void setParam(const QJsonObject& p) override;
+  virtual void move(const QPointF &p) override;
+  virtual void moveTo(const QPointF &p) override;
+  virtual void drawPoints(const QList<QPointF> &points) override;
+  virtual void setColor(const QColor &color) override;
+  virtual void setParam(const QJsonObject &p) override;
 
-  virtual int save(QJsonObject& d) override;
-  virtual int load(const QJsonObject& o) override;
-  virtual int save(const QString& path) override;
-  virtual int load(const QString& path) override;
+  virtual int save(QJsonObject &o) override;
+  virtual int load(const QJsonObject &o) override;
+  virtual int save(const QString &path) override;
+  virtual int load(const QString &path) override;
 
- protected:
-  QSGGeometry* buildGeometry(const QList<QPointF>& points,
+  void clear();
+
+protected:
+  QSGGeometry *buildGeometry(const QList<QPointF> &points,
                              unsigned long type = false);
-  void setOurGeometry(const QList<QPointF>& points, unsigned long type = false);
+  void setOurGeometry(const QList<QPointF> &points, unsigned long type = false);
 
-  QColor getColor(const QJsonObject& p);
+  QColor getColor(const QJsonObject &p);
+  QSGGeometryNode *_node;
 };
 
-#endif  // HFILLNODE_H
+#endif // HFILLNODE_H

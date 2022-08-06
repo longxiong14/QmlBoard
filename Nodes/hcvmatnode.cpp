@@ -14,11 +14,9 @@
 #define DEBUG qDebug() << __FUNCTION__ << " " << __LINE__ << " "
 
 HCVMatNode::HCVMatNode(const QString &path, const QPointF &start_point)
-    : HNodeBase(),
-      _split_size(1920, 1080),
-      _node(nullptr),
+    : HNodeBase(), _split_size(1920, 1080), _node(nullptr),
       _start_point(start_point) {
-  _mat = cv::imread(path.toStdString());
+  _mat = cv::imread(path.toLocal8Bit().toStdString());
   if (!_mat.empty()) {
     _bound_rect =
         QRectF(start_point.x(), start_point.y(), _mat.cols, _mat.rows);
@@ -32,6 +30,8 @@ HCVMatNode::HCVMatNode(const cv::Mat &mat, const QPointF &start_point)
         QRectF(start_point.x(), start_point.y(), _mat.cols, _mat.rows);
   }
 }
+
+HCVMatNode::~HCVMatNode() {}
 
 QSGNode *HCVMatNode::build(HBoard *board) {
   if (!_node && !_mat.empty()) {
@@ -90,7 +90,15 @@ void HCVMatNode::move(const QPointF &point) {
   HNodeBase::move(point);
 }
 
-HNodeBase::NODETYPE HCVMatNode::nodeType() { return NODETYPE::RECTANGLE; }
+HNodeBase::NODETYPE HCVMatNode::nodeType() { return NODETYPE::IMAGE; }
+
+int HCVMatNode::save(QJsonObject &o) { return 0; }
+
+int HCVMatNode::load(const QJsonObject &o) { return 0; }
+
+int HCVMatNode::save(const QString &path) { return 0; }
+
+int HCVMatNode::load(const QString &path) { return 0; }
 
 void HCVMatNode::setSplitSize(const cv::Size &size) { _split_size = size; }
 

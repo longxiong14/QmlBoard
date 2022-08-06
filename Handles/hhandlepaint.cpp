@@ -25,7 +25,8 @@ void HHandleDrawRect::mousePressEvent(HBoard *board, QMouseEvent *event,
   HHandleMove::mousePressEvent(board, event);
   if (board && event && leftButtonPress(event)) {
     _point = board->WCS2LCS(event->pos());
-    auto node = new HFillNode(QRectF(_point, QSize(1, 1)), GL_LINE_LOOP, o);
+    auto node = std::make_shared<HFillNode>(QRectF(_point, QSize(1, 1)),
+                                            GL_LINE_LOOP, o);
     board->pushNode(node);
     _node = node->id();
   }
@@ -50,7 +51,8 @@ void HHandleDrawPoly::mousePressEvent(HBoard *board, QMouseEvent *event,
   HHandleMove::mousePressEvent(board, event);
   if (board && event && leftButtonPress(event)) {
     auto point = board->WCS2LCS(event->pos());
-    auto node = new HFillNode(QRectF(point, QSize(1, 1)), GL_LINE_STRIP, o);
+    auto node = std::make_shared<HFillNode>(QRectF(point, QSize(1, 1)),
+                                            GL_LINE_STRIP, o);
     _points = {point};
     board->pushNode(node);
     _node = node->id();
@@ -87,7 +89,7 @@ void HHandleDrawLine::mousePressEvent(HBoard *board, QMouseEvent *event,
   if (board && event && leftButtonPress(event)) {
     _point = board->WCS2LCS(event->pos());
     QList<QPointF> list{_point};
-    auto node = new HFillNode(list, GL_LINES, o);
+    auto node = std::make_shared<HFillNode>(list, GL_LINES, o);
     board->pushNode(node);
     _node = node->id();
   }
@@ -112,7 +114,8 @@ void HHandleDrawCurve::mousePressEvent(HBoard *board, QMouseEvent *event,
   HHandleMove::mousePressEvent(board, event);
   if (board && event && leftButtonPress(event)) {
     auto point = board->WCS2LCS(event->pos());
-    auto node = new HFillNode(QRectF(point, QSize(1, 1)), GL_LINE_STRIP, o);
+    auto node = std::make_shared<HFillNode>(QRectF(point, QSize(1, 1)),
+                                            GL_LINE_STRIP, o);
     _points = {point};
     board->pushNode(node);
     _node = node->id();
@@ -144,7 +147,8 @@ void HHandleDrawFillRect::mousePressEvent(HBoard *board, QMouseEvent *event,
   HHandleMove::mousePressEvent(board, event);
   if (board && event && leftButtonPress(event)) {
     _point = board->WCS2LCS(event->pos());
-    auto node = new HFillNode(QRectF(_point, QSize(1, 1)), GL_QUADS, o);
+    auto node =
+        std::make_shared<HFillNode>(QRectF(_point, QSize(1, 1)), GL_QUADS, o);
     board->pushNode(node);
     _node = node->id();
   }
@@ -157,7 +161,8 @@ void HHandleDrawFillPoly::mousePressEvent(HBoard *board, QMouseEvent *event,
   HHandleMove::mousePressEvent(board, event);
   if (board && event && leftButtonPress(event)) {
     auto point = board->WCS2LCS(event->pos());
-    auto node = new HFillNode(QRectF(point, QSize(1, 1)), GL_POLYGON, o);
+    auto node =
+        std::make_shared<HFillNode>(QRectF(point, QSize(1, 1)), GL_POLYGON, o);
     _points = {point};
     board->pushNode(node);
     _node = node->id();

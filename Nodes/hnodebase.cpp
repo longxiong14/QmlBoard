@@ -67,10 +67,10 @@ void HNodeBase::timeOut() {
       _dash = new QSGGeometryNode();
       QList<QPointF> list;
       switch (nodeType()) {
-        case POLY:
+        case SHAPE:
           list = HCommon::BuildPolyLinesList(getPointList());
           break;
-        case RECTANGLE:
+        case IMAGE:
           list = HCommon::BuildRectLinesList(getBoundRect());
           break;
       }
