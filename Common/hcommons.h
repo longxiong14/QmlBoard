@@ -5,22 +5,24 @@
 #include <QPointF>
 #include <QRectF>
 
-namespace HCommon {
+#include "../HBoard_global.h"
+class HBOARD_EXPORT HCommon {
+ public:
+  static QPointF TopLeft(const QPointF& f, const QPointF& s);
+  static QPointF TopRight(const QPointF& f, const QPointF& s);
+  static QPointF BottomLeft(const QPointF& f, const QPointF& s);
+  static QPointF BottomRight(const QPointF& f, const QPointF& s);
 
-QPointF TopLeft(const QPointF& f, const QPointF& s);
-QPointF TopRight(const QPointF& f, const QPointF& s);
-QPointF BottomLeft(const QPointF& f, const QPointF& s);
-QPointF BottomRight(const QPointF& f, const QPointF& s);
+  static QRectF BuildRect(const QPointF& f, const QPointF& s);
+  static QList<QPointF> BuildRectList(const QPointF& f, const QPointF& s);
+  static QList<QPointF> BuildRectList(const QRectF& rect);
 
-QRectF BuildRect(const QPointF& f, const QPointF& s);
-QList<QPointF> BuildRectList(const QPointF& f, const QPointF& s);
-QList<QPointF> BuildRectList(const QRectF& rect);
+  static bool PointInContour(const QPointF& point,
+                             const QList<QPointF>& contour);
 
-bool PointInContour(const QPointF& point, const QList<QPointF>& contour);
+  static QList<QPointF> BuildRectLinesList(const QRectF& rect);
+  static QList<QPointF> BuildPolyLinesList(const QList<QPointF>& list);
 
-QList<QPointF> BuildRectLinesList(const QRectF& rect);
-QList<QPointF> BuildPolyLinesList(const QList<QPointF>& list);
-
-}  // namespace HCommon
+};  // class HCommon
 
 #endif  // HCOMMONS_H

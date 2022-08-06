@@ -128,6 +128,17 @@ void HFillNode::setParam(const QJsonObject &p) {
   HNodeBase::setParam(p);
 }
 
+int HFillNode::save(QJsonObject &d) {
+  //    QJsonObject o =
+  return 0;
+}
+
+int HFillNode::load(const QJsonObject &o) { return 0; }
+
+int HFillNode::save(const QString &path) { return 0; }
+
+int HFillNode::load(const QString &path) { return 0; }
+
 QSGGeometry *HFillNode::buildGeometry(const QList<QPointF> &points,
                                       unsigned long type) {
   return HSGNodeCommon::buildGeometry(points, type);

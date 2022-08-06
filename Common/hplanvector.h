@@ -3,7 +3,9 @@
 
 #include <QList>
 #include <QPointF>
-class HPlanVector {
+
+#include "../HBoard_global.h"
+class HBOARD_EXPORT HPlanVector {
  public:
   explicit HPlanVector();
 
