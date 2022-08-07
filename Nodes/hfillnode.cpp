@@ -190,7 +190,13 @@ int HFillNode::save(const QString &path) {
   return HJsonCommon::writeJson(path, o);
 }
 
-int HFillNode::load(const QString &path) { return 0; }
+int HFillNode::load(const QString &path) {
+  QJsonObject o;
+  if (0 != HJsonCommon::readJsonObject(path, o)) {
+    return -1;
+  }
+  return load(o);
+}
 
 void HFillNode::clear() {
   if (_node) {

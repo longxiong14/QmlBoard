@@ -57,9 +57,9 @@ bool HCommon::PointInContour(const QPointF &vtPoint,
                              const QList<QPointF> &vecPoints) {
   if (true) {
     bool bResult =
-        false;  //判断结果（true；点落在多边形内；false:点未落在多边形内）
+        false; //判断结果（true；点落在多边形内；false:点未落在多边形内）
     int nSize = vecPoints.size();
-    int j = nSize - 1;  // nSize -1 是多边形的最后一个顶点
+    int j = nSize - 1; // nSize -1 是多边形的最后一个顶点
     for (int i = 0; i < nSize; i++) {
       //判断点是否在线段的两侧(只取上端点,不取下端点，否则会多出一次判断，出现异常)
       if ((vecPoints[i].y() < vtPoint.y() && vecPoints[j].y() >= vtPoint.y()) ||
@@ -79,9 +79,9 @@ bool HCommon::PointInContour(const QPointF &vtPoint,
     return bResult;
   } else {
     bool bResult =
-        false;  //判断结果（true；点落在多边形内；false:点未落在多边形内）
+        false; //判断结果（true；点落在多边形内；false:点未落在多边形内）
     int nSize = vecPoints.size();
-    int j = nSize - 1;  // nSize -1 是多边形的最后一个顶点
+    int j = nSize - 1; // nSize -1 是多边形的最后一个顶点
     for (int i = 0; i < nSize; i++) {
       //判断点是否在线段的两侧
       if ((vecPoints[i].y() < vtPoint.y() && vecPoints[j].y() >= vtPoint.y()) ||
@@ -107,12 +107,12 @@ bool HCommon::PointInContour(const QPointF &vtPoint,
 }
 
 QList<QPointF> HCommon::BuildRectLinesList(const QRectF &rect) {
-  DEBUG << rect;
+  //  DEBUG << rect;
   auto tl = rect.topLeft(), br = rect.bottomRight();
   QList<QPointF> h_line1, h_line2, v_line1, v_line2;
   int x_min = int(tl.x()), x_max = int(br.x() + 1), y_min = int(tl.y()),
       y_max = int(br.y() + 1);
-  DEBUG << x_max << " " << x_min << " " << y_max << " " << y_min;
+  //  DEBUG << x_max << " " << x_min << " " << y_max << " " << y_min;
   for (int i = x_min, j = x_max; i <= x_max && j >= x_min; i++, j--) {
     h_line1.push_back(QPointF(i, y_min));
     h_line2.push_back(QPointF(j, y_max));
@@ -127,7 +127,7 @@ QList<QPointF> HCommon::BuildRectLinesList(const QRectF &rect) {
   list.append(v_line1);
   list.append(h_line2);
   list.append(v_line2);
-  DEBUG << list.size();
+  //  DEBUG << list.size();
   if (!list.empty()) {
     list.push_back(list.first());
   }

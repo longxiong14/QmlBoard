@@ -19,6 +19,7 @@ QList<QPointF> HNodeBase::getPointList() { return {}; }
 QUuid HNodeBase::id() { return _id; }
 
 void HNodeBase::changedSelectStatus() {
+  DEBUG << _select;
   _select = !_select;
   if (!_select) {
     auto n = get();
@@ -32,7 +33,7 @@ void HNodeBase::changedSelectStatus() {
   }
 }
 
-void HNodeBase::move(const QPointF& p) {
+void HNodeBase::move(const QPointF &p) {
   // move _dash
   for (int i = 0; i < _dash_list.size(); i++) {
     _dash_list[i] += p;
@@ -46,7 +47,7 @@ bool HNodeBase::visible() { return _visible; }
 void HNodeBase::timeOut() {
   auto node = get();
   int line_width = 2;
-  if (node) {
+  if (node && _select) {
     if (_dash) {
       auto geo = _dash->geometry();
       if (geo) {
@@ -67,12 +68,12 @@ void HNodeBase::timeOut() {
       _dash = new QSGGeometryNode();
       QList<QPointF> list;
       switch (nodeType()) {
-        case SHAPE:
-          list = HCommon::BuildPolyLinesList(getPointList());
-          break;
-        case IMAGE:
-          list = HCommon::BuildRectLinesList(getBoundRect());
-          break;
+      case SHAPE:
+        list = HCommon::BuildPolyLinesList(getPointList());
+        break;
+      case IMAGE:
+        list = HCommon::BuildRectLinesList(getBoundRect());
+        break;
       }
       if (list.size() > STEP) {
         double step = list.size() / STEP;
@@ -97,4 +98,4 @@ void HNodeBase::timeOut() {
 
 QJsonObject HNodeBase::param() { return _param; }
 
-void HNodeBase::setParam(const QJsonObject& p) { _param = p; }
+void HNodeBase::setParam(const QJsonObject &p) { _param = p; }
