@@ -9,12 +9,21 @@
 #include <opencv2/imgproc.hpp>
 
 #include "../Common/hcommons.h"
+#include "../Common/hjsoncommon.h"
 #include "../hboard.h"
 
 #define DEBUG qDebug() << __FUNCTION__ << " " << __LINE__ << " "
 
+HCVMatNode::HCVMatNode()
+    : HNodeBase(),
+      _split_size(1920, 1080),
+      _node(nullptr),
+      _start_point(0, 0) {}
+
 HCVMatNode::HCVMatNode(const QString &path, const QPointF &start_point)
-    : HNodeBase(), _split_size(1920, 1080), _node(nullptr),
+    : HNodeBase(),
+      _split_size(1920, 1080),
+      _node(nullptr),
       _start_point(start_point) {
   _mat = cv::imread(path.toLocal8Bit().toStdString());
   if (!_mat.empty()) {
@@ -31,9 +40,8 @@ HCVMatNode::HCVMatNode(const cv::Mat &mat, const QPointF &start_point)
   }
 }
 
-HCVMatNode::~HCVMatNode() {}
-
 QSGNode *HCVMatNode::build(HBoard *board) {
+  DEBUG << !_node << " " << !_mat.empty();
   if (!_node && !_mat.empty()) {
     _node = new QSGNode();
     int col = int(_mat.cols / _split_size.width) + 1;
@@ -92,13 +100,74 @@ void HCVMatNode::move(const QPointF &point) {
 
 HNodeBase::NODETYPE HCVMatNode::nodeType() { return NODETYPE::IMAGE; }
 
-int HCVMatNode::save(QJsonObject &o) { return 0; }
+int HCVMatNode::save(QJsonObject &o) {
+  auto rect = getBoundRect();
+  auto id = _id.toString();
 
-int HCVMatNode::load(const QJsonObject &o) { return 0; }
+  {
+    QJsonObject r;
+    r.insert("x", rect.x());
+    r.insert("y", rect.y());
+    r.insert("w", rect.width());
+    r.insert("h", rect.height());
+    o.insert("rect", r);
+  }
+  {
+    QJsonObject size;
+    size.insert("w", _split_size.width);
+    size.insert("h", _split_size.height);
+    o.insert("split_size", size);
+  }
+  o.insert("nodeType", nodeType());
+  o.insert("id", id);
+  o.insert("param", _param);
+  return 0;
+}
 
-int HCVMatNode::save(const QString &path) { return 0; }
+int HCVMatNode::load(const QJsonObject &o) {
+  if (!(o.contains("split_size") && o.value("split_size").isObject() &&
+        o.contains("param") && o.value("param").isObject() &&
+        o.contains("rect") && o.value("rect").isObject() &&
+        o.contains("nodeType") && o.value("nodeType").isDouble() &&
+        o.value("nodeType").toInt() == nodeType() && o.contains("id") &&
+        o.value("id").isString())) {
+    DEBUG << "isn't type";
+    return -1;
+  }
+  {
+    QJsonObject r = o.value("rect").toObject();
+    _start_point = QPointF(r.value("x").toDouble(), r.value("y").toDouble());
+    _mat = cv::Mat::zeros(r.value("h").toInt(), r.value("w").toInt(), CV_8UC3);
+    _bound_rect = QRectF(r.value("x").toInt(), r.value("y").toInt(),
+                         r.value("w").toInt(), r.value("h").toInt());
+    DEBUG << _bound_rect;
+  }
 
-int HCVMatNode::load(const QString &path) { return 0; }
+  {
+    auto split_size = o.value("split_size").toObject();
+    _split_size =
+        cv::Size(split_size.value("w").toInt(), split_size.value("h").toInt());
+  }
+  _id = o.value("id").toString();
+  setParam(o.value("param").toObject());
+  return 0;
+}
+
+int HCVMatNode::save(const QString &path) {
+  QJsonObject o;
+  if (0 != save(o)) {
+    return -1;
+  }
+  return HJsonCommon::writeJson(path, o);
+}
+
+int HCVMatNode::load(const QString &path) {
+  QJsonObject o;
+  if (0 != HJsonCommon::readJsonObject(path, o)) {
+    return -1;
+  }
+  return load(o);
+}
 
 void HCVMatNode::setSplitSize(const cv::Size &size) { _split_size = size; }
 

@@ -17,6 +17,9 @@ class HBOARD_EXPORT HStorageBase {
   virtual int save(const QString& path) = 0;
   virtual int load(const Data& o) = 0;
   virtual int save(Data& d) = 0;
+
+  virtual int loadFrom(const Data&, const QString&) { return -1; }
+  virtual int saveFrom(Data&, const QString&) { return -1; }
 };
 
 // class HBOARD_EXPORT HStorageJsonObject : public HStorageBase<QJsonObject>,

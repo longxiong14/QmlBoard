@@ -1,5 +1,5 @@
 ﻿#include "hboard.h"
-#include "Common/hjsoncommon.h"
+
 #include <QDebug>
 #include <QJsonArray>
 #include <QQmlEngine>
@@ -11,17 +11,21 @@
 #include <QSGTexture>
 
 #include "Common/hcommons.h"
+#include "Common/hjsoncommon.h"
 #include "Handles/hhandlearrow.h"
 #include "Handles/hhandlebase.h"
 #include "Handles/hhandleflyweight.h"
 #include "Handles/hhandlemove.h"
+#include "Nodes/hcvmatnode.h"
 #include "Nodes/hfillnode.h"
 #include "Nodes/hnodebase.h"
 #include "hboardmanager.h"
 #define DEBUG qDebug() << __FUNCTION__ << " " << __LINE__ << " "
 
 HBoard::HBoard(QQuickItem *parent)
-    : QQuickItem(parent), _trans_node(nullptr), _handle(new HHandleArrow()),
+    : QQuickItem(parent),
+      _trans_node(nullptr),
+      _handle(new HHandleArrow()),
       _name("") {
   setFlag(QQuickItem::ItemHasContents, true);
   setClip(true);
@@ -42,8 +46,7 @@ HBoard::HBoard(QQuickItem *parent)
           pushTask([=]() { n->timeOut(); });
         }
       }
-      if (flag)
-        update();
+      if (flag) update();
     }
   });
 }
@@ -65,6 +68,7 @@ void HBoard::home() {
     }
     auto w = width();
     auto h = height();
+    DEBUG << rect;
 
     auto ws = w / rect.width();
     auto hs = h / rect.height();
@@ -74,8 +78,7 @@ void HBoard::home() {
     auto y = (h - rect.height() * scale) / 2;
     trans.translate(x, y);
     trans.scale(scale, scale);
-    if (_trans_node)
-      _trans_node->setMatrix(trans);
+    if (_trans_node) _trans_node->setMatrix(trans);
   });
   update();
 }
@@ -85,8 +88,7 @@ void HBoard::checkItems() {
     auto sel = selects();
     if (1 == sel.size()) {
       auto node = *sel.begin();
-      if (_nodes.contains(node))
-        setItems(_nodes[node]->param());
+      if (_nodes.contains(node)) setItems(_nodes[node]->param());
     } else {
       setItems({});
     }
@@ -112,32 +114,39 @@ int HBoard::load(const QString &path) {
     DEBUG << "isn't array file";
     return -1;
   }
+  bool flag = false;
   for (int i = 0; i < array.size(); i++) {
     QJsonObject o = array[i].toObject();
     HNodeBase::NODETYPE type =
         static_cast<HNodeBase::NODETYPE>(o.value("nodeType").toInt());
     switch (type) {
-    case HNodeBase::NODETYPE::SHAPE: {
-      auto node = std::make_shared<HFillNode>();
-      if (0 == node->load(o) && !_nodes.contains(node->id())) {
-        pushNode(node);
-      } else {
-        node->clear();
-      }
-    } break;
-    case HNodeBase::NODETYPE::IMAGE:
-      break;
-    default:
-      break;
+      case HNodeBase::NODETYPE::SHAPE: {
+        auto node = std::make_shared<HFillNode>();
+        if (0 == node->load(o) && !_nodes.contains(node->id())) {
+          pushNode(node);
+          flag = true;
+        } else {
+          node->clear();
+        }
+      } break;
+      case HNodeBase::NODETYPE::IMAGE: {
+        auto node = std::make_shared<HCVMatNode>();
+        if (0 == node->load(o) && !_nodes.contains(node->id())) {
+          pushNode(node);
+          flag = true;
+        }
+      } break;
+      default:
+        break;
     }
   }
+  if (flag) home();
   return 0;
 }
 
 void HBoard::pushTransform(const QTransform &trans) {
   pushTask([=]() {
-    if (_trans_node)
-      _trans_node->setMatrix(trans);
+    if (_trans_node) _trans_node->setMatrix(trans);
   });
 }
 
@@ -145,8 +154,7 @@ void HBoard::pushNode(std::shared_ptr<HNodeBase> node, bool flag) {
   pushTask([=]() {
     if (node) {
       _trans_node->appendChildNode(node->build(this));
-      if (flag)
-        _nodes.insert(node->id(), node);
+      if (flag) _nodes.insert(node->id(), node);
     }
   });
   update();
@@ -294,19 +302,16 @@ bool HBoard::hasNode(const QUuid &node) { return _nodes.contains(node); }
 void HBoard::visibleNode(const QUuid &node, bool flag) {
   if (_nodes.contains(node)) {
     auto n = _nodes[node];
-    if (flag == n->visible())
-      return;
+    if (flag == n->visible()) return;
     n->setVisible(flag);
     if (n->visible()) {
       pushTask([=]() {
-        if (n)
-          _trans_node->appendChildNode(n->get());
+        if (n) _trans_node->appendChildNode(n->get());
       });
     } else {
       pushTask([=]() {
         if (n) {
-          if (n->isSelect())
-            n->changedSelectStatus();
+          if (n->isSelect()) n->changedSelectStatus();
           _trans_node->removeChildNode(n->get());
         }
       });
@@ -363,8 +368,7 @@ QSGTransformNode *HBoard::transformNode() { return _trans_node; }
 
 QTransform HBoard::transform() {
   QTransform trans;
-  if (_trans_node)
-    trans = _trans_node->matrix().toTransform();
+  if (_trans_node) trans = _trans_node->matrix().toTransform();
   return trans;
 }
 
@@ -387,28 +391,24 @@ QSGNode *HBoard::updatePaintNode(QSGNode *node,
 }
 
 void HBoard::mousePressEvent(QMouseEvent *event) {
-  if (_handle)
-    _handle->mousePressEvent(this, event, getHandleParam());
+  if (_handle) _handle->mousePressEvent(this, event, getHandleParam());
   update();
 }
 
 void HBoard::mouseMoveEvent(QMouseEvent *event) {
-  if (_handle)
-    _handle->mouseMoveEvent(this, event, getHandleParam());
+  if (_handle) _handle->mouseMoveEvent(this, event, getHandleParam());
   auto pos = WCS2LCS(event->pos());
   hoverPoint(int(pos.x()), int(pos.y()));
   update();
 }
 
 void HBoard::mouseReleaseEvent(QMouseEvent *event) {
-  if (_handle)
-    _handle->mouseReleaseEvent(this, event, getHandleParam());
+  if (_handle) _handle->mouseReleaseEvent(this, event, getHandleParam());
   update();
 }
 
 void HBoard::wheelEvent(QWheelEvent *event) {
-  if (_handle)
-    _handle->wheelEvent(this, event);
+  if (_handle) _handle->wheelEvent(this, event);
   update();
 }
 
