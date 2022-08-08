@@ -161,16 +161,16 @@ void HBoard::pushNode(std::shared_ptr<HNodeBase> node, bool flag) {
 }
 
 void HBoard::removeNode(const QUuid &id) {
-  if (_nodes.contains(id)) {
-    auto node = _nodes[id];
-    _nodes.remove(id);
-    pushTask([=]() {
+  pushTask([=]() {
+    if (_nodes.contains(id)) {
+      auto node = _nodes[id];
       if (node) {
         _trans_node->removeChildNode(node->get());
+        _nodes.remove(id);
       }
-    });
-    update();
-  }
+    }
+  });
+  update();
 }
 
 void HBoard::clearNode() {
@@ -181,6 +181,14 @@ void HBoard::clearNode() {
     }
     _nodes.clear();
   });
+  update();
+}
+
+void HBoard::removeSelectNode() {
+  auto sel = selects();
+  for (const auto &id : sel) {
+    removeNode(id);
+  }
   update();
 }
 
@@ -290,10 +298,12 @@ void HBoard::nodeMoveTo(const QUuid &n, QPointF point) {
 }
 
 void HBoard::drawNodePoint(const QUuid &node, const QList<QPointF> points) {
-  if (_nodes.contains(node))
-    pushTask([=]() { _nodes[node]->drawPoints(points); });
-  else
-    DEBUG << "hasn't this node " << node;
+  pushTask([=]() {
+    if (_nodes.contains(node))
+      _nodes[node]->drawPoints(points);
+    else
+      DEBUG << "hasn't this node " << node;
+  });
   update();
 }
 
@@ -334,7 +344,6 @@ void HBoard::setName(const QString &name) {
 QJsonObject HBoard::items() { return _items; }
 
 void HBoard::setItems(const QJsonObject &item) {
-  DEBUG << _items;
   _items = item;
   itemsChanged();
 }
@@ -412,18 +421,31 @@ void HBoard::wheelEvent(QWheelEvent *event) {
   update();
 }
 
-void HBoard::hoverEnterEvent(QHoverEvent *) { setFocus(true); }
+void HBoard::hoverEnterEvent(QHoverEvent *e) {
+  setFocus(true);
+  if (_handle) _handle->hoverEnterEvent(this, e, getHandleParam());
+}
 
 void HBoard::hoverMoveEvent(QHoverEvent *event) {
   auto pos = WCS2LCS(event->pos());
   hoverPoint(int(pos.x()), int(pos.y()));
+  if (_handle) _handle->hoverMoveEvent(this, event, getHandleParam());
 }
 
-void HBoard::hoverLeaveEvent(QHoverEvent *) { _keys.clear(); }
+void HBoard::hoverLeaveEvent(QHoverEvent *e) {
+  if (_handle) _handle->hoverLeaveEvent(this, e, getHandleParam());
+  _keys.clear();
+  setFocus(false);
+}
 
 void HBoard::keyPressEvent(QKeyEvent *event) {
   if (event) {
     _keys.insert(event->key());
+  }
+  switch (event->key()) {
+    case Qt::Key_Delete:
+      removeSelectNode();
+      break;
   }
 }
 

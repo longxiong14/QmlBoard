@@ -45,7 +45,7 @@ HFillNode::HFillNode(const QRectF &rect, unsigned long type,
   setColor(getColor(p));
 }
 
-HFillNode::~HFillNode() {}
+// HFillNode::~HFillNode() {}
 
 QSGNode *HFillNode::get() { return _node; }
 

@@ -99,4 +99,36 @@ class HBOARD_EXPORT HHandleDrawFillPoly : public HHandleDrawPoly {
       const QJsonObject& object = QJsonObject()) override;
 };
 
+class HBOARD_EXPORT HHandleDrawCircle : public HHandleMove {
+ public:
+  HHandleDrawCircle();
+
+  virtual void hoverMoveEvent(
+      HBoard* board, QHoverEvent* event,
+      const QJsonObject& object = QJsonObject()) override;
+
+  virtual void mouseMoveEvent(
+      HBoard* board, QMouseEvent* event,
+      const QJsonObject& object = QJsonObject()) override;
+
+  virtual void hoverLeaveEvent(
+      HBoard* board, QHoverEvent* event,
+      const QJsonObject& object = QJsonObject()) override;
+
+  virtual QJsonObject getDefaultParam() override;
+
+ protected:
+  virtual void updateCirclePosition(HBoard* board, const QPointF& center,
+                                    const QJsonObject& object);
+};
+
+class HBOARD_EXPORT HHandleDrawFillCircle : public HHandleDrawCircle {
+ public:
+  HHandleDrawFillCircle();
+
+ protected:
+  virtual void updateCirclePosition(HBoard* board, const QPointF& center,
+                                    const QJsonObject& object);
+};
+
 #endif  // HHANDLEPAINT_H

@@ -26,5 +26,7 @@
         <file>qml/ICProgram/HIcons/HTools/poly.png</file>
         <file>qml/ICProgram/HIcons/HTools/rect.png</file>
         <file>qml/ICProgram/HGlobalItems/HTextInput.qml</file>
+        <file>qml/ICProgram/HIcons/HTools/circle.png</file>
+        <file>qml/ICProgram/HIcons/HTools/fill_circle.png</file>
     </qresource>
 </RCC>

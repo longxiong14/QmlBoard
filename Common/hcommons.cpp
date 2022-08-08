@@ -8,7 +8,7 @@
 #define DEBUG qDebug() << __FUNCTION__ << " " << __LINE__ << " "
 #define DCODE true
 #define D 1e-7
-
+#define PI 3.1415
 QPointF HCommon::TopLeft(const QPointF &f, const QPointF &s) {
   auto x = std::min(f.x(), s.x());
   auto y = std::min(f.y(), s.y());
@@ -57,9 +57,9 @@ bool HCommon::PointInContour(const QPointF &vtPoint,
                              const QList<QPointF> &vecPoints) {
   if (true) {
     bool bResult =
-        false; //判断结果（true；点落在多边形内；false:点未落在多边形内）
+        false;  //判断结果（true；点落在多边形内；false:点未落在多边形内）
     int nSize = vecPoints.size();
-    int j = nSize - 1; // nSize -1 是多边形的最后一个顶点
+    int j = nSize - 1;  // nSize -1 是多边形的最后一个顶点
     for (int i = 0; i < nSize; i++) {
       //判断点是否在线段的两侧(只取上端点,不取下端点，否则会多出一次判断，出现异常)
       if ((vecPoints[i].y() < vtPoint.y() && vecPoints[j].y() >= vtPoint.y()) ||
@@ -79,9 +79,9 @@ bool HCommon::PointInContour(const QPointF &vtPoint,
     return bResult;
   } else {
     bool bResult =
-        false; //判断结果（true；点落在多边形内；false:点未落在多边形内）
+        false;  //判断结果（true；点落在多边形内；false:点未落在多边形内）
     int nSize = vecPoints.size();
-    int j = nSize - 1; // nSize -1 是多边形的最后一个顶点
+    int j = nSize - 1;  // nSize -1 是多边形的最后一个顶点
     for (int i = 0; i < nSize; i++) {
       //判断点是否在线段的两侧
       if ((vecPoints[i].y() < vtPoint.y() && vecPoints[j].y() >= vtPoint.y()) ||
@@ -180,4 +180,18 @@ QList<QPointF> HCommon::BuildPolyLinesList(const QList<QPointF> &list) {
   }
 
   return out;
+}
+
+QList<QPointF> HCommon::BuildCircle(const QPointF &center, double radius,
+                                    int parts) {
+  QList<QPointF> list;
+
+  double x, z;
+  for (int i = 0; i <= parts; i++) {
+    x = center.x() + std::sin((i * (PI / 180))) * radius;
+    z = center.y() + std::cos(i * (PI / 180)) * radius;
+    list.push_back(QPointF(x, z));
+  }
+
+  return list;
 }

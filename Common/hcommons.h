@@ -23,6 +23,9 @@ class HBOARD_EXPORT HCommon {
   static QList<QPointF> BuildRectLinesList(const QRectF& rect);
   static QList<QPointF> BuildPolyLinesList(const QList<QPointF>& list);
 
+  static QList<QPointF> BuildCircle(const QPointF& center, double radius,
+                                    int parts);
+
 };  // class HCommon
 
 #endif  // HCOMMONS_H

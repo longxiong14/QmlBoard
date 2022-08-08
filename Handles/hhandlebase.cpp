@@ -21,6 +21,15 @@ void HHandleBase::mouseReleaseEvent(HBoard *, QMouseEvent *e,
   _buttons.remove(e->button());
 }
 
+void HHandleBase::hoverEnterEvent(HBoard *, QHoverEvent *,
+                                  const QJsonObject &) {}
+
+void HHandleBase::hoverMoveEvent(HBoard *, QHoverEvent *, const QJsonObject &) {
+}
+
+void HHandleBase::hoverLeaveEvent(HBoard *, QHoverEvent *,
+                                  const QJsonObject &) {}
+
 void HHandleBase::wheelEvent(HBoard *, QWheelEvent *) {}
 
 QJsonObject HHandleBase::getDefaultParam() { return QJsonObject(); }

@@ -27,8 +27,10 @@ class HBOARD_EXPORT HHandleArrow : public HHandleMove {
   virtual bool canSelect(HNodeBase* node, const QPointF& pos, double scale);
 
  protected:
-  bool _move;
+  bool _can_move;
+  bool _moved;
   int _distance;
+  QPointF _point;
 };
 
 #endif  // HHANDLEARROW_H

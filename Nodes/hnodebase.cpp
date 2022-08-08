@@ -19,7 +19,6 @@ QList<QPointF> HNodeBase::getPointList() { return {}; }
 QUuid HNodeBase::id() { return _id; }
 
 void HNodeBase::changedSelectStatus() {
-  DEBUG << _select;
   _select = !_select;
   if (!_select) {
     auto n = get();
@@ -68,12 +67,12 @@ void HNodeBase::timeOut() {
       _dash = new QSGGeometryNode();
       QList<QPointF> list;
       switch (nodeType()) {
-      case SHAPE:
-        list = HCommon::BuildPolyLinesList(getPointList());
-        break;
-      case IMAGE:
-        list = HCommon::BuildRectLinesList(getBoundRect());
-        break;
+        case SHAPE:
+          list = HCommon::BuildPolyLinesList(getPointList());
+          break;
+        case IMAGE:
+          list = HCommon::BuildRectLinesList(getBoundRect());
+          break;
       }
       if (list.size() > STEP) {
         double step = list.size() / STEP;

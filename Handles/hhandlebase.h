@@ -22,6 +22,12 @@ class HBOARD_EXPORT HHandleBase {
                               const QJsonObject& object = QJsonObject());
   virtual void mouseReleaseEvent(HBoard* board, QMouseEvent* event,
                                  const QJsonObject& object = QJsonObject());
+  virtual void hoverEnterEvent(HBoard* board, QHoverEvent* event,
+                               const QJsonObject& object = QJsonObject());
+  virtual void hoverMoveEvent(HBoard* board, QHoverEvent* event,
+                              const QJsonObject& object = QJsonObject());
+  virtual void hoverLeaveEvent(HBoard* board, QHoverEvent* event,
+                               const QJsonObject& object = QJsonObject());
   virtual void wheelEvent(HBoard* board, QWheelEvent* event);
 
   virtual QJsonObject getDefaultParam();

@@ -33,7 +33,11 @@ HCVMatNode::HCVMatNode(const QString &path, const QPointF &start_point)
 }
 
 HCVMatNode::HCVMatNode(const cv::Mat &mat, const QPointF &start_point)
-    : HNodeBase(), _mat(mat), _start_point(start_point) {
+    : HNodeBase(),
+      _mat(mat),
+      _split_size(1920, 1080),
+      _node(nullptr),
+      _start_point(start_point) {
   if (!_mat.empty()) {
     _bound_rect =
         QRectF(start_point.x(), start_point.y(), _mat.cols, _mat.rows);

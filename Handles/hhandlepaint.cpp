@@ -168,3 +168,65 @@ void HHandleDrawFillPoly::mousePressEvent(HBoard *board, QMouseEvent *event,
     _node = node->id();
   }
 }
+
+HHandleDrawCircle::HHandleDrawCircle() { _name = "circle"; }
+
+void HHandleDrawCircle::hoverMoveEvent(HBoard *board, QHoverEvent *event,
+                                       const QJsonObject &object) {
+  if (board && event) {
+    auto center = board->WCS2LCS(event->pos());
+    updateCirclePosition(board, center, object);
+  }
+}
+
+void HHandleDrawCircle::mouseMoveEvent(HBoard *board, QMouseEvent *event,
+                                       const QJsonObject &object) {
+  DEBUG << object;
+  if (board && event) {
+    auto center = board->WCS2LCS(event->pos());
+    updateCirclePosition(board, center, object);
+  }
+}
+
+void HHandleDrawCircle::hoverLeaveEvent(HBoard *board, QHoverEvent *,
+                                        const QJsonObject &) {
+  if (!_node.isNull() && board && board->hasNode(_node)) {
+    board->removeNode(_node);
+    _node = "";
+  }
+}
+
+QJsonObject HHandleDrawCircle::getDefaultParam() {
+  QJsonObject object = defaultParam();
+  object.insert("radius", 50);
+  return object;
+}
+
+void HHandleDrawCircle::updateCirclePosition(HBoard *board,
+                                             const QPointF &center,
+                                             const QJsonObject &object) {
+  auto list = HCommon::BuildCircle(center, object.value("radius").toInt(), 360);
+  if (_node.isNull()) {
+    auto node = std::make_shared<HFillNode>(list, GL_LINE_LOOP, object);
+    _node = node->id();
+    board->pushNode(node);
+  } else {
+    board->drawNodePoint(_node, list);
+  }
+}
+
+HHandleDrawFillCircle::HHandleDrawFillCircle() { _name = "fill circle"; }
+
+void HHandleDrawFillCircle::updateCirclePosition(HBoard *board,
+                                                 const QPointF &center,
+                                                 const QJsonObject &object) {
+  DEBUG << object;
+  auto list = HCommon::BuildCircle(center, object.value("radius").toInt(), 360);
+  if (_node.isNull()) {
+    auto node = std::make_shared<HFillNode>(list, GL_POLYGON, object);
+    _node = node->id();
+    board->pushNode(node);
+  } else {
+    board->drawNodePoint(_node, list);
+  }
+}

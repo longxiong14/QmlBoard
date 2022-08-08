@@ -79,6 +79,26 @@ Tab {
                     HImageButton{
                         width: parent.height
                         height: parent.height
+                        mSource:"qrc:/qml/ICProgram/HIcons/HTools/circle.png"
+                        backColor: icon === mSource ? "red" : "transparent"
+                        onSigClick: {
+                            icon = mSource
+                            setHandle("circle")
+                        }
+                    }
+                    HImageButton{
+                        width: parent.height
+                        height: parent.height
+                        mSource:"qrc:/qml/ICProgram/HIcons/HTools/fill_circle.png"
+                        backColor: icon === mSource ? "red" : "transparent"
+                        onSigClick: {
+                            icon = mSource
+                            setHandle("fill circle")
+                        }
+                    }
+                    HImageButton{
+                        width: parent.height
+                        height: parent.height
                         mSource:"qrc:/qml/ICProgram/HIcons/HTools/close.png"
                         backColor: icon === mSource ? "red" : "transparent"
                         onSigClick: {
