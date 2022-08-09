@@ -25,13 +25,15 @@ class HBOARD_EXPORT HBoard : public QQuickItem {
   Q_PROPERTY(QJsonObject items READ items WRITE setItems NOTIFY itemsChanged)
  public:
   explicit HBoard(QQuickItem *parent = nullptr);
-  virtual ~HBoard();
+  virtual ~HBoard() override;
 
  public:
   void home();
   void checkItems();
   int save(const QString &path);
+  int save(QJsonArray &save);
   int load(const QString &path);
+  int load(const QJsonArray &nodes);
 
  public:
   void pushTransform(const QTransform &trans);

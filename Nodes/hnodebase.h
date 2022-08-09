@@ -1,23 +1,24 @@
 ﻿#ifndef HNODEBASE_H
 #define HNODEBASE_H
 
-#include "../HBoard_global.h"
-#include "../Storage/hstoragebase.h"
 #include <QColor>
 #include <QJsonObject>
 #include <QRectF>
 #include <QUuid>
+
+#include "../HBoard_global.h"
+#include "../Storage/hstoragebase.h"
 class QSGNode;
 class HBoard;
 class QSGGeometryNode;
 class HBOARD_EXPORT HNodeBase : public HStorageBase<QJsonObject> {
-public:
+ public:
   typedef enum {
-    SHAPE = 1001, //距离判断（按照点与轮廓的最近距离判断）
-    IMAGE         //点在封闭形状内的判断
-  } NODETYPE;     // node type
+    SHAPE = 1001,  //距离判断（按照点与轮廓的最近距离判断）
+    IMAGE          //点在封闭形状内的判断
+  } NODETYPE;      // node type
 
-public:
+ public:
   HNodeBase();
   HNodeBase(const HNodeBase &other) = default;
   virtual ~HNodeBase();
@@ -30,20 +31,21 @@ public:
   virtual QUuid id();
   virtual void changedSelectStatus();
   virtual void move(const QPointF &);
-  virtual void moveTo(const QPointF &) {} // move to point
+  virtual void moveTo(const QPointF &) {}  // move to point
   virtual bool isSelect() { return _select; }
   virtual void drawPoints(const QList<QPointF> &) {}
   virtual void setColor(const QColor &) {}
   virtual NODETYPE nodeType() { return SHAPE; }
+  virtual unsigned long drawingMode();
   virtual void setVisible(bool flag);
   virtual bool visible();
   virtual void timeOut();
 
-public:
+ public:
   QJsonObject param();
   virtual void setParam(const QJsonObject &p);
 
-protected:
+ protected:
   QJsonObject _param;
   QUuid _id;
   bool _select;
@@ -52,4 +54,4 @@ protected:
   QSGGeometryNode *_dash;
 };
 
-#endif // HNODEBASE_H
+#endif  // HNODEBASE_H

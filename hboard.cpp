@@ -55,10 +55,13 @@ HBoard::~HBoard() { _nodes.clear(); }
 
 void HBoard::home() {
   pushTask([=]() {
+    bool flag = false;
     QRectF rect(INT_MAX, INT_MAX, INT_MIN, INT_MIN);
+    DEBUG << _nodes.size();
     for (const auto &key : _nodes.keys()) {
       auto node = _nodes.value(key);
       if (node) {
+        flag = true;
         auto r = node->getBoundRect();
         rect.setX(std::min(r.x(), rect.x()));
         rect.setY(std::min(r.y(), rect.y()));
@@ -66,6 +69,7 @@ void HBoard::home() {
         rect.setHeight(std::max(r.height(), rect.height()));
       }
     }
+    if (!flag) return;
     auto w = width();
     auto h = height();
     DEBUG << rect;
@@ -74,8 +78,8 @@ void HBoard::home() {
     auto hs = h / rect.height();
     auto scale = std::min(ws, hs);
     QTransform trans;
-    auto x = (w - rect.width() * scale) / 2;
-    auto y = (h - rect.height() * scale) / 2;
+    auto x = (w - rect.width() * scale - rect.x() * scale) / 2;
+    auto y = (h - rect.height() * scale - rect.y() * scale) / 2;
     trans.translate(x, y);
     trans.scale(scale, scale);
     if (_trans_node) _trans_node->setMatrix(trans);
@@ -97,14 +101,18 @@ void HBoard::checkItems() {
 
 int HBoard::save(const QString &path) {
   QJsonArray out;
+  save(out);
+  return HJsonCommon::writeJson(path, out);
+}
+
+int HBoard::save(QJsonArray &save) {
   for (const auto &node : _nodes) {
     QJsonObject o;
     if (0 == node->save(o)) {
-      out.push_back(o);
+      save.push_back(o);
     }
   }
-
-  return HJsonCommon::writeJson(path, out);
+  return 0;
 }
 
 int HBoard::load(const QString &path) {
@@ -114,9 +122,13 @@ int HBoard::load(const QString &path) {
     DEBUG << "isn't array file";
     return -1;
   }
+  return load(array);
+}
+
+int HBoard::load(const QJsonArray &nodes) {
   bool flag = false;
-  for (int i = 0; i < array.size(); i++) {
-    QJsonObject o = array[i].toObject();
+  for (int i = 0; i < nodes.size(); i++) {
+    QJsonObject o = nodes[i].toObject();
     HNodeBase::NODETYPE type =
         static_cast<HNodeBase::NODETYPE>(o.value("nodeType").toInt());
     switch (type) {
@@ -136,8 +148,6 @@ int HBoard::load(const QString &path) {
           flag = true;
         }
       } break;
-      default:
-        break;
     }
   }
   if (flag) home();
@@ -151,10 +161,10 @@ void HBoard::pushTransform(const QTransform &trans) {
 }
 
 void HBoard::pushNode(std::shared_ptr<HNodeBase> node, bool flag) {
+  if (flag) _nodes.insert(node->id(), node);
   pushTask([=]() {
     if (node) {
       _trans_node->appendChildNode(node->build(this));
-      if (flag) _nodes.insert(node->id(), node);
     }
   });
   update();

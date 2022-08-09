@@ -39,6 +39,8 @@ void HNodeBase::move(const QPointF &p) {
   }
 }
 
+unsigned long HNodeBase::drawingMode() { return 0; }
+
 void HNodeBase::setVisible(bool flag) { _visible = flag; }
 
 bool HNodeBase::visible() { return _visible; }

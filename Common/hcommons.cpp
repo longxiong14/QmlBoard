@@ -188,7 +188,7 @@ QList<QPointF> HCommon::BuildCircle(const QPointF &center, double radius,
 
   double x, z;
   for (int i = 0; i <= parts; i++) {
-    x = center.x() + std::sin((i * (PI / 180))) * radius;
+    x = center.x() + std::sin(i * (PI / 180)) * radius;
     z = center.y() + std::cos(i * (PI / 180)) * radius;
     list.push_back(QPointF(x, z));
   }
@@ -207,7 +207,7 @@ QList<QPointF> HCommon::BuildWideLine(const QList<QPointF> &list,
         (std::pow(center.x() - p.x(), 2) + std::pow(center.y() - p.y(), 2)),
         0.5);
     double index = std::acos((center.x() - p.x()) / leng);
-    x = center.x() + std::sin((index * (PI / 180))) * line_width;
+    x = center.x() + std::sin(index * (PI / 180)) * line_width;
     z = center.y() + std::cos(index * (PI / 180)) * line_width;
     out_line.push_back(QPointF(x, z));
     //    if (center.x() < p.x()) {

@@ -9,11 +9,11 @@
 #include "../Common/hjsoncommon.h"
 #include "../Common/hsgnodecommon.h"
 #define DEBUG qDebug() << __FUNCTION__ << " " << __LINE__ << " "
-HFillNode::HFillNode() : _node(new QSGGeometryNode()) {}
+HFillNode::HFillNode() : _node(new QSGGeometryNode()), _drawMode(0) {}
 
 HFillNode::HFillNode(const QList<QPointF> &points, unsigned long type,
                      const QJsonObject &p)
-    : _node(new QSGGeometryNode()) {
+    : _node(new QSGGeometryNode()), _drawMode(0) {
   _param = p;
   setOurGeometry(points, type);
   setColor(getColor(p));
@@ -21,7 +21,7 @@ HFillNode::HFillNode(const QList<QPointF> &points, unsigned long type,
 
 HFillNode::HFillNode(const QRectF &rect, unsigned long type,
                      const QJsonObject &p)
-    : _node(new QSGGeometryNode()) {
+    : _node(new QSGGeometryNode()), _drawMode(0) {
   _param = p;
   auto list = HCommon::BuildRectList(rect);
   setOurGeometry(list, type);
@@ -120,6 +120,8 @@ void HFillNode::setParam(const QJsonObject &p) {
   HNodeBase::setParam(p);
 }
 
+unsigned long HFillNode::drawingMode() { return _drawMode; }
+
 int HFillNode::save(QJsonObject &o) {
   auto list = getPointList();
   QJsonArray l;
@@ -201,6 +203,7 @@ void HFillNode::setOurGeometry(const QList<QPointF> &points,
   }
   _node->setGeometry(geometry);
   _node->setFlag(QSGNode::OwnsGeometry);
+  _drawMode = type;
 }
 
 QColor HFillNode::getColor(const QJsonObject &p) {

@@ -111,6 +111,10 @@ class HBOARD_EXPORT HHandleDrawCircle : public HHandleMove {
       HBoard* board, QMouseEvent* event,
       const QJsonObject& object = QJsonObject()) override;
 
+  virtual void mousePressEvent(
+      HBoard* board, QMouseEvent* event,
+      const QJsonObject& object = QJsonObject()) override;
+
   virtual void hoverLeaveEvent(
       HBoard* board, QHoverEvent* event,
       const QJsonObject& object = QJsonObject()) override;
@@ -126,9 +130,13 @@ class HBOARD_EXPORT HHandleDrawFillCircle : public HHandleDrawCircle {
  public:
   HHandleDrawFillCircle();
 
+  virtual void mousePressEvent(
+      HBoard* board, QMouseEvent* event,
+      const QJsonObject& object = QJsonObject()) override;
+
  protected:
   virtual void updateCirclePosition(HBoard* board, const QPointF& center,
-                                    const QJsonObject& object);
+                                    const QJsonObject& object) override;
 };
 
 class HBOARD_EXPORT HHandleDrawWideLine : public HHandleMove {

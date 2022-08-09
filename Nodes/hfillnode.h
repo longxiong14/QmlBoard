@@ -25,6 +25,7 @@ class HBOARD_EXPORT HFillNode : public HNodeBase /*, public QSGGeometryNode*/ {
   virtual void drawPoints(const QList<QPointF> &points) override;
   virtual void setColor(const QColor &color) override;
   virtual void setParam(const QJsonObject &p) override;
+  virtual unsigned long drawingMode() override;
 
   virtual int save(QJsonObject &o) override;
   virtual int load(const QJsonObject &o) override;
@@ -40,6 +41,9 @@ class HBOARD_EXPORT HFillNode : public HNodeBase /*, public QSGGeometryNode*/ {
 
   QColor getColor(const QJsonObject &p);
   QSGGeometryNode *_node;
+
+ protected:
+  unsigned long _drawMode;
 };
 
 #endif  // HFILLNODE_H
