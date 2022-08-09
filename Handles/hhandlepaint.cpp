@@ -230,3 +230,28 @@ void HHandleDrawFillCircle::updateCirclePosition(HBoard *board,
     board->drawNodePoint(_node, list);
   }
 }
+
+HHandleDrawWideLine::HHandleDrawWideLine() { _name = "wide line"; }
+
+void HHandleDrawWideLine::mousePressEvent(HBoard *board, QMouseEvent *event,
+                                          const QJsonObject &object) {
+  HHandleMove::mousePressEvent(board, event);
+  if (board && event && leftButtonPress(event)) {
+    auto point = board->WCS2LCS(event->pos());
+    _points = QList<QPointF>({point});
+    auto node = std::make_shared<HFillNode>(_points, GL_LINE_STRIP, object);
+    board->pushNode(node);
+    _node = node->id();
+  }
+}
+
+void HHandleDrawWideLine::mouseMoveEvent(HBoard *board, QMouseEvent *event,
+                                         const QJsonObject &) {
+  HHandleMove::mouseMoveEvent(board, event);
+  if (board && event && leftButtonPress(event)) {
+    auto point = board->WCS2LCS(event->pos());
+    _points.push_back(point);
+    auto l = HCommon::BuildWideLine(_points, 20);
+    board->drawNodePoint(_node, l);
+  }
+}

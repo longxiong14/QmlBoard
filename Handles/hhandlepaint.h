@@ -131,4 +131,20 @@ class HBOARD_EXPORT HHandleDrawFillCircle : public HHandleDrawCircle {
                                     const QJsonObject& object);
 };
 
+class HBOARD_EXPORT HHandleDrawWideLine : public HHandleMove {
+ public:
+  HHandleDrawWideLine();
+
+  virtual void mousePressEvent(
+      HBoard* board, QMouseEvent* event,
+      const QJsonObject& object = QJsonObject()) override;
+
+  virtual void mouseMoveEvent(
+      HBoard* board, QMouseEvent* event,
+      const QJsonObject& object = QJsonObject()) override;
+
+ protected:
+  QList<QPointF> _points;
+};
+
 #endif  // HHANDLEPAINT_H

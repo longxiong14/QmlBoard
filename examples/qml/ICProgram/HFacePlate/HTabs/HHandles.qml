@@ -7,104 +7,122 @@ Tab {
 
     HRectangle{
         Flow{
-            width: parent.width
+            x:2
+            y:2
+            width: parent.width - 4
             spacing: flowSpacing
-            HRectangle{
+            Flow{
+                id:idIconsFlow
                 width: parent.width
-                height: 50
-                Flow{
-                    anchors.fill: parent
-                    anchors.margins: 2
-                    spacing: flowSpacing
-                    HImageButton{
-                        width: parent.height
-                        height: parent.height
-                        mSource:"qrc:/qml/ICProgram/HIcons/HTools/arrow.png"
-                        backColor: icon === mSource ? "red" : "transparent"
-                        onSigClick: {
-                            icon = mSource
-                            setHandle("arrow")
-                        }
+                spacing: flowSpacing
+                HImageButton{
+                    width: 20
+                    height: 20
+                    mSource:"qrc:/qml/ICProgram/HIcons/HTools/arrow.png"
+                    backColor: icon === mSource ? "red" : "transparent"
+                    onSigClick: {
+                        icon = mSource
+                        setHandle("arrow")
                     }
-                    HImageButton{
-                        width: parent.height
-                        height: parent.height
-                        mSource:"qrc:/qml/ICProgram/HIcons/HTools/rect.png"
-                        backColor: icon === mSource ? "red" : "transparent"
-                        onSigClick: {
-                            icon = mSource
-                            setHandle("rect")
-                        }
+                }
+                HImageButton{
+                    width: 20
+                    height: 20
+                    mSource:"qrc:/qml/ICProgram/HIcons/HTools/rect.png"
+                    backColor: icon === mSource ? "red" : "transparent"
+                    onSigClick: {
+                        icon = mSource
+                        setHandle("rect")
                     }
-                    HImageButton{
-                        width: parent.height
-                        height: parent.height
-                        mSource:"qrc:/qml/ICProgram/HIcons/HTools/line.png"
-                        backColor: icon === mSource ? "red" : "transparent"
-                        onSigClick: {
-                            icon = mSource
-                            setHandle("line")
-                        }
+                }
+                HImageButton{
+                    width: 20
+                    height: 20
+                    mSource:"qrc:/qml/ICProgram/HIcons/HTools/line.png"
+                    backColor: icon === mSource ? "red" : "transparent"
+                    onSigClick: {
+                        icon = mSource
+                        setHandle("line")
                     }
-                    HImageButton{
-                        width: parent.height
-                        height: parent.height
-                        mSource:"qrc:/qml/ICProgram/HIcons/HTools/fill_poly.png"
-                        backColor: icon === mSource ? "red" : "transparent"
-                        onSigClick: {
-                            icon = mSource
-                            setHandle("fill poly")
-                        }
+                }
+                HImageButton{
+                    width: 20
+                    height: 20
+                    mSource:"qrc:/qml/ICProgram/HIcons/HTools/curve.png"
+                    backColor: icon === mSource ? "red" : "transparent"
+                    onSigClick: {
+                        icon = mSource
+                        setHandle("curve")
                     }
-                    HImageButton{
-                        width: parent.height
-                        height: parent.height
-                        mSource:"qrc:/qml/ICProgram/HIcons/HTools/poly.png"
-                        backColor: icon === mSource ? "red" : "transparent"
-                        onSigClick: {
-                            icon = mSource
-                            setHandle("poly")
-                        }
+                }
+                HImageButton{
+                    width: 20
+                    height: 20
+                    mSource:"qrc:/qml/ICProgram/HIcons/HTools/fill_poly.png"
+                    backColor: icon === mSource ? "red" : "transparent"
+                    onSigClick: {
+                        icon = mSource
+                        setHandle("fill poly")
                     }
-                    HImageButton{
-                        width: parent.height
-                        height: parent.height
-                        mSource:"qrc:/qml/ICProgram/HIcons/HTools/fill_rectangle.png"
-                        backColor: icon === mSource ? "red" : "transparent"
-                        onSigClick: {
-                            icon = mSource
-                            setHandle("fill rect")
-                        }
+                }
+                HImageButton{
+                    width: 20
+                    height: 20
+                    mSource:"qrc:/qml/ICProgram/HIcons/HTools/poly.png"
+                    backColor: icon === mSource ? "red" : "transparent"
+                    onSigClick: {
+                        icon = mSource
+                        setHandle("poly")
                     }
-                    HImageButton{
-                        width: parent.height
-                        height: parent.height
-                        mSource:"qrc:/qml/ICProgram/HIcons/HTools/circle.png"
-                        backColor: icon === mSource ? "red" : "transparent"
-                        onSigClick: {
-                            icon = mSource
-                            setHandle("circle")
-                        }
+                }
+                HImageButton{
+                    width: 20
+                    height: 20
+                    mSource:"qrc:/qml/ICProgram/HIcons/HTools/fill_rectangle.png"
+                    backColor: icon === mSource ? "red" : "transparent"
+                    onSigClick: {
+                        icon = mSource
+                        setHandle("fill rect")
                     }
-                    HImageButton{
-                        width: parent.height
-                        height: parent.height
-                        mSource:"qrc:/qml/ICProgram/HIcons/HTools/fill_circle.png"
-                        backColor: icon === mSource ? "red" : "transparent"
-                        onSigClick: {
-                            icon = mSource
-                            setHandle("fill circle")
-                        }
+                }
+                HImageButton{
+                    width: 20
+                    height: 20
+                    mSource:"qrc:/qml/ICProgram/HIcons/HTools/circle.png"
+                    backColor: icon === mSource ? "red" : "transparent"
+                    onSigClick: {
+                        icon = mSource
+                        setHandle("circle")
                     }
-                    HImageButton{
-                        width: parent.height
-                        height: parent.height
-                        mSource:"qrc:/qml/ICProgram/HIcons/HTools/close.png"
-                        backColor: icon === mSource ? "red" : "transparent"
-                        onSigClick: {
-                            icon = mSource
-                            setHandle("none")
-                        }
+                }
+                HImageButton{
+                    width: 20
+                    height: 20
+                    mSource:"qrc:/qml/ICProgram/HIcons/HTools/fill_circle.png"
+                    backColor: icon === mSource ? "red" : "transparent"
+                    onSigClick: {
+                        icon = mSource
+                        setHandle("fill circle")
+                    }
+                }
+                HImageButton{
+                    width: 20
+                    height: 20
+                    mSource:"qrc:/qml/ICProgram/HIcons/HTools/wide_line.png"
+                    backColor: icon === mSource ? "red" : "transparent"
+                    onSigClick: {
+                        icon = mSource
+                        setHandle("wide line")
+                    }
+                }
+                HImageButton{
+                    width: 20
+                    height: 20
+                    mSource:"qrc:/qml/ICProgram/HIcons/HTools/close.png"
+                    backColor: icon === mSource ? "red" : "transparent"
+                    onSigClick: {
+                        icon = mSource
+                        setHandle("none")
                     }
                 }
             }
@@ -134,7 +152,7 @@ Tab {
                                 HTextInput{
                                     id:idInput
                                     width: 50
-                                    height: gFontSize
+                                    height: gFontSize + 4
                                     txt: String(items[index].value)
                                     onSigTextChanged: {
                                         if("" !== txt)
@@ -178,7 +196,7 @@ Tab {
                                 HTextInput{
                                     id:idInput2
                                     width: 50
-                                    height: gFontSize
+                                    height: gFontSize + 4
                                     txt: String(idMainBoard.items[index].value)
                                     onSigTextChanged: {
                                         idUIControl.setBoardNodeParam(idMainBoard.boardName, idMainBoard.items[index].key, Number(txt))

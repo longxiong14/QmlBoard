@@ -28,5 +28,7 @@
         <file>qml/ICProgram/HGlobalItems/HTextInput.qml</file>
         <file>qml/ICProgram/HIcons/HTools/circle.png</file>
         <file>qml/ICProgram/HIcons/HTools/fill_circle.png</file>
+        <file>qml/ICProgram/HIcons/HTools/wide_line.png</file>
+        <file>qml/ICProgram/HIcons/HTools/curve.png</file>
     </qresource>
 </RCC>

@@ -9,23 +9,6 @@
 #include "../Common/hjsoncommon.h"
 #include "../Common/hsgnodecommon.h"
 #define DEBUG qDebug() << __FUNCTION__ << " " << __LINE__ << " "
-/*
-QSGGeometry *geometry =
-    new QSGGeometry(QSGGeometry::defaultAttributes_TexturedPoint2D(), int(sz));
-auto vertices = geometry -> vertexDataAsTexturedPoint2D();
-if (aStyle == "dash") {
-  float dis = 0;
-  auto rt = 1;
-  if (m_trans_node) m_trans_node->matrix().data()[0];
-  for (auto i = 0; i < aPointList.size(); ++i) {
-    if (i > 0) {
-      auto del = aPointList[i] - aPointList[i - 1];
-      dis += sqrt(QPointF::dotProduct(del, del));
-    }
-    vertices[i].set(aPointList[i].x(), aPointList [i].y(), dis * rt / 10, 0);
-  }
-}
-*/
 HFillNode::HFillNode() : _node(new QSGGeometryNode()) {}
 
 HFillNode::HFillNode(const QList<QPointF> &points, unsigned long type,

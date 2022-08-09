@@ -94,12 +94,5 @@ HHandleFlyWeight::HHandleFlyWeight() {
   func(std::make_shared<HHandleDrawFillPoly>());
   func(std::make_shared<HHandleDrawCircle>());
   func(std::make_shared<HHandleDrawFillCircle>());
-  //  _handles = {{"arrow", std::make_shared<HHandleArrow>()},
-  //              {"poly", std::make_shared<HHandleDrawPoly>()},
-  //              {"rect", std::make_shared<HHandleDrawRect>()},
-  //              {"line", std::make_shared<HHandleDrawLine>()},
-  //              {"curve", std::make_shared<HHandleDrawCurve>()},
-  //              {"none", std::make_shared<HHandleMove>()},
-  //              {"fill rect", std::make_shared<HHandleDrawFillRect>()},
-  //              {"fill poly", std::make_shared<HHandleDrawFillPoly>()}};
+  func(std::make_shared<HHandleDrawWideLine>());
 }
