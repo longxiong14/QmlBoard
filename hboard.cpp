@@ -78,8 +78,8 @@ void HBoard::home() {
     auto hs = h / rect.height();
     auto scale = std::min(ws, hs);
     QTransform trans;
-    auto x = (w - rect.width() * scale - rect.x() * scale) / 2;
-    auto y = (h - rect.height() * scale - rect.y() * scale) / 2;
+    auto x = (w - rect.width() * scale) / 2 - rect.x() * scale;
+    auto y = (h - rect.height() * scale) / 2 - rect.y() * scale;
     trans.translate(x, y);
     trans.scale(scale, scale);
     if (_trans_node) _trans_node->setMatrix(trans);
