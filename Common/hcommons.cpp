@@ -209,11 +209,11 @@ QList<QPointF> HCommon::BuildWideLine(const QList<QPointF> &list,
     double index = std::acos((center.x() - p.x()) / leng);
     x = center.x() + std::sin(index * (PI / 180)) * line_width;
     z = center.y() + std::cos(index * (PI / 180)) * line_width;
-    out_line.push_back(QPointF(x, z));
-    //    if (center.x() < p.x()) {
-    //    } else {
-    //      out_line.push_front(QPointF(x, z));
-    //    }
+    if (center.x() < p.x()) {
+      out_line.push_back(QPointF(x, z));
+    } else {
+      //      out_line.push_front(QPointF(x, z));
+    }
   }
   out_line.append(in_line);
   return out_line;

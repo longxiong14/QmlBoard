@@ -161,7 +161,11 @@ void HBoard::pushTransform(const QTransform &trans) {
 }
 
 void HBoard::pushNode(std::shared_ptr<HNodeBase> node, bool flag) {
-  if (flag) _nodes.insert(node->id(), node);
+  {
+    QMutexLocker lock(&_mutex);
+    if (_nodes.contains(node->id())) return;
+    if (flag) _nodes.insert(node->id(), node);
+  }
   pushTask([=]() {
     if (node) {
       _trans_node->appendChildNode(node->build(this));
@@ -171,25 +175,32 @@ void HBoard::pushNode(std::shared_ptr<HNodeBase> node, bool flag) {
 }
 
 void HBoard::removeNode(const QUuid &id) {
-  pushTask([=]() {
+  std::shared_ptr<HNodeBase> node = nullptr;
+  {
+    QMutexLocker lock(&_mutex);
     if (_nodes.contains(id)) {
-      auto node = _nodes[id];
-      if (node) {
-        _trans_node->removeChildNode(node->get());
-        _nodes.remove(id);
-      }
+      node = _nodes[id];
+      _nodes.remove(id);
+    }
+  }
+  pushTask([=]() {
+    if (node) {
+      _trans_node->removeChildNode(node->get());
     }
   });
   update();
 }
 
 void HBoard::clearNode() {
+  {
+    QMutexLocker lock(&_mutex);
+    _nodes.clear();
+  }
   pushTask([=]() {
     int count = _trans_node->childCount();
     for (int i = 0; i < count; i++) {
       _trans_node->removeChildNode(_trans_node->childAtIndex(0));
     }
-    _nodes.clear();
   });
   update();
 }
@@ -338,6 +349,13 @@ void HBoard::visibleNode(const QUuid &node, bool flag) {
     }
     update();
   }
+}
+
+std::shared_ptr<HNodeBase> HBoard::getNodeById(const QUuid &id) {
+  if (!_nodes.contains(id)) {
+    return nullptr;
+  }
+  return _nodes[id];
 }
 
 QString HBoard::name() { return _name; }

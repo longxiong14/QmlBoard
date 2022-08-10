@@ -53,6 +53,7 @@ class HBOARD_EXPORT HBoard : public QQuickItem {
                      const QList<QPointF> points);  // draw handle move event
   bool hasNode(const QUuid &node);
   void visibleNode(const QUuid &node, bool flag);
+  std::shared_ptr<HNodeBase> getNodeById(const QUuid &id);
 
  public:
   void setSelect(const QUuid &s);
