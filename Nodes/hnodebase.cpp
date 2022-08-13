@@ -8,7 +8,8 @@
 #include "../Common/hsgnodecommon.h"
 #define STEP 5e3
 #define DEBUG qDebug() << __FUNCTION__ << " " << __LINE__ << " "
-HNodeBase::HNodeBase() : _select(false), _visible(true), _dash(nullptr) {
+HNodeBase::HNodeBase()
+    : _select(false), _visible(true), _dash(nullptr), _enable_home(true) {
   _id = QUuid::createUuid();
 }
 
@@ -17,6 +18,8 @@ HNodeBase::~HNodeBase() {}
 QList<QPointF> HNodeBase::getPointList() { return {}; }
 
 QUuid HNodeBase::id() { return _id; }
+
+void HNodeBase::setId(const QUuid &id) { _id = id; }
 
 void HNodeBase::changedSelectStatus() {
   _select = !_select;
@@ -96,6 +99,10 @@ void HNodeBase::timeOut() {
     }
   }
 }
+
+bool HNodeBase::enableHome() { return _enable_home; }
+
+void HNodeBase::setEnableHome(bool f) { _enable_home = f; }
 
 QJsonObject HNodeBase::param() { return _param; }
 

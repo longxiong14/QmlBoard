@@ -1,23 +1,27 @@
-#ifndef HBOARDMANAGER_H
+﻿#ifndef HBOARDMANAGER_H
 #define HBOARDMANAGER_H
-#include "HBoard_global.h"
 #include <QHash>
 #include <QMutex>
+
+#include "HBoard_global.h"
 class HBoard;
-class HBOARD_EXPORT HBoardManager
-{
-    HBoardManager();
-public:
-    static HBoardManager *getInstance();
+class HBOARD_EXPORT HBoardManager {
+  HBoardManager();
 
-    void pushBoard(HBoard* board);
+ public:
+  static HBoardManager* getInstance();
 
-    HBoard *getBoard(const QString& name);
+  void pushBoard(HBoard* board);
 
-    void changeBoardNmae(const QString& old, HBoard* board);
-private:
-    QHash<QString, HBoard*> _boards;
-    QMutex  _mutex;
+  HBoard* getBoard(const QString& name);
+
+  int removeBoard(const QString& name);
+
+  void changeBoardNmae(const QString& old, HBoard* board);
+
+ private:
+  QHash<QString, HBoard*> _boards;
+  QMutex _mutex;
 };
 
-#endif // HBOARDMANAGER_H
+#endif  // HBOARDMANAGER_H

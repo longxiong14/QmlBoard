@@ -29,6 +29,7 @@ class HBOARD_EXPORT HNodeBase : public HStorageBase<QJsonObject> {
   virtual QRectF getBoundRect() { return QRectF(); }
   virtual QList<QPointF> getPointList();
   virtual QUuid id();
+  virtual void setId(const QUuid &id);
   virtual void changedSelectStatus();
   virtual void move(const QPointF &);
   virtual void moveTo(const QPointF &) {}  // move to point
@@ -41,6 +42,9 @@ class HBOARD_EXPORT HNodeBase : public HStorageBase<QJsonObject> {
   virtual bool visible();
   virtual void timeOut();
 
+  virtual bool enableHome();
+  virtual void setEnableHome(bool f);
+
  public:
   QJsonObject param();
   virtual void setParam(const QJsonObject &p);
@@ -52,6 +56,7 @@ class HBOARD_EXPORT HNodeBase : public HStorageBase<QJsonObject> {
   bool _visible;
   QList<QPointF> _dash_list;
   QSGGeometryNode *_dash;
+  bool _enable_home;
 };
 
 #endif  // HNODEBASE_H

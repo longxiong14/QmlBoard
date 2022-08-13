@@ -32,6 +32,8 @@ void HHandleBase::hoverLeaveEvent(HBoard *, QHoverEvent *,
 
 void HHandleBase::wheelEvent(HBoard *, QWheelEvent *) {}
 
+void HHandleBase::boardLeaveOffThisHandle(HBoard *) {}
+
 QJsonObject HHandleBase::getDefaultParam() { return QJsonObject(); }
 
 QString HHandleBase::getName() { return _name; }

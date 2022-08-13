@@ -51,7 +51,13 @@ HBoard::HBoard(QQuickItem *parent)
   });
 }
 
-HBoard::~HBoard() { _nodes.clear(); }
+HBoard::~HBoard() {
+  _nodes.clear();
+  auto instance = HBoardManager::getInstance();
+  if (instance) {
+    instance->removeBoard(name());
+  }
+}
 
 void HBoard::home() {
   pushTask([=]() {
@@ -60,7 +66,7 @@ void HBoard::home() {
     DEBUG << _nodes.size();
     for (const auto &key : _nodes.keys()) {
       auto node = _nodes.value(key);
-      if (node) {
+      if (node && node->enableHome()) {
         flag = true;
         auto r = node->getBoundRect();
         rect.setX(std::min(r.x(), rect.x()));
@@ -213,7 +219,10 @@ void HBoard::removeSelectNode() {
   update();
 }
 
-void HBoard::setHandle(HHandleBase *handle) { _handle = handle; }
+void HBoard::setHandle(HHandleBase *handle) {
+  if (_handle) _handle->boardLeaveOffThisHandle(this);
+  _handle = handle;
+}
 
 void HBoard::setSelect(const QUuid &s) {
   clearSelect();

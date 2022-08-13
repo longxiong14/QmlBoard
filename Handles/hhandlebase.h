@@ -30,6 +30,8 @@ class HBOARD_EXPORT HHandleBase {
                                const QJsonObject& object = QJsonObject());
   virtual void wheelEvent(HBoard* board, QWheelEvent* event);
 
+  virtual void boardLeaveOffThisHandle(HBoard* board);
+
   virtual QJsonObject getDefaultParam();
 
   QString getName();
