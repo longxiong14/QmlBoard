@@ -15,15 +15,11 @@
 #define DEBUG qDebug() << __FUNCTION__ << " " << __LINE__ << " "
 
 HCVMatNode::HCVMatNode()
-    : HNodeBase(),
-      _split_size(1920, 1080),
-      _node(nullptr),
-      _start_point(0, 0) {}
+    : HNodeBase(), _split_size(1920, 1080), _node(nullptr), _start_point(0, 0) {
+}
 
 HCVMatNode::HCVMatNode(const QString &path, const QPointF &start_point)
-    : HNodeBase(),
-      _split_size(1920, 1080),
-      _node(nullptr),
+    : HNodeBase(), _split_size(1920, 1080), _node(nullptr),
       _start_point(start_point) {
   _mat = cv::imread(path.toLocal8Bit().toStdString());
   if (!_mat.empty()) {
@@ -33,10 +29,7 @@ HCVMatNode::HCVMatNode(const QString &path, const QPointF &start_point)
 }
 
 HCVMatNode::HCVMatNode(const cv::Mat &mat, const QPointF &start_point)
-    : HNodeBase(),
-      _mat(mat),
-      _split_size(1920, 1080),
-      _node(nullptr),
+    : HNodeBase(), _mat(mat), _split_size(1920, 1080), _node(nullptr),
       _start_point(start_point) {
   if (!_mat.empty()) {
     _bound_rect =
@@ -103,6 +96,63 @@ void HCVMatNode::move(const QPointF &point) {
 }
 
 HNodeBase::NODETYPE HCVMatNode::nodeType() { return NODETYPE::IMAGE; }
+
+void HCVMatNode::updateMat(HBoard *board, const cv::Mat &mat,
+                           const QPointF &start) {
+
+  if (mat.empty()) {
+    DEBUG << "mat empty";
+    return;
+  }
+  if (mat.type() != _mat.type()) {
+    DEBUG << "mat isn't _mat type";
+    return;
+  }
+  QRectF roi(start.x(), start.y(), mat.cols, mat.rows);
+  if (!_mat.empty()) {
+    cv::Rect r(start.x(), start.y(), mat.cols, mat.rows);
+    r = r & cv::Rect(0, 0, _mat.cols, _mat.rows);
+    if (r.area() <= 0)
+      return;
+    if (start.x() == r.x && start.y() == r.y) {
+      mat(cv::Rect(cv::Point(0, 0), r.size())).copyTo(_mat(r));
+    } else if (start.x() == r.x) {
+      mat(cv::Rect(0, std::abs(start.y()), r.width, r.height)).copyTo(_mat(r));
+    } else if (start.y() == r.y) {
+      mat(cv::Rect(std::abs(start.x()), 0, r.width, r.height)).copyTo(_mat(r));
+    } else {
+      mat(cv::Rect(std::abs(start.x()), std::abs(start.y()), r.width, r.height))
+          .copyTo(_mat(r));
+    }
+  }
+  auto top_left = getBoundRect().topLeft();
+  if (_node) {
+    int count = _node->childCount();
+    for (int i = 0; i < count; i++) {
+      auto n = dynamic_cast<QSGSimpleTextureNode *>(_node->childAtIndex(i));
+      if (n) {
+        auto texture_rect = n->rect();
+        auto relative_rect =
+            QRectF(texture_rect.topLeft() - top_left, texture_rect.size());
+        if (HCommon::RectHasOverlap(roi, relative_rect)) {
+          //          DEBUG << texture_rect;
+          if (board) {
+            cv::Rect t_rect =
+                cv::Rect(relative_rect.x(), relative_rect.y(),
+                         relative_rect.width(), relative_rect.height());
+            t_rect &= cv::Rect(0, 0, _mat.cols, _mat.rows);
+            if (t_rect.area() <= 0)
+              continue;
+            auto t = board->window()->createTextureFromImage(
+                CVMat2Qimage(_mat(t_rect)));
+            n->setTexture(t);
+            DEBUG << "success update mat";
+          }
+        }
+      }
+    }
+  }
+}
 
 int HCVMatNode::save(QJsonObject &o) {
   auto rect = getBoundRect();

@@ -11,6 +11,7 @@
 #include "../hboard.h"
 #include "../hboardmanager.h"
 #include "../hboarduicontrol.h"
+#include "hdrawmathandle.h"
 int main(int argc, char *argv[]) {
   QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
 

@@ -1,7 +1,5 @@
 ﻿#include "hboarduicontrol.h"
 
-#include <QDebug>
-
 #include "Common/hcommons.h"
 #include "Common/hplanvector.h"
 #include "Handles/hhandleflyweight.h"
@@ -10,6 +8,9 @@
 #include "Nodes/hnodebase.h"
 #include "hboard.h"
 #include "hboardmanager.h"
+#include <QDebug>
+#include <opencv2/imgcodecs.hpp>
+#include <opencv2/imgproc.hpp>
 #define DEBUG qDebug() << __FUNCTION__ << " " << __LINE__ << " "
 HBoardUIControl::HBoardUIControl(QObject *parent) : QObject(parent) {}
 
@@ -137,14 +138,21 @@ QJsonArray HBoardUIControl::paramToUIItems(const QJsonObject &object) {
 }
 
 void HBoardUIControl::test() {
-  auto board = HBoardManager::getInstance()->getBoard("test_board");
-  //  board->showAll();
-  //  auto nodes = board->nodes();
-  //  HPlanVector vec;
-  //  for (const auto &node : nodes.values()) {
-  //    auto points = node->getPointList();
-  //    DEBUG << vec.area(points);
-  //  }
+  auto board = HBoardManager::getInstance()->getBoard("main_board");
+  auto sel = board->selects();
+  for (const auto &k : sel) {
+    auto n = board->getNodeById(k);
+    if (HNodeBase::NODETYPE::IMAGE == n->nodeType()) {
+      auto mat = cv::imread("C:\\Users\\longxiong\\Pictures\\ttt.png");
+      if (mat.empty()) {
+        DEBUG << "mat empty";
+      }
+      board->updateNodeMat(k, mat, QPoint(-20, -20));
+      board->updateNodeMat(k, mat, QPoint(1900, 1070));
+      board->updateNodeMat(k, mat, QPoint(1900, -20));
+      board->updateNodeMat(k, mat, QPoint(-20, 1070));
+    }
+  }
 }
 
 void HBoardUIControl::setTranslateMap(const QJsonObject &object) {

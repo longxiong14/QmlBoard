@@ -57,9 +57,9 @@ bool HCommon::PointInContour(const QPointF &vtPoint,
                              const QList<QPointF> &vecPoints) {
   if (true) {
     bool bResult =
-        false;  //判断结果（true；点落在多边形内；false:点未落在多边形内）
+        false; //判断结果（true；点落在多边形内；false:点未落在多边形内）
     int nSize = vecPoints.size();
-    int j = nSize - 1;  // nSize -1 是多边形的最后一个顶点
+    int j = nSize - 1; // nSize -1 是多边形的最后一个顶点
     for (int i = 0; i < nSize; i++) {
       //判断点是否在线段的两侧(只取上端点,不取下端点，否则会多出一次判断，出现异常)
       if ((vecPoints[i].y() < vtPoint.y() && vecPoints[j].y() >= vtPoint.y()) ||
@@ -79,9 +79,9 @@ bool HCommon::PointInContour(const QPointF &vtPoint,
     return bResult;
   } else {
     bool bResult =
-        false;  //判断结果（true；点落在多边形内；false:点未落在多边形内）
+        false; //判断结果（true；点落在多边形内；false:点未落在多边形内）
     int nSize = vecPoints.size();
-    int j = nSize - 1;  // nSize -1 是多边形的最后一个顶点
+    int j = nSize - 1; // nSize -1 是多边形的最后一个顶点
     for (int i = 0; i < nSize; i++) {
       //判断点是否在线段的两侧
       if ((vecPoints[i].y() < vtPoint.y() && vecPoints[j].y() >= vtPoint.y()) ||
@@ -217,4 +217,24 @@ QList<QPointF> HCommon::BuildWideLine(const QList<QPointF> &list,
   }
   out_line.append(in_line);
   return out_line;
+}
+
+bool HCommon::RectHasOverlap(const QRectF &r1, const QRectF &r2) {
+  auto func = [](const QRectF &rect) {
+    QList<QPointF> list1{{rect.left(), rect.top()},
+                         {rect.right(), rect.top()},
+                         {rect.right(), rect.bottom()},
+                         {rect.left(), rect.bottom()}};
+    return list1;
+  };
+  auto list1 = func(r1);
+  auto list2 = func(r2);
+  for (int i = 0; i < list1.size(); i++) {
+    auto p1 = list1[i];
+    auto p2 = list2[i];
+    if (PointInContour(p1, list2) || PointInContour(p2, list1)) {
+      return true;
+    }
+  }
+  return false;
 }

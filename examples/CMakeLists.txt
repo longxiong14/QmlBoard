@@ -1,4 +1,4 @@
-﻿file(GLOB_RECURSE CPPS  ./*.cpp )
+﻿file(GLOB_RECURSE CPPS  ./*.cpp ./*.h)
 
 add_executable(example ${CPPS} qml.qrc)
 

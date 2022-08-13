@@ -7,28 +7,30 @@
 
 #include "../HBoard_global.h"
 class HBOARD_EXPORT HCommon {
- public:
-  static QPointF TopLeft(const QPointF& f, const QPointF& s);
-  static QPointF TopRight(const QPointF& f, const QPointF& s);
-  static QPointF BottomLeft(const QPointF& f, const QPointF& s);
-  static QPointF BottomRight(const QPointF& f, const QPointF& s);
+public:
+  static QPointF TopLeft(const QPointF &f, const QPointF &s);
+  static QPointF TopRight(const QPointF &f, const QPointF &s);
+  static QPointF BottomLeft(const QPointF &f, const QPointF &s);
+  static QPointF BottomRight(const QPointF &f, const QPointF &s);
 
-  static QRectF BuildRect(const QPointF& f, const QPointF& s);
-  static QList<QPointF> BuildRectList(const QPointF& f, const QPointF& s);
-  static QList<QPointF> BuildRectList(const QRectF& rect);
+  static QRectF BuildRect(const QPointF &f, const QPointF &s);
+  static QList<QPointF> BuildRectList(const QPointF &f, const QPointF &s);
+  static QList<QPointF> BuildRectList(const QRectF &rect);
 
-  static bool PointInContour(const QPointF& point,
-                             const QList<QPointF>& contour);
+  static bool PointInContour(const QPointF &point,
+                             const QList<QPointF> &contour);
 
-  static QList<QPointF> BuildRectLinesList(const QRectF& rect);
-  static QList<QPointF> BuildPolyLinesList(const QList<QPointF>& list);
+  static QList<QPointF> BuildRectLinesList(const QRectF &rect);
+  static QList<QPointF> BuildPolyLinesList(const QList<QPointF> &list);
 
-  static QList<QPointF> BuildCircle(const QPointF& center, double radius,
+  static QList<QPointF> BuildCircle(const QPointF &center, double radius,
                                     int parts);
 
-  static QList<QPointF> BuildWideLine(const QList<QPointF>& list,
+  static QList<QPointF> BuildWideLine(const QList<QPointF> &list,
                                       double line_width);
 
-};  // class HCommon
+  static bool RectHasOverlap(const QRectF &r1, const QRectF &r2);
 
-#endif  // HCOMMONS_H
+}; // class HCommon
+
+#endif // HCOMMONS_H

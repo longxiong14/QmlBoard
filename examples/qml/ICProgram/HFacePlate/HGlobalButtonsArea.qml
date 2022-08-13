@@ -28,9 +28,8 @@ HRectangle {
 
         HButton{
             text: "测试"
-            visible: false
             onClicked: {
-                idErrorBox.showError("错误")
+                idUIControl.test()
             }
         }
     }
