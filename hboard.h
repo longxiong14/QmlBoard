@@ -18,6 +18,7 @@ class QSGTransformNode;
 class HHandleBase;
 class HNodeBase;
 class HFillNode;
+class QSGGeometryNode;
 class HBOARD_EXPORT HBoard : public QQuickItem {
   using task = std::function<void(void)>;
   Q_OBJECT
@@ -100,6 +101,9 @@ public:
 protected:
   void pushTask(const task &t);
   QJsonObject getHandleParam();
+  void updateRule();
+  void buildTopRule(QList<QPointF> &list);
+  void buildLeftRule(QList<QPointF> &list);
 signals:
   void nameChanged();
   void hoverPoint(int x, int y);
@@ -115,6 +119,7 @@ private:
   QSet<int> _keys;
   QTimer _timer;
   QJsonObject _items;
+  QSGGeometryNode *_rule;
 };
 
 #endif // HBOARD_H

@@ -1,7 +1,8 @@
 ﻿#include "hboard.h"
-
+#include "Common/hsgnodecommon.h"
 #include <QDebug>
 #include <QJsonArray>
+#include <QPainter>
 #include <QQmlEngine>
 #include <QQuickWindow>
 #include <QSGImageNode>
@@ -24,7 +25,7 @@
 
 HBoard::HBoard(QQuickItem *parent)
     : QQuickItem(parent), _trans_node(nullptr), _handle(new HHandleArrow()),
-      _name("") {
+      _name(""), _rule(nullptr) {
   setFlag(QQuickItem::ItemHasContents, true);
   setClip(true);
   setAcceptHoverEvents(true);
@@ -458,19 +459,23 @@ QTransform HBoard::transform() {
 
 QSGNode *HBoard::updatePaintNode(QSGNode *node,
                                  QQuickItem::UpdatePaintNodeData *) {
+
   if (!node) {
     node = new QSGNode();
     _trans_node = new QSGTransformNode();
     _trans_node->setMatrix(QMatrix4x4(QTransform()));
     node->appendChildNode(_trans_node);
     node->setFlag(QSGNode::OwnedByParent);
+    _rule = new QSGGeometryNode();
+    updateRule();
+    node->appendChildNode(_rule);
   }
-
   QMutexLocker lock(&_mutex);
   while (!_tasks.empty()) {
     auto f = _tasks.dequeue();
     f();
   }
+  updateRule();
   return node;
 }
 
@@ -551,4 +556,89 @@ QJsonObject HBoard::getHandleParam() {
         name(), _handle->getName());
   }
   return object;
+}
+
+void HBoard::updateRule() {
+
+  if (_rule) {
+    QList<QPointF> list;
+    int w = width();
+    _rule->removeAllChildNodes();
+    buildTopRule(list);
+    buildLeftRule(list);
+    if (_rule->geometry()) {
+      auto geo = _rule->geometry();
+      for (int i = 0; i < list.size(); i++) {
+        geo->vertexDataAsPoint2D()[i].set(float(list[i].x()),
+                                          float(list[i].y()));
+      }
+    } else {
+      auto geo = HSGNodeCommon::buildGeometry(list, GL_LINES);
+      _rule->setGeometry(geo);
+      _rule->setMaterial(HSGNodeCommon::buildColor(Qt::red));
+      _rule->setFlag(QSGNode::OwnsGeometry);
+      _rule->setFlag(QSGNode::OwnsMaterial);
+    }
+  }
+}
+
+void HBoard::buildTopRule(QList<QPointF> &list) {
+  int s = 0;
+  for (int i = 0; i < width(); i += 10) {
+    auto start = i + s;
+    auto p1 = QPoint(start, s);
+    list.push_back(p1);
+    if (0 == i % 100) {
+      list.push_back(QPoint(start, s + 10));
+      auto p = WCS2LCS(p1);
+      QImage text = HSGNodeCommon::createTextImage(
+          QString::number(std::round(p.x() * 100) / 100), 50, 20);
+      QSGSimpleTextureNode *texture_node = new QSGSimpleTextureNode();
+      auto texture = window()->createTextureFromImage(text);
+      texture_node->setTexture(texture);
+      texture_node->setRect(start, 10, 50, 20);
+      _rule->appendChildNode(texture_node);
+    } else if (0 == i % 50) {
+      list.push_back(QPoint(start, s + 5));
+    } else {
+      list.push_back(QPoint(start, s + 2));
+    }
+  }
+}
+
+void HBoard::buildLeftRule(QList<QPointF> &list) {
+  int w = 12, h = 50;
+  for (int i = 30; i < height(); i += 10) {
+    auto p1 = QPoint(0, i);
+    list.push_back(p1);
+    if (0 == i % 100) {
+      list.push_back(QPoint(10, i));
+      auto p = WCS2LCS(p1);
+      QImage text;
+      {
+        text = QImage(w, h, QImage::Format_ARGB32);
+        QPainter painter(&text);
+        painter.setCompositionMode(QPainter::CompositionMode_DestinationIn);
+        painter.fillRect(0, 0, w, h, QColor(0, 0, 0, 0));
+        painter.setCompositionMode(QPainter::CompositionMode_SourceOver);
+        auto font = painter.font();
+        font.setPointSizeF(10);
+        painter.setFont(font);
+        painter.setPen(Qt::red);
+        painter.translate(QPoint(w, 0));
+        painter.rotate(90);
+        painter.drawText(QRectF(0, 0, h, w),
+                         QString::number(std::round(p.y() * 100) / 100));
+      }
+      QSGSimpleTextureNode *texture_node = new QSGSimpleTextureNode();
+      auto texture = window()->createTextureFromImage(text);
+      texture_node->setTexture(texture);
+      texture_node->setRect(10, i, w, h);
+      _rule->appendChildNode(texture_node);
+    } else if (0 == i % 50) {
+      list.push_back(QPoint(5, i));
+    } else {
+      list.push_back(QPoint(2, i));
+    }
+  }
 }
