@@ -1,4 +1,5 @@
 ﻿#include "hsgnodecommon.h"
+
 #include <QPainter>
 QSGGeometry *HSGNodeCommon::buildGeometry(const QList<QPointF> &points,
                                           unsigned long type) {
@@ -12,18 +13,19 @@ QSGGeometry *HSGNodeCommon::buildGeometry(const QList<QPointF> &points,
   return geometry;
 }
 
-QSGGeometry *HSGNodeCommon::updateGeometry(QSGGeometry *geo,
-                                           const QList<QPointF> &list,
-                                           unsigned long type) {
-  if (geo) {
-    for (int i = 0; i < list.size(); i++) {
-      geo->vertexDataAsPoint2D()[i].set(float(list[i].x()), float(list[i].y()));
-    }
-    return geo;
-  } else {
-    return buildGeometry(list, type);
-  }
-}
+// QSGGeometry *HSGNodeCommon::updateGeometry(QSGGeometry *geo,
+//                                           const QList<QPointF> &list,
+//                                           unsigned long type) {
+//  if (geo) {
+//    for (int i = 0; i < list.size(); i++) {
+//      geo->vertexDataAsPoint2D()[i].set(float(list[i].x()),
+//      float(list[i].y()));
+//    }
+//    return geo;
+//  } else {
+//    return buildGeometry(list, type);
+//  }
+//}
 
 QSGFlatColorMaterial *HSGNodeCommon::buildColor(const QColor &color) {
   QSGFlatColorMaterial *material = new QSGFlatColorMaterial;
