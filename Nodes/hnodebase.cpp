@@ -20,7 +20,17 @@ HNodeBase::HNodeBase()
   _id = QUuid::createUuid();
 }
 
-HNodeBase::~HNodeBase() {}
+HNodeBase::~HNodeBase() {
+  if (_destory && _text_node) {
+    int count = _text_node->childCount();
+    for (int i = 0; i < count; i++) {
+      auto n = dynamic_cast<QSGImageNode *>(_text_node->childAtIndex(0));
+      if (n) HSGNodeCommon::releaseTextureNode(n);
+    }
+    delete _text_node;
+    _text_node = nullptr;
+  }
+}
 
 QList<QPointF> HNodeBase::getPointList() { return {}; }
 
@@ -46,6 +56,17 @@ void HNodeBase::move(const QPointF &p) {
   // move _dash
   for (int i = 0; i < _dash_list.size(); i++) {
     _dash_list[i] += p;
+  }
+  if (_text_node) {
+    int count = _text_node->childCount();
+    for (int i = 0; i < count; i++) {
+      auto n = dynamic_cast<QSGImageNode *>(_text_node->childAtIndex(0));
+      if (n) {
+        auto rect = n->rect();
+        auto dst = QRectF(rect.topLeft() + p, rect.size());
+        n->setRect(dst);
+      }
+    }
   }
 }
 
@@ -107,17 +128,24 @@ void HNodeBase::timeOut() {
   }
 }
 
-int HNodeBase::setText(const QString &text, const QRectF &position,
-                       HBoard *board) {
+int HNodeBase::setText(const QString &text, HBoard *board,
+                       const QRectF &position) {
   auto node = get();
   if (!board) return -1;
+  auto tl = getBoundRect().topLeft();
+  QRectF rect;
+  if (position.isEmpty() || position.isNull() || position.isValid()) {
+    rect = getBoundRect();
+  } else {
+    rect = QRectF(tl + position.topLeft(), position.size());
+  }
   auto func = [=]() {
     auto image_node = board->window()->createImageNode();
-    auto image = HSGNodeCommon::createTextImage(_text, int(position.width()),
-                                                int(position.height()));
+    auto image = HSGNodeCommon::createTextImage(_text, int(rect.width()),
+                                                int(rect.height()));
     auto texture = board->window()->createTextureFromImage(image);
     image_node->setTexture(texture);
-    image_node->setRect(position);
+    image_node->setRect(rect);
     return image_node;
   };
   if (_text != text) {
@@ -141,6 +169,8 @@ int HNodeBase::setText(const QString &text, const QRectF &position,
   }
   return 0;
 }
+
+QString HNodeBase::getText() { return _text; }
 
 bool HNodeBase::enableHome() { return _enable_home; }
 

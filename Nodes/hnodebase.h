@@ -41,8 +41,9 @@ class HBOARD_EXPORT HNodeBase : public HStorageBase<QJsonObject> {
   virtual void setVisible(bool flag);
   virtual bool visible();
   virtual void timeOut();
-  virtual int setText(const QString &text, const QRectF &position,
-                      HBoard *board);
+  virtual int setText(const QString &text, HBoard *board,
+                      const QRectF &position = QRectF());
+  virtual QString getText();
 
   virtual bool enableHome();
   virtual void setEnableHome(bool f);

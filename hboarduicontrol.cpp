@@ -142,16 +142,17 @@ void HBoardUIControl::test() {
   auto sel = board->selects();
   for (const auto &k : sel) {
     auto n = board->getNodeById(k);
-    if (HNodeBase::NODETYPE::IMAGE == n->nodeType()) {
-      auto mat = cv::imread("C:\\Users\\xiaolong\\Pictures\\ttt.png");
-      if (mat.empty()) {
-        DEBUG << "mat empty";
-      }
-      board->updateNodeMat(k, mat, QPoint(-20, -20));
-      board->updateNodeMat(k, mat, QPoint(1900, 1070));
-      board->updateNodeMat(k, mat, QPoint(1900, -20));
-      board->updateNodeMat(k, mat, QPoint(-20, 1070));
-    }
+    n->setText(n->id().toString(), board, QRect(0, 0, 100, 100));
+    //    if (HNodeBase::NODETYPE::IMAGE == n->nodeType()) {
+    //      auto mat = cv::imread("C:\\Users\\xiaolong\\Pictures\\ttt.png");
+    //      if (mat.empty()) {
+    //        DEBUG << "mat empty";
+    //      }
+    //      board->updateNodeMat(k, mat, QPoint(-20, -20));
+    //      board->updateNodeMat(k, mat, QPoint(1900, 1070));
+    //      board->updateNodeMat(k, mat, QPoint(1900, -20));
+    //      board->updateNodeMat(k, mat, QPoint(-20, 1070));
+    //    }
   }
 }
 
