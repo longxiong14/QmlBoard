@@ -144,7 +144,7 @@ int HFillNode::save(QJsonObject &o) {
   o.insert("points", l);
   o.insert("nodeType", nodeType());
   o.insert("id", _id.toString());
-  return 0;
+  return HNodeBase::save(o);
 }
 
 int HFillNode::load(const QJsonObject &o) {
@@ -169,7 +169,7 @@ int HFillNode::load(const QJsonObject &o) {
   setOurGeometry(list,
                  static_cast<unsigned long>(o.value("drawingMode").toInt()));
   setColor(getColor(o.value("param").toObject()));
-  return 0;
+  return HNodeBase::load(o);
 }
 
 int HFillNode::save(const QString &path) {

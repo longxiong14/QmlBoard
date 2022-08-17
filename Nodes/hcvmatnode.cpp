@@ -210,7 +210,7 @@ int HCVMatNode::save(QJsonObject &o) {
   o.insert("nodeType", nodeType());
   o.insert("id", id);
   o.insert("param", _param);
-  return 0;
+  return HNodeBase::save(o);
 }
 
 int HCVMatNode::load(const QJsonObject &o) {
@@ -239,7 +239,7 @@ int HCVMatNode::load(const QJsonObject &o) {
   }
   _id = o.value("id").toString();
   setParam(o.value("param").toObject());
-  return 0;
+  return HNodeBase::load(o);
 }
 
 int HCVMatNode::save(const QString &path) {

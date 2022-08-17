@@ -49,6 +49,10 @@ class HBOARD_EXPORT HNodeBase : public HStorageBase<QJsonObject> {
   virtual void setDestory(bool flag);
 
  public:
+  virtual int save(QJsonObject &d) override;
+  virtual int load(const QJsonObject &o) override;
+
+ public:
   QJsonObject param();
   virtual void setParam(const QJsonObject &p);
 

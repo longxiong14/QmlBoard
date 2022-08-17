@@ -144,6 +144,29 @@ void HNodeBase::setEnableHome(bool f) { _enable_home = f; }
 
 void HNodeBase::setDestory(bool flag) { _destory = flag; }
 
+int HNodeBase::save(QJsonObject &d) {
+  d.insert("text", _text);
+  QJsonObject rect;
+  rect.insert("x", _text_rect.x());
+  rect.insert("y", _text_rect.y());
+  rect.insert("width", _text_rect.width());
+  rect.insert("height", _text_rect.height());
+  d.insert("text_rect", rect);
+  return 0;
+}
+
+int HNodeBase::load(const QJsonObject &o) {
+  auto text = o.value("text").toString();
+  if (!text.isEmpty()) {
+    auto rect = o.value("text_rect").toObject();
+    QRectF r =
+        QRectF(rect.value("x").toDouble(), rect.value("y").toDouble(),
+               rect.value("width").toDouble(), rect.value("height").toDouble());
+    setText(text, r);
+  }
+  return 0;
+}
+
 QJsonObject HNodeBase::param() { return _param; }
 
 void HNodeBase::setParam(const QJsonObject &p) { _param = p; }
