@@ -1,5 +1,9 @@
 ﻿#include "hboarduicontrol.h"
 
+#include <QDebug>
+#include <opencv2/imgcodecs.hpp>
+#include <opencv2/imgproc.hpp>
+
 #include "Common/hcommons.h"
 #include "Common/hplanvector.h"
 #include "Handles/hhandleflyweight.h"
@@ -8,9 +12,6 @@
 #include "Nodes/hnodebase.h"
 #include "hboard.h"
 #include "hboardmanager.h"
-#include <QDebug>
-#include <opencv2/imgcodecs.hpp>
-#include <opencv2/imgproc.hpp>
 #define DEBUG qDebug() << __FUNCTION__ << " " << __LINE__ << " "
 HBoardUIControl::HBoardUIControl(QObject *parent) : QObject(parent) {}
 
@@ -92,7 +93,6 @@ int HBoardUIControl::setBoardNodeParam(const QString &board, const QString &key,
 }
 
 int HBoardUIControl::saveBoard(const QString &board, const QString &path) {
-
   auto ptr = HBoardManager::getInstance()->getBoard(board);
   if (!ptr) {
     DEBUG << "hasn't this board " << board;
@@ -143,7 +143,7 @@ void HBoardUIControl::test() {
   for (const auto &k : sel) {
     auto n = board->getNodeById(k);
     if (HNodeBase::NODETYPE::IMAGE == n->nodeType()) {
-      auto mat = cv::imread("C:\\Users\\longxiong\\Pictures\\ttt.png");
+      auto mat = cv::imread("C:\\Users\\xiaolong\\Pictures\\ttt.png");
       if (mat.empty()) {
         DEBUG << "mat empty";
       }

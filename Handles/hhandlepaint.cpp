@@ -23,7 +23,7 @@ HHandleDrawRect::HHandleDrawRect() { _name = "rect"; }
 void HHandleDrawRect::mousePressEvent(HBoard *board, QMouseEvent *event,
                                       const QJsonObject &o) {
   HHandleMove::mousePressEvent(board, event);
-  if (board && event && leftButtonPress(event)) {
+  if (board && event && isButtonPress(event)) {
     _point = board->WCS2LCS(event->pos());
     auto node = std::make_shared<HFillNode>(QRectF(_point, QSize(1, 1)),
                                             GL_LINE_LOOP, o);
@@ -49,7 +49,7 @@ HHandleDrawPoly::HHandleDrawPoly() { _name = "poly"; }
 void HHandleDrawPoly::mousePressEvent(HBoard *board, QMouseEvent *event,
                                       const QJsonObject &o) {
   HHandleMove::mousePressEvent(board, event);
-  if (board && event && leftButtonPress(event)) {
+  if (board && event && isButtonPress(event)) {
     auto point = board->WCS2LCS(event->pos());
     auto node = std::make_shared<HFillNode>(QRectF(point, QSize(1, 1)),
                                             GL_LINE_STRIP, o);
@@ -72,11 +72,12 @@ void HHandleDrawPoly::mouseMoveEvent(HBoard *board, QMouseEvent *event,
 void HHandleDrawPoly::mouseReleaseEvent(HBoard *board, QMouseEvent *event,
                                         const QJsonObject &) {
   HHandleMove::mouseReleaseEvent(board, event);
-  if (board && event && !_points.empty()) {
+  DEBUG << event->button();
+  if (board && event && !_points.empty() && isButtonPress(event)) {
     _points.push_back(_points.first());
     board->drawNodePoint(_node, _points);
+    _points.clear();
   }
-  _points.clear();
 }
 
 QJsonObject HHandleDrawPoly::getDefaultParam() { return defaultParam(); }
@@ -86,7 +87,7 @@ HHandleDrawLine::HHandleDrawLine() { _name = "line"; }
 void HHandleDrawLine::mousePressEvent(HBoard *board, QMouseEvent *event,
                                       const QJsonObject &o) {
   HHandleMove::mousePressEvent(board, event);
-  if (board && event && leftButtonPress(event)) {
+  if (board && event && isButtonPress(event)) {
     _point = board->WCS2LCS(event->pos());
     QList<QPointF> list{_point};
     auto node = std::make_shared<HFillNode>(list, GL_LINES, o);
@@ -112,7 +113,7 @@ HHandleDrawCurve::HHandleDrawCurve() { _name = "curve"; }
 void HHandleDrawCurve::mousePressEvent(HBoard *board, QMouseEvent *event,
                                        const QJsonObject &o) {
   HHandleMove::mousePressEvent(board, event);
-  if (board && event && leftButtonPress(event)) {
+  if (board && event && isButtonPress(event)) {
     auto point = board->WCS2LCS(event->pos());
     auto node = std::make_shared<HFillNode>(QRectF(point, QSize(1, 1)),
                                             GL_LINE_STRIP, o);
@@ -134,7 +135,9 @@ void HHandleDrawCurve::mouseMoveEvent(HBoard *board, QMouseEvent *event,
 
 void HHandleDrawCurve::mouseReleaseEvent(HBoard *b, QMouseEvent *e,
                                          const QJsonObject &o) {
-  _points.clear();
+  if (isButtonPress(e)) {
+    _points.clear();
+  }
   HHandleMove::mouseReleaseEvent(b, e, o);
 }
 
@@ -145,7 +148,7 @@ HHandleDrawFillRect::HHandleDrawFillRect() { _name = "fill rect"; }
 void HHandleDrawFillRect::mousePressEvent(HBoard *board, QMouseEvent *event,
                                           const QJsonObject &o) {
   HHandleMove::mousePressEvent(board, event);
-  if (board && event && leftButtonPress(event)) {
+  if (board && event && isButtonPress(event)) {
     _point = board->WCS2LCS(event->pos());
     auto node =
         std::make_shared<HFillNode>(QRectF(_point, QSize(1, 1)), GL_QUADS, o);
@@ -159,7 +162,7 @@ HHandleDrawFillPoly::HHandleDrawFillPoly() { _name = "fill poly"; }
 void HHandleDrawFillPoly::mousePressEvent(HBoard *board, QMouseEvent *event,
                                           const QJsonObject &o) {
   HHandleMove::mousePressEvent(board, event);
-  if (board && event && leftButtonPress(event)) {
+  if (board && event && isButtonPress(event)) {
     auto point = board->WCS2LCS(event->pos());
     auto node =
         std::make_shared<HFillNode>(QRectF(point, QSize(1, 1)), GL_POLYGON, o);
@@ -193,7 +196,7 @@ void HHandleDrawCircle::mousePressEvent(HBoard *board, QMouseEvent *event,
                                         const QJsonObject &object) {
   DEBUG << event->buttons();
   HHandleMove::mousePressEvent(board, event, object);
-  if (board && event && leftButtonPress(event)) {
+  if (board && event && isButtonPress(event)) {
     auto center = board->WCS2LCS(event->pos());
     auto list =
         HCommon::BuildCircle(center, object.value("radius").toInt(), 360);
@@ -235,7 +238,7 @@ HHandleDrawFillCircle::HHandleDrawFillCircle() { _name = "fill circle"; }
 void HHandleDrawFillCircle::mousePressEvent(HBoard *board, QMouseEvent *event,
                                             const QJsonObject &object) {
   HHandleMove::mousePressEvent(board, event);
-  if (board && event && leftButtonPress(event)) {
+  if (board && event && isButtonPress(event)) {
     auto center = board->WCS2LCS(event->pos());
     auto list =
         HCommon::BuildCircle(center, object.value("radius").toInt(), 360);
@@ -262,7 +265,7 @@ HHandleDrawWideLine::HHandleDrawWideLine() { _name = "wide line"; }
 void HHandleDrawWideLine::mousePressEvent(HBoard *board, QMouseEvent *event,
                                           const QJsonObject &object) {
   HHandleMove::mousePressEvent(board, event);
-  if (board && event && leftButtonPress(event)) {
+  if (board && event && isButtonPress(event)) {
     auto point = board->WCS2LCS(event->pos());
     _points = QList<QPointF>({point});
     auto node = std::make_shared<HFillNode>(_points, GL_LINE_STRIP, object);

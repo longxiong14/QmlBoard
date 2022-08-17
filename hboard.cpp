@@ -8,7 +8,6 @@
 #include <QSGImageNode>
 #include <QSGOpaqueTextureMaterial>
 #include <QSGSimpleRectNode>
-#include <QSGSimpleTextureNode>
 #include <QSGTexture>
 
 #include "Common/hcommons.h"
@@ -189,12 +188,20 @@ void HBoard::removeNode(const QUuid &id) {
     QMutexLocker lock(&_mutex);
     if (_nodes.contains(id)) {
       node = _nodes[id];
+      if (node && node->isSelect()) node->changedSelectStatus();
       _nodes.remove(id);
     }
   }
   pushTask([=]() {
-    if (node) {
-      _trans_node->removeChildNode(node->get());
+    if (node && node->get()) {
+      for (int i = 0; i < _trans_node->childCount(); i++) {
+        auto n = _trans_node->childAtIndex(i);
+        auto g = node->get();
+        if (n == g) {
+          _trans_node->removeChildNode(node->get());
+          break;
+        }
+      }
     }
   });
   update();
@@ -550,15 +557,9 @@ void HBoard::updateRule() {
     for (int i = 0; i < count; i++) {
       auto node = _rule->childAtIndex(0);
       _rule->removeChildNode(node);
-      auto image = dynamic_cast<QSGSimpleTextureNode *>(node);
+      auto image = dynamic_cast<QSGImageNode *>(node);
       if (image) {
-        auto texture = image->texture();
-        if (texture) {
-          delete image;
-          delete texture;
-          image = nullptr;
-          texture = nullptr;
-        }
+        HSGNodeCommon::releaseTextureNode(image);
       } else {
         delete node;
         node = nullptr;
@@ -590,7 +591,7 @@ void HBoard::buildTopRule(QList<QPointF> &list) {
       QImage text = HSGNodeCommon::createTextImage(
           QString::number(std::round(p.x() * 100) / 100), 50, 20);
       auto texture = window()->createTextureFromImage(text);
-      QSGSimpleTextureNode *texture_node = new QSGSimpleTextureNode();
+      QSGImageNode *texture_node = window()->createImageNode();
       texture_node->setTexture(texture);
       texture_node->setRect(start, 10, 50, 20);
       _rule->appendChildNode(texture_node);
@@ -627,7 +628,7 @@ void HBoard::buildLeftRule(QList<QPointF> &list) {
         painter.drawText(QRectF(0, 0, h, w),
                          QString::number(std::round(p.y() * 100) / 100));
       }
-      QSGSimpleTextureNode *texture_node = new QSGSimpleTextureNode();
+      QSGImageNode *texture_node = window()->createImageNode();
       auto texture = window()->createTextureFromImage(text);
       texture_node->setTexture(texture);
       texture_node->setRect(10, i, w, h);

@@ -5,11 +5,13 @@
 
 #include "../HBoard_global.h"
 #include "hnodebase.h"
+class QSGImageNode;
 class HBOARD_EXPORT HCVMatNode : public HNodeBase {
  public:
   HCVMatNode();
   HCVMatNode(const QString &path, const QPointF &start_point = QPointF());
   HCVMatNode(const cv::Mat &mat, const QPointF &start_point = QPointF());
+  virtual ~HCVMatNode() override;
 
   virtual QSGNode *build(HBoard *) override;
   virtual QSGNode *get() override;
@@ -40,8 +42,8 @@ class HBOARD_EXPORT HCVMatNode : public HNodeBase {
 
  public:
   QImage CVMat2Qimage(const cv::Mat &mat);
-  QSGNode *BuildQImageNode(const QImage &image, HBoard *board,
-                           const QRectF &rect);
+  QSGImageNode *BuildQImageNode(const QImage &image, HBoard *board,
+                                        const QRectF &rect);
 
  protected:
   cv::Mat _mat;

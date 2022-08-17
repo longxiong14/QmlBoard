@@ -5,6 +5,7 @@
 #include <QPointF>
 #include <QSGFlatColorMaterial>
 #include <QSGGeometry>
+#include <QSGImageNode>
 
 #include "../HBoard_global.h"
 class HBOARD_EXPORT HSGNodeCommon {
@@ -19,6 +20,8 @@ class HBOARD_EXPORT HSGNodeCommon {
   static QSGFlatColorMaterial *buildColor(const QColor &color);
 
   static QImage createTextImage(const QString &str, int w, int h);
+
+  static void releaseTextureNode(QSGImageNode *image);
 
 };  // class  HSGNodeCommon
 

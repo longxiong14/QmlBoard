@@ -46,3 +46,15 @@ QImage HSGNodeCommon::createTextImage(const QString &str, int w, int h) {
   painter.drawText(QRectF(0, 0, w, h), str);
   return text;
 }
+
+void HSGNodeCommon::releaseTextureNode(QSGImageNode *image) {
+  if (image) {
+    auto texture = image->texture();
+    if (texture) {
+      delete image;
+      delete texture;
+      image = nullptr;
+      texture = nullptr;
+    }
+  }
+}

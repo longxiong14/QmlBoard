@@ -3,13 +3,14 @@
 #include <QDebug>
 #include <QImage>
 #include <QQuickWindow>
+#include <QSGImageNode>
 #include <QSGNode>
-#include <QSGSimpleTextureNode>
 #include <opencv2/imgcodecs.hpp>
 #include <opencv2/imgproc.hpp>
 
 #include "../Common/hcommons.h"
 #include "../Common/hjsoncommon.h"
+#include "../Common/hsgnodecommon.h"
 #include "../hboard.h"
 
 #define DEBUG qDebug() << __FUNCTION__ << " " << __LINE__ << " "
@@ -44,6 +45,31 @@ HCVMatNode::HCVMatNode(const cv::Mat &mat, const QPointF &start_point)
   }
 }
 
+HCVMatNode::~HCVMatNode() {
+  if (_node) {
+    int count = _node->childCount();
+    DEBUG << count;
+    for (int i = 0; i < count; i++) {
+      auto n = _node->childAtIndex(0);
+      if (n) {
+        auto image = dynamic_cast<QSGImageNode *>(n);
+        if (image) {
+          DEBUG << i;
+          HSGNodeCommon::releaseTextureNode(image);
+        } else {
+          DEBUG << "isn't QSGImageNode";
+        }
+      } else {
+        DEBUG << "n is nullptr";
+      }
+    }
+    _node->removeAllChildNodes();
+    delete _node;
+    _node = nullptr;
+  }
+  _mat = cv::Mat();
+}
+
 QSGNode *HCVMatNode::build(HBoard *board) {
   DEBUG << !_node << " " << !_mat.empty();
   if (!_node && !_mat.empty()) {
@@ -51,6 +77,7 @@ QSGNode *HCVMatNode::build(HBoard *board) {
     int col = int(_mat.cols / _split_size.width) + 1;
     int row = int(_mat.rows / _split_size.height) + 1;
     cv::Rect src = cv::Rect(0, 0, _mat.cols, _mat.rows);
+    int childcout = 1;
     for (int i = 0; i < col; i++) {
       for (int j = 0; j < row; j++) {
         cv::Rect rect =
@@ -62,6 +89,7 @@ QSGNode *HCVMatNode::build(HBoard *board) {
         auto n = BuildQImageNode(image, board, r);
         if (n) {
           _node->appendChildNode(n);
+          DEBUG << childcout++;
         }
       }
     }
@@ -88,7 +116,7 @@ void HCVMatNode::move(const QPointF &point) {
     for (int i = 0; i < size; i++) {
       auto node = _node->childAtIndex(i);
       if (node) {
-        auto texture = dynamic_cast<QSGSimpleTextureNode *>(node);
+        auto texture = dynamic_cast<QSGImageNode *>(node);
         if (texture) {
           auto rect = texture->rect();
           auto tl = rect.topLeft();
@@ -140,8 +168,14 @@ void HCVMatNode::updateRoi(HBoard *board, const QRectF &roi) {
   if (_node) {
     int count = _node->childCount();
     for (int i = 0; i < count; i++) {
-      auto n = dynamic_cast<QSGSimpleTextureNode *>(_node->childAtIndex(i));
+      auto n = dynamic_cast<QSGImageNode *>(_node->childAtIndex(i));
       if (n) {
+        auto texture = n->texture();
+        if (texture) {
+          delete texture;
+          texture = nullptr;
+        }
+
         auto texture_rect = n->rect();
         auto relative_rect =
             QRectF(texture_rect.topLeft() - top_left, texture_rect.size());
@@ -271,16 +305,17 @@ QImage HCVMatNode::CVMat2Qimage(const cv::Mat &mat) {
   return QImage();
 }
 
-QSGNode *HCVMatNode::BuildQImageNode(const QImage &image, HBoard *board,
-                                     const QRectF &rect) {
+QSGImageNode *HCVMatNode::BuildQImageNode(const QImage &image, HBoard *board,
+                                          const QRectF &rect) {
   if (image.isNull()) {
     DEBUG << "image is null";
     return nullptr;
   }
-  QSGSimpleTextureNode *node = nullptr;
+  QSGImageNode *node = nullptr;
   if (board) {
-    node = new QSGSimpleTextureNode();
+    node = board->window()->createImageNode();
     QSGTexture *texture = board->window()->createTextureFromImage(image);
+
     node->setTexture(texture);
     node->setRect(rect);
   }
