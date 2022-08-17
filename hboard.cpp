@@ -54,11 +54,16 @@ HBoard::HBoard(QQuickItem *parent)
 }
 
 HBoard::~HBoard() {
-  _nodes.clear();
+  DEBUG << _nodes.size();
+  for (const auto &node : nodes()) {
+    node->setDestory(false);
+  }
+  DEBUG << "clear nodes";
   auto instance = HBoardManager::getInstance();
   if (instance) {
     instance->removeBoard(name());
   }
+  DEBUG << "end distruct";
 }
 
 void HBoard::home() {

@@ -1,15 +1,22 @@
 ﻿#include "hnodebase.h"
 
 #include <QDebug>
+#include <QQuickWindow>
 #include <QSGGeometryNode>
 #include <QSGNode>
 
 #include "../Common/hcommons.h"
 #include "../Common/hsgnodecommon.h"
+#include "../hboard.h"
 #define STEP 5e3
 #define DEBUG qDebug() << __FUNCTION__ << " " << __LINE__ << " "
 HNodeBase::HNodeBase()
-    : _select(false), _visible(true), _dash(nullptr), _enable_home(true) {
+    : _select(false),
+      _visible(true),
+      _dash(nullptr),
+      _enable_home(true),
+      _text_node(nullptr),
+      _destory(true) {
   _id = QUuid::createUuid();
 }
 
@@ -100,9 +107,46 @@ void HNodeBase::timeOut() {
   }
 }
 
+int HNodeBase::setText(const QString &text, const QRectF &position,
+                       HBoard *board) {
+  auto node = get();
+  if (!board) return -1;
+  auto func = [=]() {
+    auto image_node = board->window()->createImageNode();
+    auto image = HSGNodeCommon::createTextImage(_text, int(position.width()),
+                                                int(position.height()));
+    auto texture = board->window()->createTextureFromImage(image);
+    image_node->setTexture(texture);
+    image_node->setRect(position);
+    return image_node;
+  };
+  if (_text != text) {
+    _text = text;
+    if (!_text_node) {
+      _text_node = new QSGNode();
+      auto image_node = func();
+      _text_node->appendChildNode(image_node);
+      node->appendChildNode(_text_node);
+    } else {
+      int count = _text_node->childCount();
+      for (int i = 0; i < count; i++) {
+        auto n = dynamic_cast<QSGImageNode *>(_text_node->childAtIndex(0));
+        if (n) HSGNodeCommon::releaseTextureNode(n);
+      }
+      _text_node->removeAllChildNodes();
+      auto image_node = func();
+      _text_node->appendChildNode(image_node);
+    }
+    board->update();
+  }
+  return 0;
+}
+
 bool HNodeBase::enableHome() { return _enable_home; }
 
 void HNodeBase::setEnableHome(bool f) { _enable_home = f; }
+
+void HNodeBase::setDestory(bool flag) { _destory = flag; }
 
 QJsonObject HNodeBase::param() { return _param; }
 

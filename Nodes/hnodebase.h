@@ -41,9 +41,12 @@ class HBOARD_EXPORT HNodeBase : public HStorageBase<QJsonObject> {
   virtual void setVisible(bool flag);
   virtual bool visible();
   virtual void timeOut();
+  virtual int setText(const QString &text, const QRectF &position,
+                      HBoard *board);
 
   virtual bool enableHome();
   virtual void setEnableHome(bool f);
+  virtual void setDestory(bool flag);
 
  public:
   QJsonObject param();
@@ -57,6 +60,9 @@ class HBOARD_EXPORT HNodeBase : public HStorageBase<QJsonObject> {
   QList<QPointF> _dash_list;
   QSGGeometryNode *_dash;
   bool _enable_home;
+  QSGNode *_text_node;
+  QString _text;
+  bool _destory;
 };
 
 #endif  // HNODEBASE_H

@@ -46,38 +46,30 @@ HCVMatNode::HCVMatNode(const cv::Mat &mat, const QPointF &start_point)
 }
 
 HCVMatNode::~HCVMatNode() {
-  if (_node) {
+  if (_destory && _node) {
     int count = _node->childCount();
-    DEBUG << count;
     for (int i = 0; i < count; i++) {
       auto n = _node->childAtIndex(0);
       if (n) {
         auto image = dynamic_cast<QSGImageNode *>(n);
         if (image) {
-          DEBUG << i;
           HSGNodeCommon::releaseTextureNode(image);
-        } else {
-          DEBUG << "isn't QSGImageNode";
         }
-      } else {
-        DEBUG << "n is nullptr";
       }
     }
     _node->removeAllChildNodes();
     delete _node;
     _node = nullptr;
+    _mat = cv::Mat();
   }
-  _mat = cv::Mat();
 }
 
 QSGNode *HCVMatNode::build(HBoard *board) {
-  DEBUG << !_node << " " << !_mat.empty();
   if (!_node && !_mat.empty()) {
     _node = new QSGNode();
     int col = int(_mat.cols / _split_size.width) + 1;
     int row = int(_mat.rows / _split_size.height) + 1;
     cv::Rect src = cv::Rect(0, 0, _mat.cols, _mat.rows);
-    int childcout = 1;
     for (int i = 0; i < col; i++) {
       for (int j = 0; j < row; j++) {
         cv::Rect rect =
@@ -89,7 +81,6 @@ QSGNode *HCVMatNode::build(HBoard *board) {
         auto n = BuildQImageNode(image, board, r);
         if (n) {
           _node->appendChildNode(n);
-          DEBUG << childcout++;
         }
       }
     }
@@ -170,12 +161,6 @@ void HCVMatNode::updateRoi(HBoard *board, const QRectF &roi) {
     for (int i = 0; i < count; i++) {
       auto n = dynamic_cast<QSGImageNode *>(_node->childAtIndex(i));
       if (n) {
-        auto texture = n->texture();
-        if (texture) {
-          delete texture;
-          texture = nullptr;
-        }
-
         auto texture_rect = n->rect();
         auto relative_rect =
             QRectF(texture_rect.topLeft() - top_left, texture_rect.size());
@@ -190,6 +175,11 @@ void HCVMatNode::updateRoi(HBoard *board, const QRectF &roi) {
             if (t_rect.area() <= 0) continue;
             auto t = board->window()->createTextureFromImage(
                 CVMat2Qimage(_mat(t_rect)));
+            auto texture = n->texture();
+            if (texture) {
+              delete texture;
+              texture = nullptr;
+            }
             n->setTexture(t);
             DEBUG << "success update mat";
           }

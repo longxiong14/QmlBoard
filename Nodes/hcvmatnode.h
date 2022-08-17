@@ -43,7 +43,7 @@ class HBOARD_EXPORT HCVMatNode : public HNodeBase {
  public:
   QImage CVMat2Qimage(const cv::Mat &mat);
   QSGImageNode *BuildQImageNode(const QImage &image, HBoard *board,
-                                        const QRectF &rect);
+                                const QRectF &rect);
 
  protected:
   cv::Mat _mat;
