@@ -1,6 +1,5 @@
 ﻿#ifndef HBOARD_H
 #define HBOARD_H
-#include "HBoard_global.h"
 #include <QHash>
 #include <QJsonObject>
 #include <QMutex>
@@ -13,6 +12,8 @@
 #include <QtQuick/QQuickItem>
 #include <functional>
 #include <opencv2/core.hpp>
+
+#include "HBoard_global.h"
 class QSGNode;
 class QSGTransformNode;
 class HHandleBase;
@@ -24,11 +25,11 @@ class HBOARD_EXPORT HBoard : public QQuickItem {
   Q_OBJECT
   Q_PROPERTY(QString name READ name WRITE setName NOTIFY nameChanged)
   Q_PROPERTY(QJsonObject items READ items WRITE setItems NOTIFY itemsChanged)
-public:
+ public:
   explicit HBoard(QQuickItem *parent = nullptr);
   virtual ~HBoard() override;
 
-public:
+ public:
   void home();
   void checkItems();
   int save(const QString &path);
@@ -36,7 +37,7 @@ public:
   int load(const QString &path);
   int load(const QJsonArray &nodes);
 
-public:
+ public:
   void pushTransform(const QTransform &trans);
   void pushNode(std::shared_ptr<HNodeBase> node, bool flag = true);
   //  void pushDashNode(HNodeBase* node);
@@ -48,10 +49,12 @@ public:
   QTransform transform();
   QHash<QUuid, std::shared_ptr<HNodeBase>> nodes();
   QHash<QUuid, std::shared_ptr<HNodeBase>> visibleNodes();
-  void moveNode(const QUuid &n, QPointF dlt);     // move node delta
-  void nodeMoveTo(const QUuid &n, QPointF point); // move node to point
+  void moveNode(const QUuid &n, QPointF dlt);      // move node delta
+  void nodeMoveTo(const QUuid &n, QPointF point);  // move node to point
   void drawNodePoint(const QUuid &node,
-                     const QList<QPointF> points); // draw handle move event
+                     const QList<QPointF> points);  // draw handle move event
+  int updateNodeText(const QUuid &node, const QString &text,
+                     const QRectF &rect = QRectF());
 
   // start: relate position
   bool updateNodeMat(const QUuid &node, const cv::Mat &mat,
@@ -60,7 +63,7 @@ public:
   void visibleNode(const QUuid &node, bool flag);
   std::shared_ptr<HNodeBase> getNodeById(const QUuid &id);
 
-public:
+ public:
   void setSelect(const QUuid &s);
   void clearSelect();
   void pushSelect(const QUuid &s);
@@ -69,21 +72,21 @@ public:
   void changeSelectParam(const QString &key, const QJsonValue &value);
   QSet<QUuid> selects();
 
-public: // keys
+ public:  // keys
   QSet<int> keys();
 
-public:
+ public:
   QString name();
   void setName(const QString &name);
   QJsonObject items();
   void setItems(const QJsonObject &item);
 
-public:
+ public:
   QPointF WCS2LCS(const QPointF &point);
   QPointF LCS2WCS(const QPointF &point);
   double getScale();
 
-public:
+ public:
   virtual QSGNode *updatePaintNode(QSGNode *node,
                                    UpdatePaintNodeData *) override;
   virtual void mousePressEvent(QMouseEvent *event) override;
@@ -98,18 +101,18 @@ public:
   virtual void keyReleaseEvent(QKeyEvent *event) override;
   //  virtual void sceneGraphInvalidated() override;
 
-protected:
+ protected:
   void pushTask(const task &t);
   QJsonObject getHandleParam();
   void updateRule();
   void buildTopRule(QList<QPointF> &list);
   void buildLeftRule(QList<QPointF> &list);
-signals:
+ signals:
   void nameChanged();
   void hoverPoint(int x, int y);
   void itemsChanged();
 
-private:
+ private:
   QSGTransformNode *_trans_node;
   HHandleBase *_handle;
   QMutex _mutex;
@@ -122,4 +125,4 @@ private:
   QSGGeometryNode *_rule;
 };
 
-#endif // HBOARD_H
+#endif  // HBOARD_H

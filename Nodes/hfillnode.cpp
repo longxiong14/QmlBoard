@@ -32,7 +32,10 @@ HFillNode::HFillNode(const QRectF &rect, unsigned long type,
 
 QSGNode *HFillNode::get() { return _node; }
 
-QSGNode *HFillNode::build(HBoard *) { return _node; }
+QSGNode *HFillNode::build(HBoard *b) {
+  buildTextNode(b);
+  return _node;
+}
 
 QRectF HFillNode::getBoundRect() {
   QRectF r;

@@ -352,6 +352,23 @@ void HBoard::drawNodePoint(const QUuid &node, const QList<QPointF> points) {
   update();
 }
 
+int HBoard::updateNodeText(const QUuid &node, const QString &text,
+                           const QRectF &rect) {
+  if (!_nodes.contains(node)) {
+    return -1;
+  }
+  pushTask([=]() {
+    auto n = _nodes.value(node);
+    if (n) {
+      n->setText(text, rect);
+      n->buildTextNode(this);
+    }
+  });
+  update();
+
+  return 0;
+}
+
 bool HBoard::updateNodeMat(const QUuid &node, const cv::Mat &mat,
                            const QPointF &start) {
   if (!_nodes.contains(node)) {

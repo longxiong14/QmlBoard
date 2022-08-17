@@ -45,7 +45,9 @@ int HBoardUIControl::openBoardPicture(const QString &board,
     DEBUG << "hasn't this board " << board;
     return -1;
   }
-  ptr->pushNode(std::make_shared<HCVMatNode>(path));
+  auto node = std::make_shared<HCVMatNode>(path);
+  node->setText(node->id().toString());
+  ptr->pushNode(node);
   ptr->home();
   return 0;
 }
@@ -142,7 +144,8 @@ void HBoardUIControl::test() {
   auto sel = board->selects();
   for (const auto &k : sel) {
     auto n = board->getNodeById(k);
-    n->setText(n->id().toString(), board, QRect(0, 0, 100, 100));
+    //    n->setText(n->id().toString(), QRect(0, 0, 100, 100));
+    board->updateNodeText(k, n->id().toString(), QRectF(0, -10, 100, 100));
     //    if (HNodeBase::NODETYPE::IMAGE == n->nodeType()) {
     //      auto mat = cv::imread("C:\\Users\\xiaolong\\Pictures\\ttt.png");
     //      if (mat.empty()) {

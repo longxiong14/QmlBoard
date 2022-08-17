@@ -85,7 +85,7 @@ QSGNode *HCVMatNode::build(HBoard *board) {
       }
     }
   }
-
+  buildTextNode(board);
   return _node;
 }
 

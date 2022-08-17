@@ -32,6 +32,8 @@ HNodeBase::~HNodeBase() {
   }
 }
 
+QSGNode *HNodeBase::build(HBoard *) { return nullptr; }
+
 QList<QPointF> HNodeBase::getPointList() { return {}; }
 
 QUuid HNodeBase::id() { return _id; }
@@ -128,16 +130,34 @@ void HNodeBase::timeOut() {
   }
 }
 
-int HNodeBase::setText(const QString &text, HBoard *board,
-                       const QRectF &position) {
+int HNodeBase::setText(const QString &text, const QRectF &position) {
+  _text = text;
+  _text_rect = position;
+  return 0;
+}
+
+QString HNodeBase::getText() { return _text; }
+
+bool HNodeBase::enableHome() { return _enable_home; }
+
+void HNodeBase::setEnableHome(bool f) { _enable_home = f; }
+
+void HNodeBase::setDestory(bool flag) { _destory = flag; }
+
+QJsonObject HNodeBase::param() { return _param; }
+
+void HNodeBase::setParam(const QJsonObject &p) { _param = p; }
+
+void HNodeBase::buildTextNode(HBoard *board) {
+  if (_text.isEmpty()) return;
   auto node = get();
-  if (!board) return -1;
+  if (!board) return;
   auto tl = getBoundRect().topLeft();
   QRectF rect;
-  if (position.isEmpty() || position.isNull() || position.isValid()) {
+  if (_text_rect.isEmpty()) {
     rect = getBoundRect();
   } else {
-    rect = QRectF(tl + position.topLeft(), position.size());
+    rect = QRectF(tl + _text_rect.topLeft(), _text_rect.size());
   }
   auto func = [=]() {
     auto image_node = board->window()->createImageNode();
@@ -148,7 +168,6 @@ int HNodeBase::setText(const QString &text, HBoard *board,
     image_node->setRect(rect);
     return image_node;
   };
-  _text = text;
   if (!_text_node) {
     _text_node = new QSGNode();
     auto image_node = func();
@@ -165,17 +184,4 @@ int HNodeBase::setText(const QString &text, HBoard *board,
     _text_node->appendChildNode(image_node);
   }
   board->update();
-  return 0;
 }
-
-QString HNodeBase::getText() { return _text; }
-
-bool HNodeBase::enableHome() { return _enable_home; }
-
-void HNodeBase::setEnableHome(bool f) { _enable_home = f; }
-
-void HNodeBase::setDestory(bool flag) { _destory = flag; }
-
-QJsonObject HNodeBase::param() { return _param; }
-
-void HNodeBase::setParam(const QJsonObject &p) { _param = p; }
