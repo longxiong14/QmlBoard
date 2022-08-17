@@ -33,7 +33,8 @@ QSGFlatColorMaterial *HSGNodeCommon::buildColor(const QColor &color) {
   return material;
 }
 
-QImage HSGNodeCommon::createTextImage(const QString &str, int w, int h) {
+QImage HSGNodeCommon::createTextImage(const QString &str, int w, int h,
+                                      const QColor &color) {
   QImage text = QImage(w, h, QImage::Format_ARGB32);
   QPainter painter(&text);
   painter.setCompositionMode(QPainter::CompositionMode_DestinationIn);
@@ -42,7 +43,7 @@ QImage HSGNodeCommon::createTextImage(const QString &str, int w, int h) {
   auto font = painter.font();
   font.setPointSizeF(10);
   painter.setFont(font);
-  painter.setPen(Qt::red);
+  painter.setPen(color);
   painter.drawText(QRectF(0, 0, w, h), str);
   return text;
 }

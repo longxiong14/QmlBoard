@@ -19,7 +19,8 @@ class HBOARD_EXPORT HSGNodeCommon {
 
   static QSGFlatColorMaterial *buildColor(const QColor &color);
 
-  static QImage createTextImage(const QString &str, int w, int h);
+  static QImage createTextImage(const QString &str, int w, int h,
+                                const QColor &color = Qt::red);
 
   static void releaseTextureNode(QSGImageNode *image);
 

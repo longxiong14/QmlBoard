@@ -148,25 +148,23 @@ int HNodeBase::setText(const QString &text, HBoard *board,
     image_node->setRect(rect);
     return image_node;
   };
-  if (_text != text) {
-    _text = text;
-    if (!_text_node) {
-      _text_node = new QSGNode();
-      auto image_node = func();
-      _text_node->appendChildNode(image_node);
-      node->appendChildNode(_text_node);
-    } else {
-      int count = _text_node->childCount();
-      for (int i = 0; i < count; i++) {
-        auto n = dynamic_cast<QSGImageNode *>(_text_node->childAtIndex(0));
-        if (n) HSGNodeCommon::releaseTextureNode(n);
-      }
-      _text_node->removeAllChildNodes();
-      auto image_node = func();
-      _text_node->appendChildNode(image_node);
+  _text = text;
+  if (!_text_node) {
+    _text_node = new QSGNode();
+    auto image_node = func();
+    _text_node->appendChildNode(image_node);
+    node->appendChildNode(_text_node);
+  } else {
+    int count = _text_node->childCount();
+    for (int i = 0; i < count; i++) {
+      auto n = dynamic_cast<QSGImageNode *>(_text_node->childAtIndex(0));
+      if (n) HSGNodeCommon::releaseTextureNode(n);
     }
-    board->update();
+    _text_node->removeAllChildNodes();
+    auto image_node = func();
+    _text_node->appendChildNode(image_node);
   }
+  board->update();
   return 0;
 }
 
