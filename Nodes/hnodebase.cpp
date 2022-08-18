@@ -16,6 +16,7 @@ HNodeBase::HNodeBase()
       _dash(nullptr),
       _enable_home(true),
       _text_node(nullptr),
+      _pixel_size(10),
       _destory(true) {
   _id = QUuid::createUuid();
 }
@@ -130,9 +131,11 @@ void HNodeBase::timeOut() {
   }
 }
 
-int HNodeBase::setText(const QString &text, const QRectF &position) {
+int HNodeBase::setText(const QString &text, const QRectF &position,
+                       int pixel_size) {
   _text = text;
   _text_rect = position;
+  _pixel_size = pixel_size;
   return 0;
 }
 
@@ -152,17 +155,19 @@ int HNodeBase::save(QJsonObject &d) {
   rect.insert("width", _text_rect.width());
   rect.insert("height", _text_rect.height());
   d.insert("text_rect", rect);
+  d.insert("text_pixel_size", _pixel_size);
   return 0;
 }
 
 int HNodeBase::load(const QJsonObject &o) {
   auto text = o.value("text").toString();
+  auto size = o.value("text_pixel_size").toInt();
   if (!text.isEmpty()) {
     auto rect = o.value("text_rect").toObject();
     QRectF r =
         QRectF(rect.value("x").toDouble(), rect.value("y").toDouble(),
                rect.value("width").toDouble(), rect.value("height").toDouble());
-    setText(text, r);
+    setText(text, r, size);
   }
   return 0;
 }
@@ -184,8 +189,8 @@ void HNodeBase::buildTextNode(HBoard *board) {
   }
   auto func = [=]() {
     auto image_node = board->window()->createImageNode();
-    auto image = HSGNodeCommon::createTextImage(_text, int(rect.width()),
-                                                int(rect.height()));
+    auto image = HSGNodeCommon::createTextImage(
+        _text, int(rect.width()), int(rect.height()), Qt::red, _pixel_size);
     auto texture = board->window()->createTextureFromImage(image);
     image_node->setTexture(texture);
     image_node->setRect(rect);

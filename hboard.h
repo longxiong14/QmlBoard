@@ -54,7 +54,7 @@ class HBOARD_EXPORT HBoard : public QQuickItem {
   void drawNodePoint(const QUuid &node,
                      const QList<QPointF> points);  // draw handle move event
   int updateNodeText(const QUuid &node, const QString &text,
-                     const QRectF &rect = QRectF());
+                     const QRectF &rect = QRectF(), int pixel_size = 10);
 
   // start: relate position
   bool updateNodeMat(const QUuid &node, const cv::Mat &mat,

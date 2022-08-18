@@ -145,7 +145,7 @@ void HBoardUIControl::test() {
   for (const auto &k : sel) {
     auto n = board->getNodeById(k);
     //    n->setText(n->id().toString(), QRect(0, 0, 100, 100));
-    board->updateNodeText(k, n->id().toString(), QRectF(0, -10, 100, 100));
+    board->updateNodeText(k, n->id().toString(), QRectF(0, -10, 100, 100), 50);
     //    if (HNodeBase::NODETYPE::IMAGE == n->nodeType()) {
     //      auto mat = cv::imread("C:\\Users\\xiaolong\\Pictures\\ttt.png");
     //      if (mat.empty()) {

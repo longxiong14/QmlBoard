@@ -34,14 +34,14 @@ QSGFlatColorMaterial *HSGNodeCommon::buildColor(const QColor &color) {
 }
 
 QImage HSGNodeCommon::createTextImage(const QString &str, int w, int h,
-                                      const QColor &color) {
+                                      const QColor &color, int pixel_size) {
   QImage text = QImage(w, h, QImage::Format_ARGB32);
   QPainter painter(&text);
   painter.setCompositionMode(QPainter::CompositionMode_DestinationIn);
   painter.fillRect(0, 0, w, h, QColor(0, 0, 0, 0));
   painter.setCompositionMode(QPainter::CompositionMode_SourceOver);
   auto font = painter.font();
-  font.setPointSizeF(10);
+  font.setPointSizeF(pixel_size);
   painter.setFont(font);
   painter.setPen(color);
   painter.drawText(QRectF(0, 0, w, h), str);
