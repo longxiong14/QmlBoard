@@ -80,30 +80,30 @@ HBoard::~HBoard() {
 void HBoard::home() {
   pushTask([=]() {
     bool flag = false;
-    QRectF rect(INT_MAX, INT_MAX, INT_MIN, INT_MIN);
-    DEBUG << _nodes.size();
+    double tl_x = INT_MAX, tl_y = INT_MAX, br_x = INT_MIN, br_y = INT_MIN;
     for (const auto &key : _nodes.keys()) {
       auto node = _nodes.value(key);
       if (node && node->enableHome()) {
         flag = true;
         auto r = node->getBoundRect();
-        rect.setX(std::min(r.x(), rect.x()));
-        rect.setY(std::min(r.y(), rect.y()));
-        rect.setWidth(std::max(r.width(), rect.width()));
-        rect.setHeight(std::max(r.height(), rect.height()));
+        tl_x = std::min(r.topLeft().x(), tl_x);
+        tl_y = std::min(r.topLeft().y(), tl_y);
+        br_x = std::max(r.bottomRight().x(), br_x);
+        br_y = std::max(r.bottomRight().y(), br_y);
       }
     }
+    QRectF rect(QPointF(tl_x, tl_y), QPointF(br_x, br_y));
     if (!flag) return;
     auto w = width();
     auto h = height();
-    DEBUG << rect;
 
     auto ws = w / rect.width();
     auto hs = h / rect.height();
     auto scale = std::min(ws, hs);
     QTransform trans;
-    auto x = (w - rect.width() * scale) / 2 - rect.x() * scale;
-    auto y = (h - rect.height() * scale) / 2 - rect.y() * scale;
+    auto x = w / 2 - rect.center().x() * scale;
+    auto y = h / 2 - rect.center().y() * scale;
+
     trans.translate(x, y);
     trans.scale(scale, scale);
     if (_trans_node) _trans_node->setMatrix(trans);
@@ -575,6 +575,11 @@ void HBoard::keyPressEvent(QKeyEvent *event) {
   switch (event->key()) {
     case Qt::Key_Delete:
       removeSelectNode();
+      break;
+    case Qt::Key_H:
+      if (_keys.contains(Qt::Key_Control)) {
+        home();
+      }
       break;
   }
 }

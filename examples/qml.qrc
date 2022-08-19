@@ -30,5 +30,6 @@
         <file>qml/ICProgram/HIcons/HTools/fill_circle.png</file>
         <file>qml/ICProgram/HIcons/HTools/wide_line.png</file>
         <file>qml/ICProgram/HIcons/HTools/curve.png</file>
+        <file>qml/ICProgram/HIcons/HTools/rule.png</file>
     </qresource>
 </RCC>

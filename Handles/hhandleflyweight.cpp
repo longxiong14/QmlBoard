@@ -6,7 +6,7 @@
 #include "hhandlebase.h"
 #include "hhandlemove.h"
 #include "hhandlepaint.h"
-
+#include "hhandlerule.h"
 #define DEBUG qDebug() << __FUNCTION__ << " " << __LINE__ << " "
 HHandleFlyWeight *HHandleFlyWeight::getInstance() {
   static HHandleFlyWeight weight;
@@ -95,4 +95,5 @@ HHandleFlyWeight::HHandleFlyWeight() {
   func(std::make_shared<HHandleDrawCircle>());
   func(std::make_shared<HHandleDrawFillCircle>());
   func(std::make_shared<HHandleDrawWideLine>());
+  func(std::make_shared<HHandleRule>());
 }

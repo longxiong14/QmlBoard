@@ -3,6 +3,7 @@ import "../../HGlobalItems"
 import QtQuick.Controls 1.4
 Tab {
     property var flowSpacing: 5
+    property int iconWidth: 40
     title: "工具"
 
     HRectangle{
@@ -16,8 +17,8 @@ Tab {
                 width: parent.width
                 spacing: flowSpacing
                 HImageButton{
-                    width: 20
-                    height: 20
+                    width: iconWidth
+                    height: iconWidth
                     mSource:"qrc:/qml/ICProgram/HIcons/HTools/arrow.png"
                     backColor: icon === mSource ? "red" : "transparent"
                     onSigClick: {
@@ -26,8 +27,8 @@ Tab {
                     }
                 }
                 HImageButton{
-                    width: 20
-                    height: 20
+                    width: iconWidth
+                    height: iconWidth
                     mSource:"qrc:/qml/ICProgram/HIcons/HTools/rect.png"
                     backColor: icon === mSource ? "red" : "transparent"
                     onSigClick: {
@@ -36,8 +37,8 @@ Tab {
                     }
                 }
                 HImageButton{
-                    width: 20
-                    height: 20
+                    width: iconWidth
+                    height: iconWidth
                     mSource:"qrc:/qml/ICProgram/HIcons/HTools/line.png"
                     backColor: icon === mSource ? "red" : "transparent"
                     onSigClick: {
@@ -46,8 +47,8 @@ Tab {
                     }
                 }
                 HImageButton{
-                    width: 20
-                    height: 20
+                    width: iconWidth
+                    height: iconWidth
                     mSource:"qrc:/qml/ICProgram/HIcons/HTools/curve.png"
                     backColor: icon === mSource ? "red" : "transparent"
                     onSigClick: {
@@ -56,8 +57,8 @@ Tab {
                     }
                 }
                 HImageButton{
-                    width: 20
-                    height: 20
+                    width: iconWidth
+                    height: iconWidth
                     mSource:"qrc:/qml/ICProgram/HIcons/HTools/fill_poly.png"
                     backColor: icon === mSource ? "red" : "transparent"
                     onSigClick: {
@@ -66,8 +67,8 @@ Tab {
                     }
                 }
                 HImageButton{
-                    width: 20
-                    height: 20
+                    width: iconWidth
+                    height: iconWidth
                     mSource:"qrc:/qml/ICProgram/HIcons/HTools/poly.png"
                     backColor: icon === mSource ? "red" : "transparent"
                     onSigClick: {
@@ -76,8 +77,8 @@ Tab {
                     }
                 }
                 HImageButton{
-                    width: 20
-                    height: 20
+                    width: iconWidth
+                    height: iconWidth
                     mSource:"qrc:/qml/ICProgram/HIcons/HTools/fill_rectangle.png"
                     backColor: icon === mSource ? "red" : "transparent"
                     onSigClick: {
@@ -86,8 +87,8 @@ Tab {
                     }
                 }
                 HImageButton{
-                    width: 20
-                    height: 20
+                    width: iconWidth
+                    height: iconWidth
                     mSource:"qrc:/qml/ICProgram/HIcons/HTools/circle.png"
                     backColor: icon === mSource ? "red" : "transparent"
                     onSigClick: {
@@ -96,8 +97,8 @@ Tab {
                     }
                 }
                 HImageButton{
-                    width: 20
-                    height: 20
+                    width: iconWidth
+                    height: iconWidth
                     mSource:"qrc:/qml/ICProgram/HIcons/HTools/fill_circle.png"
                     backColor: icon === mSource ? "red" : "transparent"
                     onSigClick: {
@@ -106,8 +107,18 @@ Tab {
                     }
                 }
                 HImageButton{
-                    width: 20
-                    height: 20
+                    width: iconWidth
+                    height: iconWidth
+                    mSource:"qrc:/qml/ICProgram/HIcons/HTools/rule.png"
+                    backColor: icon === mSource ? "red" : "transparent"
+                    onSigClick: {
+                        icon = mSource
+                        setHandle("rule")
+                    }
+                }
+                HImageButton{
+                    width: iconWidth
+                    height: iconWidth
                     mSource:"qrc:/qml/ICProgram/HIcons/HTools/wide_line.png"
                     backColor: icon === mSource ? "red" : "transparent"
                     onSigClick: {
@@ -116,8 +127,8 @@ Tab {
                     }
                 }
                 HImageButton{
-                    width: 20
-                    height: 20
+                    width: iconWidth
+                    height: iconWidth
                     mSource:"qrc:/qml/ICProgram/HIcons/HTools/close.png"
                     backColor: icon === mSource ? "red" : "transparent"
                     onSigClick: {
