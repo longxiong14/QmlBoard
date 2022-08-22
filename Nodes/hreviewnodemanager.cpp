@@ -83,6 +83,8 @@ int HReviewNodeManager::removeNode(const QString &key) {
   return 0;
 }
 
+void HReviewNodeManager::clearButUnremoveNodes() { _nodes.clear(); }
+
 bool HReviewNodeManager::hasReviewNode() { return _nodes.empty(); }
 
 QHash<QString, QUuid> HReviewNodeManager::nodes() { return _nodes; }

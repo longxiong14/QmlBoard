@@ -20,6 +20,8 @@ class HBOARD_EXPORT HReviewNodeManager {
 
   int removeNode(const QString& key);
 
+  void clearButUnremoveNodes();
+
   bool hasReviewNode();
 
   QHash<QString, QUuid> nodes();
