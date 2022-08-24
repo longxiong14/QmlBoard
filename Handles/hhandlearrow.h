@@ -30,7 +30,9 @@ class HBOARD_EXPORT HHandleArrow : public HHandleMove {
   bool _can_move;
   bool _moved;
   int _distance;
+  QUuid _select_node;
   QPointF _point;
+  QPointF _select_start_point;
 };
 
 #endif  // HHANDLEARROW_H

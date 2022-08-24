@@ -39,7 +39,9 @@ class HBOARD_EXPORT HHandleBase {
  protected:
   bool middleButtonPress(QMouseEvent* event);
   bool leftButtonPress(QMouseEvent* event);
-  bool isButtonPress(QMouseEvent* event);
+  bool rightButtonPress(QMouseEvent* event);
+  bool isButtonPress(QMouseEvent* event,
+                     Qt::MouseButton button = Qt::MouseButton::LeftButton);
   bool ctrlKeyPress(const QSet<int>& keys);
 
  protected:

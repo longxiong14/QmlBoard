@@ -48,8 +48,14 @@ bool HHandleBase::leftButtonPress(QMouseEvent *event) {
   return flag;
 }
 
-bool HHandleBase::isButtonPress(QMouseEvent *event) {
-  return Qt::MouseButton::LeftButton == event->button();
+bool HHandleBase::rightButtonPress(QMouseEvent *event) {
+  bool flag = (Qt::MouseButton::RightButton ==
+               (Qt::MouseButton::RightButton & event->buttons()));
+  return flag;
+}
+
+bool HHandleBase::isButtonPress(QMouseEvent *event, Qt::MouseButton button) {
+  return button == event->button();
 }
 
 bool HHandleBase::ctrlKeyPress(const QSet<int> &keys) {
