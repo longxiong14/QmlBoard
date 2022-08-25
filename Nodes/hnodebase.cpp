@@ -53,7 +53,6 @@ void HNodeBase::changedSelectStatus() {
       }
     }
   }
-  DEBUG << _id << _select;
 }
 
 void HNodeBase::move(const QPointF &p) {
