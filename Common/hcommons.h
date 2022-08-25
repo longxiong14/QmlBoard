@@ -7,7 +7,7 @@
 
 #include "../HBoard_global.h"
 class HBOARD_EXPORT HCommon {
-public:
+ public:
   static QPointF TopLeft(const QPointF &f, const QPointF &s);
   static QPointF TopRight(const QPointF &f, const QPointF &s);
   static QPointF BottomLeft(const QPointF &f, const QPointF &s);
@@ -20,6 +20,8 @@ public:
   static bool PointInContour(const QPointF &point,
                              const QList<QPointF> &contour);
 
+  static bool PointInRect(const QPointF &point, const QRectF &rect);
+
   static QList<QPointF> BuildRectLinesList(const QRectF &rect);
   static QList<QPointF> BuildPolyLinesList(const QList<QPointF> &list);
 
@@ -31,6 +33,6 @@ public:
 
   static bool RectHasOverlap(const QRectF &r1, const QRectF &r2);
 
-}; // class HCommon
+};  // class HCommon
 
-#endif // HCOMMONS_H
+#endif  // HCOMMONS_H

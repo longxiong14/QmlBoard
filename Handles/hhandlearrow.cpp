@@ -76,11 +76,11 @@ void HHandleArrow::mouseMoveEvent(HBoard *board, QMouseEvent *event,
 void HHandleArrow::mouseReleaseEvent(HBoard *board, QMouseEvent *event,
                                      const QJsonObject &) {
   if (board && event) {
+    auto pos = board->WCS2LCS(event->pos());
     if (isButtonPress(event) && !middleButtonPress(event) && !_moved) {
       if (!ctrlKeyPress(board->keys())) {
         board->clearSelect();
       }
-      auto pos = board->WCS2LCS(event->pos());
       auto nodes = board->visibleNodes();
       double scale = board->getScale();
       for (const auto &n : nodes.values()) {
@@ -90,7 +90,19 @@ void HHandleArrow::mouseReleaseEvent(HBoard *board, QMouseEvent *event,
       }
       board->checkItems();
     }
+    auto r = HCommon::BuildRect(_select_start_point, pos);
     if (isButtonPress(event, Qt::MouseButton::RightButton)) {
+      auto nodes = board->nodes();
+      for (const auto &k : nodes.keys()) {
+        auto n = nodes.value(k);
+        if (!n || n->isSelect() || n->id() == _select_node) continue;
+        DEBUG << k << n->isSelect();
+        auto bound = nodes.value(k)->getBoundRect();
+        if (HCommon::PointInRect(bound.topLeft(), r) &&
+            HCommon::PointInRect(bound.bottomRight(), r)) {
+          board->changeSelectStatus(k);
+        }
+      }
       board->removeNode(_select_node);
       _select_node = "";
     }

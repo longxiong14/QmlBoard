@@ -274,11 +274,13 @@ void HBoard::setSelect(const QUuid &s) {
 }
 
 void HBoard::clearSelect() {
-  for (auto n : _nodes) {
-    if (n->isSelect()) {
-      pushTask([=]() { n->changedSelectStatus(); });
+  pushTask([=]() {
+    for (auto n : _nodes) {
+      if (n->isSelect()) {
+        n->changedSelectStatus();
+      }
     }
-  }
+  });
   update();
 }
 

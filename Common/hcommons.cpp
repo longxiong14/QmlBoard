@@ -57,9 +57,9 @@ bool HCommon::PointInContour(const QPointF &vtPoint,
                              const QList<QPointF> &vecPoints) {
   if (true) {
     bool bResult =
-        false; //判断结果（true；点落在多边形内；false:点未落在多边形内）
+        false;  //判断结果（true；点落在多边形内；false:点未落在多边形内）
     int nSize = vecPoints.size();
-    int j = nSize - 1; // nSize -1 是多边形的最后一个顶点
+    int j = nSize - 1;  // nSize -1 是多边形的最后一个顶点
     for (int i = 0; i < nSize; i++) {
       //判断点是否在线段的两侧(只取上端点,不取下端点，否则会多出一次判断，出现异常)
       if ((vecPoints[i].y() < vtPoint.y() && vecPoints[j].y() >= vtPoint.y()) ||
@@ -79,9 +79,9 @@ bool HCommon::PointInContour(const QPointF &vtPoint,
     return bResult;
   } else {
     bool bResult =
-        false; //判断结果（true；点落在多边形内；false:点未落在多边形内）
+        false;  //判断结果（true；点落在多边形内；false:点未落在多边形内）
     int nSize = vecPoints.size();
-    int j = nSize - 1; // nSize -1 是多边形的最后一个顶点
+    int j = nSize - 1;  // nSize -1 是多边形的最后一个顶点
     for (int i = 0; i < nSize; i++) {
       //判断点是否在线段的两侧
       if ((vecPoints[i].y() < vtPoint.y() && vecPoints[j].y() >= vtPoint.y()) ||
@@ -104,6 +104,16 @@ bool HCommon::PointInContour(const QPointF &vtPoint,
 
     return bResult;
   }
+}
+
+bool HCommon::PointInRect(const QPointF &point, const QRectF &rect) {
+  auto tl = rect.topLeft();
+  auto br = rect.bottomRight();
+  if (point.x() >= tl.x() && point.y() >= tl.y() && point.x() <= br.x() &&
+      point.y() <= br.y()) {
+    return true;
+  }
+  return false;
 }
 
 QList<QPointF> HCommon::BuildRectLinesList(const QRectF &rect) {
