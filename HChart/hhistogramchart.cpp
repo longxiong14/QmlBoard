@@ -207,6 +207,14 @@ void HHistogramChart::updateNode(QSGGeometryNode *&node, int num) {
   if (!node) {
     node = new QSGGeometryNode();
   }
+  if (node) {
+    for (int i = 0; i < node->childCount(); i++) {
+      QSGImageNode *n = dynamic_cast<QSGImageNode *>(node->childAtIndex(0));
+      if (n) HSGNodeCommon::releaseTextureNode(n);
+    }
+    node->removeAllChildNodes();
+  }
+
   QList<QPointF> list{{step * num, 0}, {step * num, height()}};
   auto geo = HSGNodeCommon::buildGeometry(list, GL_LINES);
   geo->setLineWidth(2);
@@ -219,6 +227,14 @@ void HHistogramChart::updateNode(QSGGeometryNode *&node, int num) {
   auto green = c.green() ^ 0xff;
   auto blue = c.blue() ^ 0xff;
   c = QColor(red, green, blue);
+  {
+    auto image = HSGNodeCommon::createTextImage(QString::number(num), 20, 20);
+    auto image_node = window()->createImageNode();
+    auto texture = window()->createTextureFromImage(image);
+    image_node->setTexture(texture);
+    image_node->setRect(step * num, 0, 20, 20);
+    node->appendChildNode(image_node);
+  }
 
   QSGFlatColorMaterial *material = HSGNodeCommon::buildColor(c);
   node->setMaterial(material);
