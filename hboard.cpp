@@ -50,17 +50,6 @@ HBoard::HBoard(QQuickItem *parent)
       });
       update();
     }
-    //    if (_trans_node) {
-    //      bool flag = false;
-    //      for (auto n : _nodes) {
-    //        if (n->isSelect()) {
-    //          flag = true;
-    //          pushTask([=]() { n->timeOut(); });
-    //        }
-    //      }
-    //      if (flag)
-    //        update();
-    //    }
   });
 }
 

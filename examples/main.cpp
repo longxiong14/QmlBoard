@@ -1,6 +1,7 @@
 ﻿#include <QGuiApplication>
 #include <QQmlApplicationEngine>
 
+#include "../HChart/hhistogramchart.h"
 #include "../Handles/hhandlearrow.h"
 #include "../Handles/hhandleflyweight.h"
 #include "../Handles/hhandlemove.h"
@@ -20,14 +21,14 @@ int main(int argc, char *argv[]) {
   QQmlApplicationEngine engine;
 
   qmlRegisterType<HBoard>("hBoard", 1, 0, "HBoard");
+  qmlRegisterType<HHistogramChart>("hHistogramChart", 1, 0, "HHistogramChart");
   qmlRegisterType<HBoardUIControl>("hUIControl", 1, 0, "HUIControl");
 
   const QUrl url(QStringLiteral("qrc:/qml/ICProgram/ICProgramMain.qml"));
   QObject::connect(
       &engine, &QQmlApplicationEngine::objectCreated, &app,
       [url](QObject *obj, const QUrl &objUrl) {
-        if (!obj && url == objUrl)
-          QCoreApplication::exit(-1);
+        if (!obj && url == objUrl) QCoreApplication::exit(-1);
       },
       Qt::QueuedConnection);
   engine.load(url);
