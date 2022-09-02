@@ -205,9 +205,16 @@ void HHandleDrawCircle::mousePressEvent(HBoard *board, QMouseEvent *event,
   }
 }
 
+void HHandleDrawCircle::boardLeaveOffThisHandle(HBoard *board) {
+  if (board) {
+    board->removeNode(_node);
+    _node = "";
+  }
+}
+
 void HHandleDrawCircle::hoverLeaveEvent(HBoard *board, QHoverEvent *event,
                                         const QJsonObject &object) {
-  if (!_node.isNull() && board && board->hasNode(_node)) {
+  if (!_node.isNull() && board) {
     board->removeNode(_node);
     _node = "";
   }
@@ -224,7 +231,8 @@ void HHandleDrawCircle::updateCirclePosition(HBoard *board,
                                              const QPointF &center,
                                              const QJsonObject &object) {
   auto list = HCommon::BuildCircle(center, object.value("radius").toInt(), 360);
-  if (!board->hasNode(_node)) {
+  if (!board) return;
+  if (_node.isNull()) {
     auto node = std::make_shared<HFillNode>(list, GL_LINE_LOOP, object);
     _node = node->id();
     board->pushNode(node);
@@ -251,7 +259,8 @@ void HHandleDrawFillCircle::updateCirclePosition(HBoard *board,
                                                  const QPointF &center,
                                                  const QJsonObject &object) {
   auto list = HCommon::BuildCircle(center, object.value("radius").toInt(), 360);
-  if (!board->hasNode(_node)) {
+  if (!board) return;
+  if (_node.isNull()) {
     auto node = std::make_shared<HFillNode>(list, GL_POLYGON, object);
     _node = node->id();
     board->pushNode(node);

@@ -37,6 +37,10 @@ HReviewNodeManager::~HReviewNodeManager() {
 
 int HReviewNodeManager::pushNode(const QString &key,
                                  std::shared_ptr<HNodeBase> node) {
+  if (_nodes.contains(key)) {
+    DEBUG << "had this node" << key;
+    return -1;
+  }
   if (!node) {
     DEBUG << "node is nullptr";
     return -1;
@@ -58,6 +62,14 @@ int HReviewNodeManager::pushNode(const QString &key,
 
 int HReviewNodeManager::pushNode(const QString &key, const cv::Mat &mat,
                                  const QPointF &start_point) {
+  if (_nodes.contains(key)) {
+    DEBUG << "had this node " << key;
+    return -1;
+  }
+  if (mat.empty()) {
+    DEBUG << "mat is empty";
+    return -1;
+  }
   std::shared_ptr<HCVMatNode> node =
       std::make_shared<HCVMatNode>(mat, start_point);
   return pushNode(key, node);

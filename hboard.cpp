@@ -185,13 +185,10 @@ void HBoard::pushTransform(const QTransform &trans) {
 }
 
 void HBoard::pushNode(std::shared_ptr<HNodeBase> node, bool flag) {
-  {
-    QMutexLocker lock(&_mutex);
-    if (_nodes.contains(node->id())) return;
-    if (flag) _nodes.insert(node->id(), node);
-  }
   pushTask([=]() {
     if (node) {
+      if (_nodes.contains(node->id())) return;
+      if (flag) _nodes.insert(node->id(), node);
       _trans_node->appendChildNode(node->build(this));
     }
   });
@@ -234,6 +231,10 @@ void HBoard::removeNode(const QUuid &id) {
             _trans_node->removeChildNode(node->get());
             break;
           }
+        }
+        if (HNodeBase::NODETYPE::IMAGE == node->nodeType()) {
+          DEBUG << "remove image node " << node->id();
+          std::this_thread::sleep_for(std::chrono::milliseconds(100));
         }
       }
     });
@@ -528,6 +529,7 @@ QSGNode *HBoard::updatePaintNode(QSGNode *node,
     }
   }
   updateRule();
+  emit updated();
   return node;
 }
 
@@ -582,6 +584,9 @@ void HBoard::keyPressEvent(QKeyEvent *event) {
       if (_keys.contains(Qt::Key_Control)) {
         home();
       }
+      break;
+    case Qt::Key_Escape:
+      clearSelect();
       break;
   }
 }

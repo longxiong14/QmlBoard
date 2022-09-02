@@ -115,6 +115,8 @@ class HBOARD_EXPORT HHandleDrawCircle : public HHandleMove {
       HBoard* board, QMouseEvent* event,
       const QJsonObject& object = QJsonObject()) override;
 
+  virtual void boardLeaveOffThisHandle(HBoard* board) override;
+
   virtual void hoverLeaveEvent(
       HBoard* board, QHoverEvent* event,
       const QJsonObject& object = QJsonObject()) override;

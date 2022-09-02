@@ -111,6 +111,7 @@ class HBOARD_EXPORT HBoard : public QQuickItem {
   void nameChanged();
   void hoverPoint(int x, int y);
   void itemsChanged();
+  void updated();
 
  private:
   QSGTransformNode *_trans_node;

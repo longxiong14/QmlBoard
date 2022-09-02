@@ -47,6 +47,7 @@ HCVMatNode::HCVMatNode(const cv::Mat &mat, const QPointF &start_point)
 
 HCVMatNode::~HCVMatNode() {
   if (_destory && _node) {
+    DEBUG << "release HCVMatNode " << _destory;
     int count = _node->childCount();
     for (int i = 0; i < count; i++) {
       auto n = _node->childAtIndex(0);
@@ -62,6 +63,7 @@ HCVMatNode::~HCVMatNode() {
     _node = nullptr;
     _mat = cv::Mat();
   }
+  DEBUG << "release HCVMatNode " << _destory;
 }
 
 QSGNode *HCVMatNode::build(HBoard *board) {
@@ -181,7 +183,7 @@ void HCVMatNode::updateRoi(HBoard *board, const QRectF &roi) {
               texture = nullptr;
             }
             n->setTexture(t);
-            DEBUG << "success update mat";
+            //            DEBUG << "success update mat";
           }
         }
       }
@@ -305,7 +307,7 @@ QSGImageNode *HCVMatNode::BuildQImageNode(const QImage &image, HBoard *board,
   if (board) {
     node = board->window()->createImageNode();
     QSGTexture *texture = board->window()->createTextureFromImage(image);
-
+    texture->bind();
     node->setTexture(texture);
     node->setRect(rect);
   }
