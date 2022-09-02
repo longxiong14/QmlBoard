@@ -25,15 +25,15 @@ HHistogramChart::HHistogramChart(QQuickItem *parent)
   setFocus(true);
   setAcceptedMouseButtons(Qt::MouseButton::LeftButton);
 
-  QJsonArray array;
-  std::srand(0);
-  for (int i = 0; i < 256; i++) {
-    auto num = std::rand() % 100;
-    array.push_back(num);
-  }
-  setArray(array);
-  setLeft(30);
-  setRight(80);
+  //  QJsonArray array;
+  //  std::srand(0);
+  //  for (int i = 0; i < 256; i++) {
+  //    auto num = std::rand() % 100;
+  //    array.push_back(num);
+  //  }
+  //  setArray(array);
+  //  setLeft(30);
+  //  setRight(80);
 }
 
 QSGNode *HHistogramChart::updatePaintNode(QSGNode *node,
