@@ -29,7 +29,8 @@ double HPlanVector::pmult(const QPointF& a, const QPointF& b) {
   return a.x() * b.x() + a.y() * b.y();
 }
 
-double HPlanVector::pldis(const QPointF& a, const QPointF& b, const QPointF& c) {
+double HPlanVector::pldis(const QPointF& a, const QPointF& b,
+                          const QPointF& c) {
   QPointF s1, s2, s3;
   s1.setX(c.x() - b.x());
   s1.setY(c.y() - b.y());

@@ -487,7 +487,10 @@ double HBoard::getScale() {
   auto w = width();
   auto h = height();
   auto pt = WCS2LCS(QPointF((w), (h)));
-  return ((1.0 * w / pt.x()) + (1.0 * h / pt.y())) / 2;
+  auto pt2 = WCS2LCS(QPointF(0, 0));
+  auto d_w = pt.x() - pt2.x();
+  auto d_h = pt.y() - pt2.y();
+  return ((1.0 * w / d_w) + (1.0 * h / d_h)) / 2;
 }
 
 QSGTransformNode *HBoard::transformNode() { return _trans_node; }
