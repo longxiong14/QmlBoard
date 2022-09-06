@@ -1,14 +1,12 @@
 ﻿#include "hboarduicontrol.h"
 
 #include <QDebug>
-#include <opencv2/imgcodecs.hpp>
-#include <opencv2/imgproc.hpp>
 
 #include "Common/hcommons.h"
 #include "Common/hplanvector.h"
 #include "Handles/hhandleflyweight.h"
-#include "Nodes/hcvmatnode.h"
 #include "Nodes/hfillnode.h"
+#include "Nodes/himagenode.h"
 #include "Nodes/hnodebase.h"
 #include "hboard.h"
 #include "hboardmanager.h"
@@ -45,7 +43,7 @@ int HBoardUIControl::openBoardPicture(const QString &board,
     DEBUG << "hasn't this board " << board;
     return -1;
   }
-  auto node = std::make_shared<HCVMatNode>(path);
+  auto node = std::make_shared<HImageNode>(path);
   node->setText(node->id().toString());
   ptr->pushNode(node);
   ptr->home();
@@ -145,16 +143,20 @@ void HBoardUIControl::test() {
   for (const auto &k : sel) {
     auto n = board->getNodeById(k);
     //    n->setText(n->id().toString(), QRect(0, 0, 100, 100));
-    board->updateNodeText(k, n->id().toString(), QRectF(0, -10, 100, 100), 50);
+    //    board->updateNodeText(k, n->id().toString(), QRectF(0, -10, 100, 100),
+    //    50);
     //    if (HNodeBase::NODETYPE::IMAGE == n->nodeType()) {
-    //      auto mat = cv::imread("C:\\Users\\xiaolong\\Pictures\\ttt.png");
-    //      if (mat.empty()) {
+    //      auto mat = QImage("C:\\Users\\xiaolong\\Pictures\\ttt.png");
+
+    //      if (mat.isNull()) {
     //        DEBUG << "mat empty";
     //      }
-    //      board->updateNodeMat(k, mat, QPoint(-20, -20));
-    //      board->updateNodeMat(k, mat, QPoint(1900, 1070));
-    //      board->updateNodeMat(k, mat, QPoint(1900, -20));
-    //      board->updateNodeMat(k, mat, QPoint(-20, 1070));
+    //      mat.convertTo(QImage::Format::Format_ARGB32);
+    //      //      board->updateNodeMat(k, mat, QPoint(0, 0));
+    //      board->updateNodeMat(k, mat, QPoint(-10, -10));
+    //      board->updateNodeMat(k, mat, QPoint(1910, 1070));
+    //      board->updateNodeMat(k, mat, QPoint(1910, -10));
+    //      board->updateNodeMat(k, mat, QPoint(-10, 1070));
     //    }
   }
 }

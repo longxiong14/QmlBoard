@@ -11,7 +11,6 @@
 #include <QUuid>
 #include <QtQuick/QQuickItem>
 #include <functional>
-#include <opencv2/core.hpp>
 
 #include "HBoard_global.h"
 class QSGNode;
@@ -57,7 +56,7 @@ class HBOARD_EXPORT HBoard : public QQuickItem {
                      const QRectF &rect = QRectF(), int pixel_size = 10);
 
   // start: relate position
-  bool updateNodeMat(const QUuid &node, const cv::Mat &mat,
+  bool updateNodeMat(const QUuid &node, const QImage &mat,
                      const QPointF &start);
   bool hasNode(const QUuid &node);
   void visibleNode(const QUuid &node, bool flag);

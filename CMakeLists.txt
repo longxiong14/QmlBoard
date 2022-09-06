@@ -13,14 +13,16 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 #set(OpenCV_DIR  "${CMAKE_SOURCE_DIR}/Install/opencv/${CMAKE_BUILD_TYPE}" )
 
 find_package(Qt5 COMPONENTS Core Quick  REQUIRED)
-find_package(OpenCV REQUIRED)
+#find_package(OpenCV REQUIRED)
 
-include_directories(${OpenCV_INCLUDE_DIRS})
+#include_directories(${OpenCV_INCLUDE_DIRS})
 
 file(GLOB_RECURSE CPPS  ./*.cpp ./*.h)
 LIST(FILTER CPPS EXCLUDE REGEX "examples/*")
 add_library(${PROJECT_NAME} SHARED ${CPPS})
-target_link_libraries(${PROJECT_NAME} Qt5::Gui Qt5::Core Qt5::Quick ${OpenCV_LIBS})
+target_link_libraries(${PROJECT_NAME} Qt5::Gui Qt5::Core Qt5::Quick
+#    ${OpenCV_LIBS}
+    )
 target_compile_definitions(${PROJECT_NAME} PRIVATE HBOARD_LIBRARY)
 
 FILE(GLOB_RECURSE sub_data_dirs RELATIVE "${CMAKE_SOURCE_DIR}" *.h)

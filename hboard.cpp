@@ -9,6 +9,7 @@
 #include <QSGOpaqueTextureMaterial>
 #include <QSGSimpleRectNode>
 #include <QSGTexture>
+#include <thread>
 
 #include "Common/hcommons.h"
 #include "Common/hjsoncommon.h"
@@ -17,8 +18,8 @@
 #include "Handles/hhandlebase.h"
 #include "Handles/hhandleflyweight.h"
 #include "Handles/hhandlemove.h"
-#include "Nodes/hcvmatnode.h"
 #include "Nodes/hfillnode.h"
+#include "Nodes/himagenode.h"
 #include "Nodes/hnodebase.h"
 #include "hboardmanager.h"
 #define DEBUG qDebug() << __FUNCTION__ << " " << __LINE__ << " "
@@ -155,7 +156,7 @@ int HBoard::load(const QJsonArray &nodes) {
         }
       } break;
       case HNodeBase::NODETYPE::IMAGE: {
-        auto node = std::make_shared<HCVMatNode>();
+        auto node = std::make_shared<HImageNode>();
         if (0 == node->load(o) && !_nodes.contains(node->id())) {
           pushNode(node);
           flag = true;
@@ -390,7 +391,7 @@ int HBoard::updateNodeText(const QUuid &node, const QString &text,
   return 0;
 }
 
-bool HBoard::updateNodeMat(const QUuid &node, const cv::Mat &mat,
+bool HBoard::updateNodeMat(const QUuid &node, const QImage &mat,
                            const QPointF &start) {
   if (!_nodes.contains(node)) {
     return false;
@@ -408,7 +409,7 @@ bool HBoard::updateNodeMat(const QUuid &node, const cv::Mat &mat,
     if (!n || HNodeBase::NODETYPE::IMAGE != n->nodeType()) {
       return false;
     }
-    auto image_node = dynamic_cast<HCVMatNode *>(n.get());
+    auto image_node = dynamic_cast<HImageNode *>(n.get());
     if (image_node) {
       image_node->updateMat(this, mat, start);
     }

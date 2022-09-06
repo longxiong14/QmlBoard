@@ -59,3 +59,20 @@ void HSGNodeCommon::releaseTextureNode(QSGImageNode *image) {
     }
   }
 }
+
+int HSGNodeCommon::imageCopyTo(const QImage &src, const QRect &src_rect,
+                               QImage &dst, const QRect &dst_rect) {
+  if (src.format() != dst.format()) {
+    return -1;
+  }
+  //  auto r = src_rect & src.rect() & dst.rect() & dst_rect;
+  //  auto s_r = src_rect & src.rect();
+  //  auto d_r = dst_rect & dst.rect();
+  //  auto r = s_r & d_r;
+  //  if (r.width() * r.height() <= 0) return -1;
+
+  //  auto s = src.copy(r);
+  QPainter painter(&dst);
+  painter.drawImage(dst_rect, src.copy(src_rect));
+  return 0;
+}

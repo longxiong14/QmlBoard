@@ -25,6 +25,9 @@ class HBOARD_EXPORT HSGNodeCommon {
 
   static void releaseTextureNode(QSGImageNode *image);
 
+  static int imageCopyTo(const QImage &src, const QRect &src_rect, QImage &dst,
+                         const QRect &dst_rect);
+
 };  // class  HSGNodeCommon
 
 #endif  // HSGNODECOMMON_H

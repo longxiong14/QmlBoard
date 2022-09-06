@@ -1,9 +1,9 @@
 ﻿#ifndef HREVIEWNODEMANAGER_H
 #define HREVIEWNODEMANAGER_H
 
+#include <QImage>
 #include <QSet>
 #include <QUuid>
-#include <opencv2/core.hpp>
 
 #include "../HBoard_global.h"
 #include "hnodebase.h"
@@ -15,7 +15,7 @@ class HBOARD_EXPORT HReviewNodeManager {
   virtual ~HReviewNodeManager();
 
   int pushNode(const QString& key, std::shared_ptr<HNodeBase> node);
-  int pushNode(const QString& key, const cv::Mat& mat,
+  int pushNode(const QString& key, const QImage& image,
                const QPointF& start_point);
 
   int removeNode(const QString& key);

@@ -4,7 +4,7 @@
 
 #include "../hboard.h"
 #include "../hboardmanager.h"
-#include "hcvmatnode.h"
+#include "himagenode.h"
 #define DEBUG qDebug() << __FUNCTION__ << " " << __LINE__ << " "
 HReviewNodeManager::HReviewNodeManager(const QString &name)
     : _board_name(name) {}
@@ -60,18 +60,18 @@ int HReviewNodeManager::pushNode(const QString &key,
   return 0;
 }
 
-int HReviewNodeManager::pushNode(const QString &key, const cv::Mat &mat,
+int HReviewNodeManager::pushNode(const QString &key, const QImage &mat,
                                  const QPointF &start_point) {
   if (_nodes.contains(key)) {
     DEBUG << "had this node " << key;
     return -1;
   }
-  if (mat.empty()) {
+  if (mat.isNull()) {
     DEBUG << "mat is empty";
     return -1;
   }
-  std::shared_ptr<HCVMatNode> node =
-      std::make_shared<HCVMatNode>(mat, start_point);
+  std::shared_ptr<HImageNode> node =
+      std::make_shared<HImageNode>(mat, start_point);
   return pushNode(key, node);
 }
 

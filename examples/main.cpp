@@ -6,13 +6,11 @@
 #include "../Handles/hhandleflyweight.h"
 #include "../Handles/hhandlemove.h"
 #include "../Handles/hhandlepaint.h"
-#include "../Nodes/hcvmatnode.h"
 #include "../Nodes/hfillnode.h"
 #include "../Nodes/hnodebase.h"
 #include "../hboard.h"
 #include "../hboardmanager.h"
 #include "../hboarduicontrol.h"
-#include "hdrawmathandle.h"
 int main(int argc, char *argv[]) {
   QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
 
