@@ -20,10 +20,19 @@ class HBOARD_EXPORT HHandleMove : public HHandleBase {
       const QJsonObject& object = QJsonObject()) override;
   virtual void wheelEvent(HBoard* board, QWheelEvent* event) override;
 
+  virtual void hoverEnterEvent(
+      HBoard* board, QHoverEvent* event,
+      const QJsonObject& object = QJsonObject()) override;
+
+  void setCursorSize(int size);
+
+  int cursorSize();
+
  protected:
   QPointF _last_point;
   QTransform _last_trans;
   double _scale;
+  int _cursor_size;
 };
 
 #endif  // HHANDLEMOVE_H

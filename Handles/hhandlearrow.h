@@ -19,6 +19,10 @@ class HBOARD_EXPORT HHandleArrow : public HHandleMove {
       const QJsonObject& object = QJsonObject()) override;
   virtual void wheelEvent(HBoard* board, QWheelEvent* event) override;
 
+  virtual void hoverEnterEvent(
+      HBoard* board, QHoverEvent* event,
+      const QJsonObject& object = QJsonObject()) override;
+
  public:
   void setDistance(int dis);
   int getDistance();

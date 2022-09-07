@@ -1,5 +1,6 @@
 ﻿#include "hhandlearrow.h"
 
+#include <QCursor>
 #include <QDebug>
 #include <QMatrix>
 #include <QSGNode>
@@ -111,6 +112,13 @@ void HHandleArrow::mouseReleaseEvent(HBoard *board, QMouseEvent *event,
 
 void HHandleArrow::wheelEvent(HBoard *board, QWheelEvent *event) {
   HHandleMove::wheelEvent(board, event);
+}
+
+void HHandleArrow::hoverEnterEvent(HBoard *board, QHoverEvent *,
+                                   const QJsonObject &) {
+  if (board) {
+    board->setCursor(Qt::CursorShape::ArrowCursor);
+  }
 }
 
 void HHandleArrow::setDistance(int dis) { _distance = dis; }
