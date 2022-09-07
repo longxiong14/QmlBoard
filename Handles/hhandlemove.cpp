@@ -10,7 +10,10 @@
 #include "hboard.h"
 
 #define DEBUG qDebug() << __FUNCTION__ << " " << __LINE__ << " "
-HHandleMove::HHandleMove() : _scale(0.05), _cursor_size(200) { _name = "none"; }
+HHandleMove::HHandleMove()
+    : _scale(0.05), _cursor_size(200), _cursor_color("green") {
+  _name = "none";
+}
 
 void HHandleMove::mousePressEvent(HBoard *board, QMouseEvent *event,
                                   const QJsonObject &o) {
@@ -67,6 +70,9 @@ void HHandleMove::hoverEnterEvent(HBoard *board, QHoverEvent *,
     QPainter painter(&map);
     painter.setRenderHint(QPainter::Antialiasing, true);
     painter.fillRect(map.rect(), QColor(0, 0, 0, 0));
+    QColor color;
+    color.setNamedColor(_cursor_color);
+    painter.setPen(color);
     painter.drawLine(0, _cursor_size / 2, _cursor_size, _cursor_size / 2);
     painter.drawLine(_cursor_size / 2, 0, _cursor_size / 2, _cursor_size);
     QCursor cursor(map);
@@ -77,3 +83,15 @@ void HHandleMove::hoverEnterEvent(HBoard *board, QHoverEvent *,
 void HHandleMove::setCursorSize(int size) { _cursor_size = size; }
 
 int HHandleMove::cursorSize() { return _cursor_size; }
+
+void HHandleMove::setColor(const QString &color) { _cursor_color = color; }
+
+void HHandleMove::setColor(const QColor &color) {
+  _cursor_color = color.name();
+}
+
+QColor HHandleMove::getCursorColor() {
+  QColor color;
+  color.setNamedColor(_cursor_color);
+  return color;
+}
