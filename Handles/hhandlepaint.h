@@ -7,6 +7,7 @@
 
 #include "hhandlebase.h"
 #include "hhandlemove.h"
+
 class HBOARD_EXPORT HHandleDrawRect : public HHandleMove {
  public:
   HHandleDrawRect();
@@ -22,26 +23,6 @@ class HBOARD_EXPORT HHandleDrawRect : public HHandleMove {
 
  protected:
   QPointF _point;
-};
-
-class HBOARD_EXPORT HHandleDrawPoly : public HHandleMove {
- public:
-  HHandleDrawPoly();
-
-  virtual void mousePressEvent(
-      HBoard* board, QMouseEvent* event,
-      const QJsonObject& object = QJsonObject()) override;
-  virtual void mouseMoveEvent(
-      HBoard* board, QMouseEvent* event,
-      const QJsonObject& object = QJsonObject()) override;
-  virtual void mouseReleaseEvent(
-      HBoard* board, QMouseEvent* event,
-      const QJsonObject& object = QJsonObject()) override;
-
-  virtual QJsonObject getDefaultParam() override;
-
- protected:
-  QList<QPointF> _points;
 };
 
 class HBOARD_EXPORT HHandleDrawLine : public HHandleMove {
@@ -68,17 +49,34 @@ class HBOARD_EXPORT HHandleDrawCurve : public HHandleMove {
   virtual void mousePressEvent(
       HBoard* board, QMouseEvent* event,
       const QJsonObject& object = QJsonObject()) override;
-  virtual void mouseMoveEvent(
-      HBoard* board, QMouseEvent* event,
+
+  virtual void hoverMoveEvent(
+      HBoard* board, QHoverEvent* event,
       const QJsonObject& object = QJsonObject()) override;
+
   virtual void mouseReleaseEvent(
       HBoard* board, QMouseEvent* event,
       const QJsonObject& object = QJsonObject()) override;
+
+  virtual void boardLeaveOffThisHandle(HBoard* board) override;
 
   virtual QJsonObject getDefaultParam() override;
 
  protected:
   QList<QPointF> _points;
+};
+
+class HBOARD_EXPORT HHandleDrawPoly : public HHandleDrawCurve {
+ public:
+  HHandleDrawPoly();
+
+  virtual void mouseReleaseEvent(
+      HBoard* board, QMouseEvent* event,
+      const QJsonObject& object = QJsonObject()) override;
+
+  virtual void boardLeaveOffThisHandle(HBoard* board) override;
+
+  virtual QJsonObject getDefaultParam() override;
 };
 
 class HBOARD_EXPORT HHandleDrawFillRect : public HHandleDrawRect {
@@ -94,9 +92,7 @@ class HBOARD_EXPORT HHandleDrawFillPoly : public HHandleDrawPoly {
  public:
   HHandleDrawFillPoly();
 
-  virtual void mousePressEvent(
-      HBoard* board, QMouseEvent* event,
-      const QJsonObject& object = QJsonObject()) override;
+  virtual void boardLeaveOffThisHandle(HBoard* board) override;
 };
 
 class HBOARD_EXPORT HHandleDrawCircle : public HHandleMove {

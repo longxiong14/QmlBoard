@@ -6,7 +6,7 @@
 #include "../Storage/hstoragebase.h"
 #include "hnodebase.h"
 class HBOARD_EXPORT HFillNode : public HNodeBase /*, public QSGGeometryNode*/ {
-public:
+ public:
   HFillNode();
   HFillNode(const QList<QPointF> &points, unsigned long type = GL_LINE_LOOP,
             const QJsonObject &p = QJsonObject());
@@ -15,7 +15,7 @@ public:
   //  virtual ~HFillNode() override;
   //  HFillNode(const HFillNode &o) = delete;
 
-public:
+ public:
   virtual QSGNode *get() override;
   virtual QSGNode *build(HBoard *) override;
   virtual QRectF getBoundRect() override;
@@ -26,6 +26,7 @@ public:
   virtual void setColor(const QColor &color) override;
   virtual void setParam(const QJsonObject &p) override;
   virtual unsigned long drawingMode() override;
+  virtual void updateDrawMode(unsigned long mode) override;
 
   virtual int save(QJsonObject &o) override;
   virtual int load(const QJsonObject &o) override;
@@ -34,14 +35,14 @@ public:
 
   void clear();
 
-protected:
+ protected:
   void setOurGeometry(const QList<QPointF> &points, unsigned long type = false);
 
   QColor getColor(const QJsonObject &p);
   QSGGeometryNode *_node;
 
-protected:
+ protected:
   unsigned long _drawMode;
 };
 
-#endif // HFILLNODE_H
+#endif  // HFILLNODE_H

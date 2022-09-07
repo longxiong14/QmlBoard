@@ -55,6 +55,8 @@ class HBOARD_EXPORT HBoard : public QQuickItem {
   int updateNodeText(const QUuid &node, const QString &text,
                      const QRectF &rect = QRectF(), int pixel_size = 10);
 
+  int updateNodeDrawMode(const QUuid &node, unsigned long mode);
+
   // start: relate position
   bool updateNodeMat(const QUuid &node, const QImage &mat,
                      const QPointF &start);
@@ -112,7 +114,7 @@ class HBOARD_EXPORT HBoard : public QQuickItem {
   void itemsChanged();
   void updated();
 
- private:
+ protected:
   QSGTransformNode *_trans_node;
   HHandleBase *_handle;
   QMutex _mutex;

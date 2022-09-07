@@ -16,6 +16,8 @@ class HBOARD_EXPORT HHistogramChart : public QQuickItem {
   Q_PROPERTY(int left READ left WRITE setLeft NOTIFY leftChanged)
   Q_PROPERTY(int right READ right WRITE setRight NOTIFY rightChanged)
   Q_PROPERTY(QString color READ color WRITE setColor NOTIFY colorChanged)
+  Q_PROPERTY(
+      int fontSize READ fontSize WRITE setFontSize NOTIFY fontSizeChanged)
 
  public:
   HHistogramChart(QQuickItem *parent = nullptr);
@@ -24,6 +26,7 @@ class HBOARD_EXPORT HHistogramChart : public QQuickItem {
 
   virtual void mousePressEvent(QMouseEvent *event) override;
   virtual void mouseMoveEvent(QMouseEvent *event) override;
+  virtual void mouseReleaseEvent(QMouseEvent *event) override;
   virtual void hoverMoveEvent(QHoverEvent *event) override;
 
  public:
@@ -39,6 +42,9 @@ class HBOARD_EXPORT HHistogramChart : public QQuickItem {
   QString color();
   void setColor(const QString &c);
 
+  int fontSize();
+  void setFontSize(int size);
+
  protected:
   void updateChart(QSGNode *node);
   void updateLeft(QSGNode *node);
@@ -51,6 +57,7 @@ class HBOARD_EXPORT HHistogramChart : public QQuickItem {
   void leftChanged();
   void rightChanged();
   void colorChanged();
+  void fontSizeChanged();
  public slots:
 
  protected:
@@ -69,6 +76,7 @@ class HBOARD_EXPORT HHistogramChart : public QQuickItem {
   QString _color;
 
   LOR _lor;
+  int _font_size;
 };
 
 #endif  // HHISTOGRAMCHART_H

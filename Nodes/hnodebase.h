@@ -38,6 +38,7 @@ class HBOARD_EXPORT HNodeBase : public HStorageBase<QJsonObject> {
   virtual void setColor(const QColor &) {}
   virtual NODETYPE nodeType() { return SHAPE; }
   virtual unsigned long drawingMode();
+  virtual void updateDrawMode(unsigned long mode);
   virtual void setVisible(bool flag);
   virtual bool visible();
   virtual void timeOut();

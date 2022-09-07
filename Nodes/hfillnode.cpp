@@ -125,6 +125,11 @@ void HFillNode::setParam(const QJsonObject &p) {
 
 unsigned long HFillNode::drawingMode() { return _drawMode; }
 
+void HFillNode::updateDrawMode(unsigned long mode) {
+  auto pts = getPointList();
+  setOurGeometry(pts, mode);
+}
+
 int HFillNode::save(QJsonObject &o) {
   auto list = getPointList();
   QJsonArray l;

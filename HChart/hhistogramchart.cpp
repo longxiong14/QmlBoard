@@ -18,7 +18,8 @@ HHistogramChart::HHistogramChart(QQuickItem *parent)
       _bottom_rule(nullptr),
       _left(0),
       _right(255),
-      _color("red") {
+      _color("red"),
+      _font_size(10) {
   setFlag(QQuickItem::ItemHasContents, true);
   setAcceptHoverEvents(true);
   setClip(true);
@@ -75,6 +76,20 @@ void HHistogramChart::mouseMoveEvent(QMouseEvent *event) {
   }
 }
 
+void HHistogramChart::mouseReleaseEvent(QMouseEvent *) {
+  //
+  switch (_lor) {
+    case LOR::LEFT:
+      leftChanged();
+      break;
+    case LOR::RIGHT:
+      rightChanged();
+      break;
+    case LOR::NONE:
+      break;
+  }
+}
+
 void HHistogramChart::hoverMoveEvent(QHoverEvent *event) {
   if (event) {
     auto pos = event->pos();
@@ -103,7 +118,6 @@ int HHistogramChart::left() { return _left; }
 void HHistogramChart::setLeft(int l) {
   if (_left != l && l < _right && l >= 0) {
     _left = l;
-    leftChanged();
   }
 }
 
@@ -112,7 +126,6 @@ int HHistogramChart::right() { return _right; }
 void HHistogramChart::setRight(int r) {
   if (_right != r && _left < r && r >= 0 && r <= 255) {
     _right = r;
-    rightChanged();
   }
 }
 
@@ -122,6 +135,14 @@ void HHistogramChart::setColor(const QString &c) {
   if (c != _color) {
     _color = c;
     colorChanged();
+  }
+}
+
+int HHistogramChart::fontSize() { return _font_size; }
+void HHistogramChart::setFontSize(int size) {
+  if (size != _font_size) {
+    _font_size = size;
+    fontSizeChanged();
   }
 }
 
@@ -153,11 +174,12 @@ void HHistogramChart::updateChart(QSGNode *node) {
       list.push_back(
           QPointF(i * step, bottom * (1 - _array[i].toDouble() / max)));
       if (0 == i % 50) {
-        auto image = HSGNodeCommon::createTextImage(QString::number(i), 20, 20);
+        auto image = HSGNodeCommon::createTextImage(
+            QString::number(i), _font_size * 3, _font_size * 2);
         auto image_node = window()->createImageNode();
         auto texture = window()->createTextureFromImage(image);
         image_node->setTexture(texture);
-        image_node->setRect(i * step, bottom, 20, 20);
+        image_node->setRect(i * step, bottom, _font_size * 3, _font_size * 2);
         _bottom_rule->appendChildNode(image_node);
       }
     }
@@ -218,11 +240,12 @@ void HHistogramChart::updateNode(QSGGeometryNode *&node, int num) {
   auto blue = c.blue() ^ 0xff;
   c = QColor(red, green, blue);
   {
-    auto image = HSGNodeCommon::createTextImage(QString::number(num), 20, 20);
+    auto image = HSGNodeCommon::createTextImage(QString::number(num),
+                                                _font_size * 3, _font_size * 2);
     auto image_node = window()->createImageNode();
     auto texture = window()->createTextureFromImage(image);
     image_node->setTexture(texture);
-    image_node->setRect(step * num, 0, 20, 20);
+    image_node->setRect(step * num, 0, _font_size * 3, _font_size * 2);
     node->appendChildNode(image_node);
   }
 

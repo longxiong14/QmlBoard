@@ -376,10 +376,10 @@ void HBoard::drawNodePoint(const QUuid &node, const QList<QPointF> points) {
 
 int HBoard::updateNodeText(const QUuid &node, const QString &text,
                            const QRectF &rect, int pixel_size) {
-  if (!_nodes.contains(node)) {
-    return -1;
-  }
   pushTask([=]() {
+    if (!_nodes.contains(node)) {
+      return;
+    }
     auto n = _nodes.value(node);
     if (n) {
       n->setText(text, rect, pixel_size);
@@ -387,7 +387,19 @@ int HBoard::updateNodeText(const QUuid &node, const QString &text,
     }
   });
   update();
+  return 0;
+}
 
+int HBoard::updateNodeDrawMode(const QUuid &node, unsigned long mode) {
+  pushTask([=]() {
+    if (_nodes.contains(node)) {
+      auto n = _nodes[node];
+      if (n) {
+        n->updateDrawMode(mode);
+      }
+    }
+  });
+  update();
   return 0;
 }
 
