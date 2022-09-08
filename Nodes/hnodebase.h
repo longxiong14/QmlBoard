@@ -11,6 +11,7 @@
 class QSGNode;
 class HBoard;
 class QSGGeometryNode;
+class HDragNode;
 class HBOARD_EXPORT HNodeBase : public HStorageBase<QJsonObject> {
  public:
   typedef enum {
@@ -56,6 +57,8 @@ class HBOARD_EXPORT HNodeBase : public HStorageBase<QJsonObject> {
 
   virtual void setFlag(NODEFLAG flag, bool open);
 
+  virtual HDragNode *buildDragNode();
+
  public:
   virtual int save(QJsonObject &d) override;
   virtual int load(const QJsonObject &o) override;
@@ -64,11 +67,17 @@ class HBOARD_EXPORT HNodeBase : public HStorageBase<QJsonObject> {
   QJsonObject param();
   virtual void setParam(const QJsonObject &p);
 
+  QJsonObject data();
+  virtual void setData(const QJsonObject &d);
+
+  void insertData(const QString &key, const QJsonValue &value);
+
  public:
   void buildTextNode(HBoard *board);
 
  protected:
   QJsonObject _param;
+  QJsonObject _data;
   QUuid _id;
   bool _select;
   bool _visible;
@@ -76,6 +85,7 @@ class HBOARD_EXPORT HNodeBase : public HStorageBase<QJsonObject> {
   QSGGeometryNode *_dash;
   bool _enable_home;
   QSGNode *_text_node;
+  HDragNode *_drag_node;
   QRectF _text_rect;
   QString _text;
   int _pixel_size;

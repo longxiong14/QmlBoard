@@ -8,6 +8,7 @@
 #include "../Common/hcommons.h"
 #include "../Common/hsgnodecommon.h"
 #include "../hboard.h"
+#include "hdragnode.h"
 #define STEP 5e3
 #define DEBUG qDebug() << __FUNCTION__ << " " << __LINE__ << " "
 HNodeBase::HNodeBase()
@@ -16,6 +17,7 @@ HNodeBase::HNodeBase()
       _dash(nullptr),
       _enable_home(true),
       _text_node(nullptr),
+      _drag_node(nullptr),
       _pixel_size(10),
       _destory(true),
       _flag(NODEFLAG::CANSELECT) {
@@ -45,13 +47,24 @@ void HNodeBase::setId(const QUuid &id) { _id = id; }
 void HNodeBase::changedSelectStatus() {
   if (_flag & NODEFLAG::CANSELECT) {
     _select = !_select;
-    if (!_select) {
+    if (_select) {
+      auto node = get();
+      if (node) {
+        _drag_node = buildDragNode();
+        if (_drag_node) {
+          node->appendChildNode(_drag_node);
+        }
+      }
+    } else {
       auto n = get();
       if (n) {
         if (_dash) {
           n->removeChildNode(_dash);
           delete _dash;
           _dash = nullptr;
+        }
+        if (_drag_node) {
+          n->removeChildNode(_drag_node);
         }
       }
     }
@@ -160,6 +173,8 @@ void HNodeBase::setFlag(HNodeBase::NODEFLAG flag, bool open) {
   }
 }
 
+HDragNode *HNodeBase::buildDragNode() { return nullptr; }
+
 int HNodeBase::save(QJsonObject &d) {
   d.insert("text", _text);
   QJsonObject rect;
@@ -169,6 +184,7 @@ int HNodeBase::save(QJsonObject &d) {
   rect.insert("height", _text_rect.height());
   d.insert("text_rect", rect);
   d.insert("text_pixel_size", _pixel_size);
+  d.insert("data", _data);
   return 0;
 }
 
@@ -182,12 +198,21 @@ int HNodeBase::load(const QJsonObject &o) {
                rect.value("width").toDouble(), rect.value("height").toDouble());
     setText(text, r, size);
   }
+  _data = o.value("data").toObject();
   return 0;
 }
 
 QJsonObject HNodeBase::param() { return _param; }
 
 void HNodeBase::setParam(const QJsonObject &p) { _param = p; }
+
+QJsonObject HNodeBase::data() { return _data; }
+
+void HNodeBase::setData(const QJsonObject &d) { _data = d; }
+
+void HNodeBase::insertData(const QString &key, const QJsonValue &value) {
+  _data.insert(key, value);
+}
 
 void HNodeBase::buildTextNode(HBoard *board) {
   if (_text.isEmpty()) return;

@@ -142,23 +142,34 @@ void HBoardUIControl::test() {
   auto sel = board->selects();
   for (const auto &k : sel) {
     auto n = board->getNodeById(k);
-    //    n->setText(n->id().toString(), QRect(0, 0, 100, 100));
-    //    board->updateNodeText(k, n->id().toString(), QRectF(0, -10, 100, 100),
-    //    50);
-    //    if (HNodeBase::NODETYPE::IMAGE == n->nodeType()) {
-    //      auto mat = QImage("C:\\Users\\xiaolong\\Pictures\\ttt.png");
-
-    //      if (mat.isNull()) {
-    //        DEBUG << "mat empty";
-    //      }
-    //      mat.convertTo(QImage::Format::Format_ARGB32);
-    //      //      board->updateNodeMat(k, mat, QPoint(0, 0));
-    //      board->updateNodeMat(k, mat, QPoint(-10, -10));
-    //      board->updateNodeMat(k, mat, QPoint(1910, 1070));
-    //      board->updateNodeMat(k, mat, QPoint(1910, -10));
-    //      board->updateNodeMat(k, mat, QPoint(-10, 1070));
+    //    if (n) {
+    //      n->insertData("ttttt", "tttttt");
     //    }
+    if (n) {
+      DEBUG << n->data();
+    }
   }
+
+  //  for (const auto &k : sel) {
+  //    auto n = board->getNodeById(k);
+  //    //    n->setText(n->id().toString(), QRect(0, 0, 100, 100));
+  //    //    board->updateNodeText(k, n->id().toString(), QRectF(0, -10, 100,
+  //    100),
+  //    //    50);
+  //    //    if (HNodeBase::NODETYPE::IMAGE == n->nodeType()) {
+  //    //      auto mat = QImage("C:\\Users\\xiaolong\\Pictures\\ttt.png");
+
+  //    //      if (mat.isNull()) {
+  //    //        DEBUG << "mat empty";
+  //    //      }
+  //    //      mat.convertTo(QImage::Format::Format_ARGB32);
+  //    //      //      board->updateNodeMat(k, mat, QPoint(0, 0));
+  //    //      board->updateNodeMat(k, mat, QPoint(-10, -10));
+  //    //      board->updateNodeMat(k, mat, QPoint(1910, 1070));
+  //    //      board->updateNodeMat(k, mat, QPoint(1910, -10));
+  //    //      board->updateNodeMat(k, mat, QPoint(-10, 1070));
+  //    //    }
+  //  }
 }
 
 void HBoardUIControl::setTranslateMap(const QJsonObject &object) {

@@ -28,6 +28,10 @@ class HBOARD_EXPORT HSGNodeCommon {
   static int imageCopyTo(const QImage &src, const QRect &src_rect, QImage &dst,
                          const QRect &dst_rect);
 
+  static QSGGeometryNode *buildGeometryNode(const QList<QPointF> &points,
+                                            const QColor &color,
+                                            unsigned long type);
+
 };  // class  HSGNodeCommon
 
 #endif  // HSGNODECOMMON_H

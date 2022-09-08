@@ -76,3 +76,16 @@ int HSGNodeCommon::imageCopyTo(const QImage &src, const QRect &src_rect,
   painter.drawImage(dst_rect, src.copy(src_rect));
   return 0;
 }
+
+QSGGeometryNode *HSGNodeCommon::buildGeometryNode(const QList<QPointF> &points,
+                                                  const QColor &color,
+                                                  unsigned long type) {
+  auto node = new QSGGeometryNode();
+  auto geo = buildGeometry(points, type);
+  auto c = buildColor(color);
+  node->setGeometry(geo);
+  node->setMaterial(c);
+  node->setFlag(QSGNode::OwnsMaterial);
+  node->setFlag(QSGNode::OwnsGeometry);
+  return node;
+}

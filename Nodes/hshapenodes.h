@@ -11,6 +11,8 @@ class HBOARD_EXPORT HShapeLineNode : public HFillNode {
  public:
   HShapeLineNode(const QPointF& begin, const QPointF& end,
                  const QJsonObject& param);
+
+  virtual HDragNode* buildDragNode() override;
 };
 
 class HBOARD_EXPORT HShapeRectNode : public HFillNode {
