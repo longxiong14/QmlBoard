@@ -17,7 +17,8 @@ HNodeBase::HNodeBase()
       _enable_home(true),
       _text_node(nullptr),
       _pixel_size(10),
-      _destory(true) {
+      _destory(true),
+      _flag(NODEFLAG::CANSELECT) {
   _id = QUuid::createUuid();
 }
 
@@ -42,14 +43,16 @@ QUuid HNodeBase::id() { return _id; }
 void HNodeBase::setId(const QUuid &id) { _id = id; }
 
 void HNodeBase::changedSelectStatus() {
-  _select = !_select;
-  if (!_select) {
-    auto n = get();
-    if (n) {
-      if (_dash) {
-        n->removeChildNode(_dash);
-        delete _dash;
-        _dash = nullptr;
+  if (_flag & NODEFLAG::CANSELECT) {
+    _select = !_select;
+    if (!_select) {
+      auto n = get();
+      if (n) {
+        if (_dash) {
+          n->removeChildNode(_dash);
+          delete _dash;
+          _dash = nullptr;
+        }
       }
     }
   }
@@ -148,6 +151,14 @@ bool HNodeBase::enableHome() { return _enable_home; }
 void HNodeBase::setEnableHome(bool f) { _enable_home = f; }
 
 void HNodeBase::setDestory(bool flag) { _destory = flag; }
+
+void HNodeBase::setFlag(HNodeBase::NODEFLAG flag, bool open) {
+  if (open) {
+    _flag = _flag | flag;
+  } else {
+    _flag = _flag & ~flag;
+  }
+}
 
 int HNodeBase::save(QJsonObject &d) {
   d.insert("text", _text);

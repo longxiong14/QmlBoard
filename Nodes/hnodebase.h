@@ -18,6 +18,10 @@ class HBOARD_EXPORT HNodeBase : public HStorageBase<QJsonObject> {
     IMAGE          //点在封闭形状内的判断
   } NODETYPE;      // node type
 
+  typedef enum {
+    CANSELECT = 1,  //能否选取
+  } NODEFLAG;
+
  public:
   HNodeBase();
   HNodeBase(const HNodeBase &other) = default;
@@ -50,6 +54,8 @@ class HBOARD_EXPORT HNodeBase : public HStorageBase<QJsonObject> {
   virtual void setEnableHome(bool f);
   virtual void setDestory(bool flag);
 
+  virtual void setFlag(NODEFLAG flag, bool open);
+
  public:
   virtual int save(QJsonObject &d) override;
   virtual int load(const QJsonObject &o) override;
@@ -58,7 +64,7 @@ class HBOARD_EXPORT HNodeBase : public HStorageBase<QJsonObject> {
   QJsonObject param();
   virtual void setParam(const QJsonObject &p);
 
- protected:
+ public:
   void buildTextNode(HBoard *board);
 
  protected:
@@ -74,8 +80,7 @@ class HBOARD_EXPORT HNodeBase : public HStorageBase<QJsonObject> {
   QString _text;
   int _pixel_size;
   bool _destory;
-
-  friend HBoard;
+  int _flag;
 };
 
 #endif  // HNODEBASE_H
