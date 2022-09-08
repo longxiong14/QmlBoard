@@ -94,6 +94,6 @@ HHandleFlyWeight::HHandleFlyWeight() {
   func(std::make_shared<HHandleDrawFillPoly>());
   func(std::make_shared<HHandleDrawCircle>());
   func(std::make_shared<HHandleDrawFillCircle>());
-  func(std::make_shared<HHandleDrawWideLine>());
+  //  func(std::make_shared<HHandleDrawWideLine>());
   func(std::make_shared<HHandleRule>());
 }
