@@ -14,6 +14,8 @@ class HBOARD_EXPORT HCommon {
   static QPointF BottomRight(const QPointF &f, const QPointF &s);
 
   static QRectF BuildRect(const QPointF &f, const QPointF &s);
+  static QRectF FindRect(const QList<QPointF> &list);
+
   static QList<QPointF> BuildRectList(const QPointF &f, const QPointF &s);
   static QList<QPointF> BuildRectList(const QRectF &rect);
 

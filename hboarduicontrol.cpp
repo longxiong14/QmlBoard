@@ -8,6 +8,7 @@
 #include "Nodes/hfillnode.h"
 #include "Nodes/himagenode.h"
 #include "Nodes/hnodebase.h"
+#include "Nodes/hshapenodes.h"
 #include "hboard.h"
 #include "hboardmanager.h"
 #define DEBUG qDebug() << __FUNCTION__ << " " << __LINE__ << " "
@@ -139,37 +140,11 @@ QJsonArray HBoardUIControl::paramToUIItems(const QJsonObject &object) {
 
 void HBoardUIControl::test() {
   auto board = HBoardManager::getInstance()->getBoard("main_board");
-  auto sel = board->selects();
-  for (const auto &k : sel) {
-    auto n = board->getNodeById(k);
-    //    if (n) {
-    //      n->insertData("ttttt", "tttttt");
-    //    }
-    if (n) {
-      DEBUG << n->data();
-    }
+  if (board) {
+    std::shared_ptr<HShapeXNode> node =
+        std::make_shared<HShapeXNode>(QPointF(), 100, QJsonObject());
+    board->pushNode(node);
   }
-
-  //  for (const auto &k : sel) {
-  //    auto n = board->getNodeById(k);
-  //    //    n->setText(n->id().toString(), QRect(0, 0, 100, 100));
-  //    //    board->updateNodeText(k, n->id().toString(), QRectF(0, -10, 100,
-  //    100),
-  //    //    50);
-  //    //    if (HNodeBase::NODETYPE::IMAGE == n->nodeType()) {
-  //    //      auto mat = QImage("C:\\Users\\xiaolong\\Pictures\\ttt.png");
-
-  //    //      if (mat.isNull()) {
-  //    //        DEBUG << "mat empty";
-  //    //      }
-  //    //      mat.convertTo(QImage::Format::Format_ARGB32);
-  //    //      //      board->updateNodeMat(k, mat, QPoint(0, 0));
-  //    //      board->updateNodeMat(k, mat, QPoint(-10, -10));
-  //    //      board->updateNodeMat(k, mat, QPoint(1910, 1070));
-  //    //      board->updateNodeMat(k, mat, QPoint(1910, -10));
-  //    //      board->updateNodeMat(k, mat, QPoint(-10, 1070));
-  //    //    }
-  //  }
 }
 
 void HBoardUIControl::setTranslateMap(const QJsonObject &object) {

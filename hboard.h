@@ -52,6 +52,8 @@ class HBOARD_EXPORT HBoard : public QQuickItem {
   void nodeMoveTo(const QUuid &n, QPointF point);  // move node to point
   void drawNodePoint(const QUuid &node,
                      const QList<QPointF> points);  // draw handle move event
+  void updateNodeIndexPoint(const QUuid &node, int index,
+                            const QPointF &point);  // draw handle move event
   int updateNodeText(const QUuid &node, const QString &text,
                      const QRectF &rect = QRectF(), int pixel_size = 10);
 

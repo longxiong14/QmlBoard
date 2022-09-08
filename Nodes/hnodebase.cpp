@@ -173,7 +173,25 @@ void HNodeBase::setFlag(HNodeBase::NODEFLAG flag, bool open) {
   }
 }
 
-HDragNode *HNodeBase::buildDragNode() { return nullptr; }
+QSGNode *HNodeBase::buildDragNode() { return nullptr; }
+
+bool HNodeBase::pointInDragNode(const QPointF &point, HDragNode *&drag) {
+  if (!_drag_node) return false;
+  auto count = _drag_node->childCount();
+  if (!count) return false;
+  for (int i = 0; i < count; i++) {
+    auto node = dynamic_cast<HDragNode *>(_drag_node->childAtIndex(i));
+    if (node) {
+      if (node->pointIn(point)) {
+        drag = node;
+        return true;
+      }
+    }
+  }
+  return false;
+}
+
+void HNodeBase::updateIndexPoint(int, const QPointF &) {}
 
 int HNodeBase::save(QJsonObject &d) {
   d.insert("text", _text);

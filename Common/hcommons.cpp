@@ -25,6 +25,17 @@ QRectF HCommon::BuildRect(const QPointF &f, const QPointF &s) {
   return QRectF(TopLeft(f, s), BottomRight(f, s));
 }
 
+QRectF HCommon::FindRect(const QList<QPointF> &list) {
+  double x_min = INT_MAX, y_min = INT_MAX, x_max = INT_MIN, y_max = INT_MIN;
+  for (const auto &point : list) {
+    x_min = std::min(point.x(), x_min);
+    y_min = std::min(point.y(), y_min);
+    x_max = std::max(point.x(), x_max);
+    y_max = std::max(point.y(), y_max);
+  }
+  return QRectF(QPointF(x_min, y_min), QPointF(x_max, y_max));
+}
+
 QPointF HCommon::TopRight(const QPointF &f, const QPointF &s) {
   auto x = std::min(f.x(), s.x());
   auto y = std::max(f.y(), s.y());

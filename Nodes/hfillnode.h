@@ -28,6 +28,7 @@ class HBOARD_EXPORT HFillNode : public HNodeBase /*, public QSGGeometryNode*/ {
   virtual unsigned long drawingMode() override;
   virtual void updateDrawMode(unsigned long mode) override;
 
+ public:
   virtual int save(QJsonObject &o) override;
   virtual int load(const QJsonObject &o) override;
   virtual int save(const QString &path) override;

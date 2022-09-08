@@ -374,6 +374,19 @@ void HBoard::drawNodePoint(const QUuid &node, const QList<QPointF> points) {
   update();
 }
 
+void HBoard::updateNodeIndexPoint(const QUuid &node, int index,
+                                  const QPointF &point) {
+  pushTask([=]() {
+    if (_nodes.contains(node)) {
+      auto n = _nodes[node];
+      if (n) {
+        n->updateIndexPoint(index, point);
+      }
+    }
+  });
+  update();
+}
+
 int HBoard::updateNodeText(const QUuid &node, const QString &text,
                            const QRectF &rect, int pixel_size) {
   pushTask([=]() {

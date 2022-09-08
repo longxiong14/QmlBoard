@@ -4,6 +4,7 @@
 
 #include "hhandlemove.h"
 class HNodeBase;
+class HDragNode;
 class HBOARD_EXPORT HHandleArrow : public HHandleMove {
  public:
   HHandleArrow();
@@ -18,8 +19,10 @@ class HBOARD_EXPORT HHandleArrow : public HHandleMove {
       HBoard* board, QMouseEvent* event,
       const QJsonObject& object = QJsonObject()) override;
   virtual void wheelEvent(HBoard* board, QWheelEvent* event) override;
-
   virtual void hoverEnterEvent(
+      HBoard* board, QHoverEvent* event,
+      const QJsonObject& object = QJsonObject()) override;
+  virtual void hoverMoveEvent(
       HBoard* board, QHoverEvent* event,
       const QJsonObject& object = QJsonObject()) override;
 
@@ -37,6 +40,7 @@ class HBOARD_EXPORT HHandleArrow : public HHandleMove {
   QUuid _select_node;
   QPointF _point;
   QPointF _select_start_point;
+  HDragNode* _drag_node;
 };
 
 #endif  // HHANDLEARROW_H

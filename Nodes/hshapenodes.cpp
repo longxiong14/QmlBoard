@@ -1,26 +1,48 @@
 ﻿#include "hshapenodes.h"
 
+#include <QDebug>
 #include <QList>
 
 #include "../Common/hcommons.h"
 #include "../Common/hsgnodecommon.h"
 #include "hdragnode.h"
+#define DEBUG qDebug() << __FUNCTION__ << __LINE__
 HShapeLineNode::HShapeLineNode(const QPointF &begin, const QPointF &end,
                                const QJsonObject &param)
     : HFillNode(QList<QPointF>{begin, end}, GL_LINES, param) {}
 
-HDragNode *HShapeLineNode::buildDragNode() {
-  HDragNode *node = new HDragNode();
+QSGNode *HShapeLineNode::buildDragNode() {
+  QSGNode *node = new QSGNode();
   auto pts = getPointList();
   auto p = 20;
   for (int i = 0; i < pts.size(); i++) {
-    QRectF rect(pts[i] - QPointF(p / 2, p / 2), QSize(p, p));
-    auto gnode = HSGNodeCommon::buildGeometryNode(HCommon::BuildRectList(rect),
-                                                  Qt::red, GL_QUADS);
-    node->setFlag(i);
-    node->appendChildNode(gnode);
+    HDragNode *n = HDragNode::buildNode(pts[i], p, id());
+    n->setPointIndex(i);
+    n->setCurSor(Qt::CursorShape::SizeAllCursor);
+    node->appendChildNode(n);
   }
   return node;
+}
+
+void HShapeLineNode::updateIndexPoint(int index, const QPointF &point) {
+  DEBUG << index << point;
+  if (_drag_node) {
+  }
+  auto node = get();
+  if (node) {
+    auto gnode = dynamic_cast<QSGGeometryNode *>(node);
+    if (gnode) {
+      auto geo = gnode->geometry();
+      auto count = geo->vertexCount();
+      if (count > index && index >= 0) {
+        auto point_list =
+            static_cast<QSGGeometry::Point2D *>(geo->vertexData());
+        QSGGeometry::Point2D pt;
+        pt.set(float(point.x()), float(point.y()));
+        point_list[index] = pt;
+      }
+    }
+  }
 }
 
 HShapeRectNode::HShapeRectNode(const QRectF &rect, const QJsonObject &param)
