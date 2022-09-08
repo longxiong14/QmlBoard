@@ -42,4 +42,14 @@ class HBOARD_EXPORT HShapeFillCircleNode : public HFillNode {
                        const QJsonObject& param);
 };
 
+class HBOARD_EXPORT HShapeCrossNode : public HFillNode {
+ public:
+  HShapeCrossNode(const QPointF& center, double size, const QJsonObject& param);
+};
+
+class HBOARD_EXPORT HShapeXNode : public HFillNode {
+ public:
+  HShapeXNode(const QPointF& center, double size, const QJsonObject& param);
+};
+
 #endif  // HSHAPENODES_H

@@ -42,3 +42,27 @@ HShapeCircleNode::HShapeCircleNode(const QPointF &center, double radius,
 HShapeFillCircleNode::HShapeFillCircleNode(const QPointF &center, double radius,
                                            const QJsonObject &param)
     : HFillNode(HCommon::BuildCircle(center, radius, 360), GL_POLYGON, param) {}
+
+HShapeCrossNode::HShapeCrossNode(const QPointF &center, double size,
+                                 const QJsonObject &param)
+    : HFillNode(QList<QPointF>{center,
+                               {center.x(), center.y() - size},
+                               center,
+                               {center.x(), center.y() + size},
+                               center,
+                               {center.x() - size, center.y()},
+                               center,
+                               {center.x() + size, center.y()}},
+                GL_LINES, param) {}
+
+HShapeXNode::HShapeXNode(const QPointF &center, double size,
+                         const QJsonObject &param)
+    : HFillNode(QList<QPointF>{center,
+                               {center.x() - size, center.y() - size},
+                               center,
+                               {center.x() + size, center.y() + size},
+                               center,
+                               {center.x() + size, center.y() - size},
+                               center,
+                               {center.x() - size, center.y() + size}},
+                GL_LINES, param) {}
