@@ -2,8 +2,10 @@
 #define HNODEFACTORY_H
 #include <QJsonObject>
 #include <memory>
+
+#include "../HBoard_global.h"
 class HNodeBase;
-class HNodeFactory {
+class HBOARD_EXPORT HNodeFactory {
  public:
   HNodeFactory();
 
