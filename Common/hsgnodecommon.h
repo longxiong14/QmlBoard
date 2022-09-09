@@ -32,7 +32,8 @@ class HBOARD_EXPORT HSGNodeCommon {
 
   static QSGGeometryNode *buildGeometryNode(const QList<QPointF> &points,
                                             const QColor &color,
-                                            unsigned long type);
+                                            unsigned long type,
+                                            float line_width = 1);
 
 };  // class  HSGNodeCommon
 

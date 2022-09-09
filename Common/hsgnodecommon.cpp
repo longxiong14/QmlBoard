@@ -81,10 +81,12 @@ int HSGNodeCommon::imageCopyTo(const QImage &src, const QRect &src_rect,
 
 QSGGeometryNode *HSGNodeCommon::buildGeometryNode(const QList<QPointF> &points,
                                                   const QColor &color,
-                                                  unsigned long type) {
+                                                  unsigned long type,
+                                                  float line_width) {
   auto node = new QSGGeometryNode();
   auto geo = buildGeometry(points, type);
   auto c = buildColor(color);
+  geo->setLineWidth(line_width);
   node->setGeometry(geo);
   node->setMaterial(c);
   node->setFlag(QSGNode::OwnsMaterial);

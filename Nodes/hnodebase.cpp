@@ -128,7 +128,6 @@ void HNodeBase::timeOut() {
           break;
       }
       if (list.empty()) return;
-      _dash = new QSGGeometryNode();
       if (list.size() > STEP) {
         double step = list.size() / STEP;
         _dash_list.clear();
@@ -138,13 +137,8 @@ void HNodeBase::timeOut() {
       } else {
         _dash_list = list;
       }
-
-      auto geo = HSGNodeCommon::buildGeometry(_dash_list, GL_LINES);
-      geo->setLineWidth(line_width);
-      auto color = HSGNodeCommon::buildColor(Qt::blue);
-      _dash->setGeometry(geo);
-      _dash->setMaterial(color);
-      _dash->setFlags(QSGNode::OwnsMaterial | QSGNode::OwnsGeometry);
+      _dash = HSGNodeCommon::buildGeometryNode(_dash_list, Qt::blue, GL_LINES,
+                                               line_width);
       node->appendChildNode(_dash);
     }
   }
