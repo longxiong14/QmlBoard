@@ -119,6 +119,35 @@ QJsonObject HHandleDrawCurve::getDefaultParam() { return defaultParam(); }
 
 HHandleDrawPoly::HHandleDrawPoly() { _name = "poly"; }
 
+void HHandleDrawPoly::mousePressEvent(HBoard *board, QMouseEvent *event,
+                                      const QJsonObject &object) {
+  if (board && event && isButtonPress(event)) {
+    auto point = board->WCS2LCS(event->pos());
+    if (_node.isNull()) {
+      auto node =
+          std::make_shared<HShapePolyNode>(QList<QPointF>({point}), object);
+      _points = {point};
+      board->pushNode(node);
+      _node = node->id();
+    } else {
+      _points.push_back(point);
+      board->drawNodePoint(_node, _points);
+    }
+  }
+}
+
+void HHandleDrawPoly::hoverMoveEvent(HBoard *board, QHoverEvent *event,
+                                     const QJsonObject &) {
+  if (board && event) {
+    auto point = board->WCS2LCS(event->pos());
+    if (!_node.isNull()) {
+      auto pts = _points;
+      pts.push_back(point);
+      board->drawNodePoint(_node, pts);
+    }
+  }
+}
+
 void HHandleDrawPoly::mouseReleaseEvent(HBoard *board, QMouseEvent *event,
                                         const QJsonObject &) {
   if (isButtonPress(event, Qt::MouseButton::RightButton)) {

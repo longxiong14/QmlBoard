@@ -6,8 +6,10 @@
 #include <QSGFlatColorMaterial>
 #include <QSGGeometry>
 #include <QSGImageNode>
+#include <QUuid>
 
 #include "../HBoard_global.h"
+
 class HBOARD_EXPORT HSGNodeCommon {
  public:
   static QSGGeometry *buildGeometry(const QList<QPointF> &points,

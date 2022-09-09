@@ -14,6 +14,7 @@
 #include "Common/hcommons.h"
 #include "Common/hjsoncommon.h"
 #include "Common/hsgnodecommon.h"
+#include "Factory/hnodefactory.h"
 #include "Handles/hhandlearrow.h"
 #include "Handles/hhandlebase.h"
 #include "Handles/hhandleflyweight.h"
@@ -141,28 +142,34 @@ int HBoard::load(const QString &path) {
 
 int HBoard::load(const QJsonArray &nodes) {
   bool flag = false;
+  HNodeFactory factory;
   for (int i = 0; i < nodes.size(); i++) {
     QJsonObject o = nodes[i].toObject();
-    HNodeBase::NODETYPE type =
-        static_cast<HNodeBase::NODETYPE>(o.value("nodeType").toInt());
-    switch (type) {
-      case HNodeBase::NODETYPE::SHAPE: {
-        auto node = std::make_shared<HFillNode>();
-        if (0 == node->load(o) && !_nodes.contains(node->id())) {
-          pushNode(node);
-          flag = true;
-        } else {
-          node->clear();
-        }
-      } break;
-      case HNodeBase::NODETYPE::IMAGE: {
-        auto node = std::make_shared<HImageNode>();
-        if (0 == node->load(o) && !_nodes.contains(node->id())) {
-          pushNode(node);
-          flag = true;
-        }
-      } break;
+    auto node = factory.create(o);
+    if (node && 0 == node->load(o) && !_nodes.contains(node->id())) {
+      pushNode(node);
+      flag = true;
     }
+    //    HNodeBase::NODETYPE type =
+    //        static_cast<HNodeBase::NODETYPE>(o.value("nodeType").toInt());
+    //    switch (type) {
+    //      case HNodeBase::NODETYPE::SHAPE: {
+    //        auto node = std::make_shared<HFillNode>();
+    //        if (0 == node->load(o) && !_nodes.contains(node->id())) {
+    //          pushNode(node);
+    //          flag = true;
+    //        } else {
+    //          node->clear();
+    //        }
+    //      } break;
+    //      case HNodeBase::NODETYPE::IMAGE: {
+    //        auto node = std::make_shared<HImageNode>();
+    //        if (0 == node->load(o) && !_nodes.contains(node->id())) {
+    //          pushNode(node);
+    //          flag = true;
+    //        }
+    //      } break;
+    //    }
   }
   if (flag) home();
   return 0;

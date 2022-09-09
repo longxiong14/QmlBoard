@@ -54,7 +54,6 @@ void HHandleArrow::mouseMoveEvent(HBoard *board, QMouseEvent *event,
       HHandleMove::mouseMoveEvent(board, event);
     } else if (leftButtonPress(event)) {
       if (_drag_node) {
-        DEBUG << _drag_node->getParent() << _drag_node->getPointIndex();
         board->updateNodeIndexPoint(_drag_node->getParent(),
                                     _drag_node->getPointIndex(), pos);
       } else {
@@ -85,6 +84,10 @@ void HHandleArrow::mouseReleaseEvent(HBoard *board, QMouseEvent *event,
                                      const QJsonObject &) {
   if (board && event) {
     auto pos = board->WCS2LCS(event->pos());
+    if (_drag_node) {
+      return;
+    }
+
     if (isButtonPress(event) && !middleButtonPress(event) && !_moved) {
       if (!ctrlKeyPress(board->keys())) {
         board->clearSelect();
@@ -133,9 +136,9 @@ void HHandleArrow::hoverMoveEvent(HBoard *board, QHoverEvent *e,
   if (board && e) {
     auto sels = board->selects();
     auto pos = board->WCS2LCS(e->pos());
+    _drag_node = nullptr;
     for (auto s : sels) {
       auto node = board->getNodeById(s);
-      _drag_node = nullptr;
       if (node->isSelect() && node->pointInDragNode(pos, _drag_node) &&
           _drag_node) {
         board->setCursor(_drag_node->getCursor());

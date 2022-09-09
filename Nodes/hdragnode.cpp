@@ -7,11 +7,14 @@
 #include "../Common/hsgnodecommon.h"
 #define DEBUG qDebug() << __FUNCTION__ << __LINE__
 HDragNode::HDragNode()
-    : QSGGeometryNode(), _cursor(Qt::CursorShape::ArrowCursor) {}
+    : QSGGeometryNode(), _cursor(Qt::CursorShape::ArrowCursor) {
+  setFollowIndex(-1);
+}
 
-HDragNode *HDragNode::buildNode(const QPointF &center, int size,
+HDragNode *HDragNode::buildNode(const QPointF &center, float size,
                                 const QUuid &parent) {
-  QRectF rect(center - QPointF(size / 2, size / 2), QSize(size, size));
+  QRectF rect(center - QPointF(double(size / 2), double(size / 2)),
+              QSizeF(double(size), double(size)));
   auto points = HCommon::BuildRectList(rect);
   auto node = new HDragNode();
   auto geo = HSGNodeCommon::buildGeometry(points, GL_QUADS);
@@ -21,7 +24,20 @@ HDragNode *HDragNode::buildNode(const QPointF &center, int size,
   node->setFlag(QSGNode::OwnsMaterial);
   node->setFlag(QSGNode::OwnsGeometry);
   node->setParent(parent);
+  node->_size = size;
   return node;
+}
+
+void HDragNode::moveTo(const QPointF &center) {
+  QRectF rect(center - QPointF(double(_size / 2), double(_size / 2)),
+              QSizeF(double(_size), double(_size)));
+  auto points = HCommon::BuildRectList(rect);
+  auto geo = HSGNodeCommon::buildGeometry(points, GL_QUADS);
+  auto c = HSGNodeCommon::buildColor(Qt::red);
+  setGeometry(geo);
+  setMaterial(c);
+  setFlag(QSGNode::OwnsMaterial);
+  setFlag(QSGNode::OwnsGeometry);
 }
 
 bool HDragNode::pointIn(const QPointF &point) {
@@ -41,6 +57,10 @@ bool HDragNode::pointIn(const QPointF &point) {
 void HDragNode::setPointIndex(int index) { insert("point_index", index); }
 
 int HDragNode::getPointIndex() { return value("point_index").toInt(); }
+
+void HDragNode::setFollowIndex(int index) { insert("follow_index", index); }
+
+int HDragNode::getFollowIndex() { return value("follow_index").toInt(); }
 
 void HDragNode::setCurSor(const QCursor &cursor) { _cursor = cursor; }
 

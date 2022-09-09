@@ -75,8 +75,13 @@ class HBOARD_EXPORT HNodeBase : public HStorageBase<QJsonObject> {
 
   void insertData(const QString &key, const QJsonValue &value);
 
+  QString shapeType();
+
  public:
   void buildTextNode(HBoard *board);
+
+ protected:
+  void flushMayiLine();
 
  protected:
   QJsonObject _param;
@@ -94,6 +99,7 @@ class HBOARD_EXPORT HNodeBase : public HStorageBase<QJsonObject> {
   int _pixel_size;
   bool _destory;
   int _flag;
+  QString _shape_type;
 };
 
 #endif  // HNODEBASE_H

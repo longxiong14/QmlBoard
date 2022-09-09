@@ -9,7 +9,9 @@
 #include "../Common/hjsoncommon.h"
 #include "../Common/hsgnodecommon.h"
 #define DEBUG qDebug() << __FUNCTION__ << " " << __LINE__ << " "
-HFillNode::HFillNode() : _node(new QSGGeometryNode()), _drawMode(0) {}
+HFillNode::HFillNode() : _node(new QSGGeometryNode()), _drawMode(0) {
+  _shape_type = "fill node";
+}
 
 HFillNode::HFillNode(const QList<QPointF> &points, unsigned long type,
                      const QJsonObject &p)
@@ -17,11 +19,13 @@ HFillNode::HFillNode(const QList<QPointF> &points, unsigned long type,
   _param = p;
   setOurGeometry(points, type);
   setColor(getColor(p));
+  _shape_type = "fill node";
 }
 
 HFillNode::HFillNode(const QRectF &rect, unsigned long type,
                      const QJsonObject &p)
     : _node(new QSGGeometryNode()), _drawMode(0) {
+  _shape_type = "fill node";
   _param = p;
   auto list = HCommon::BuildRectList(rect);
   setOurGeometry(list, type);
@@ -77,7 +81,8 @@ void HFillNode::move(const QPointF &p) {
   auto point_list = static_cast<QSGGeometry::Point2D *>(geo->vertexData());
   for (int i = 0; i < count; i++) {
     QSGGeometry::Point2D pt = point_list[i];
-    pt.set(float(double(pt.x) + p.x()), float(double(pt.y) + p.y()));
+    float x = float(double(pt.x) + p.x()), y = float(double(pt.y) + p.y());
+    pt.set(x, y);
     point_list[i] = pt;
     geo->vertexDataAsPoint2D()[i] = pt;
   }
@@ -208,6 +213,17 @@ void HFillNode::setOurGeometry(const QList<QPointF> &points,
   _node->setGeometry(geometry);
   _node->setFlag(QSGNode::OwnsGeometry);
   _drawMode = type;
+}
+
+float HFillNode::getLineWidth() {
+  float width = 1;
+  if (_node) {
+    auto geo = _node->geometry();
+    if (geo) {
+      width = geo->lineWidth();
+    }
+  }
+  return width;
 }
 
 QColor HFillNode::getColor(const QJsonObject &p) {

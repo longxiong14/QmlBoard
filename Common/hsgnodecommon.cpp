@@ -1,6 +1,8 @@
 ﻿#include "hsgnodecommon.h"
 
 #include <QPainter>
+
+#include "../Nodes/hdragnode.h"
 QSGGeometry *HSGNodeCommon::buildGeometry(const QList<QPointF> &points,
                                           unsigned long type) {
   QSGGeometry *geometry =

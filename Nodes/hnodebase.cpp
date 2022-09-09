@@ -191,7 +191,19 @@ bool HNodeBase::pointInDragNode(const QPointF &point, HDragNode *&drag) {
   return false;
 }
 
-void HNodeBase::updateIndexPoint(int, const QPointF &) {}
+void HNodeBase::updateIndexPoint(int index, const QPointF &point) {
+  if (_drag_node) {
+    auto size = _drag_node->childCount();
+    if (size > index && index >= 0) {
+      HDragNode *drag =
+          dynamic_cast<HDragNode *>(_drag_node->childAtIndex(index));
+      if (drag && drag->getPointIndex() == index) {
+        drag->moveTo(point);
+      }
+    }
+  }
+  flushMayiLine();
+}
 
 int HNodeBase::save(QJsonObject &d) {
   d.insert("text", _text);
@@ -203,6 +215,7 @@ int HNodeBase::save(QJsonObject &d) {
   d.insert("text_rect", rect);
   d.insert("text_pixel_size", _pixel_size);
   d.insert("data", _data);
+  d.insert("shape_type", _shape_type);
   return 0;
 }
 
@@ -231,6 +244,8 @@ void HNodeBase::setData(const QJsonObject &d) { _data = d; }
 void HNodeBase::insertData(const QString &key, const QJsonValue &value) {
   _data.insert(key, value);
 }
+
+QString HNodeBase::shapeType() { return _shape_type; }
 
 void HNodeBase::buildTextNode(HBoard *board) {
   if (_text.isEmpty()) return;
@@ -268,4 +283,15 @@ void HNodeBase::buildTextNode(HBoard *board) {
     _text_node->appendChildNode(image_node);
   }
   board->update();
+}
+
+void HNodeBase::flushMayiLine() {
+  auto n = get();
+  if (n) {
+    if (_dash) {
+      n->removeChildNode(_dash);
+      delete _dash;
+      _dash = nullptr;
+    }
+  }
 }
