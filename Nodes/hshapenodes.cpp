@@ -36,13 +36,11 @@ void moveDragNode(QSGNode *drag_node, const QList<QPointF> &list) {
   }
 }
 
-HShapeLineNode::HShapeLineNode() { _shape_type = "shape line"; }
+HShapeLineNode::HShapeLineNode() {}
 
 HShapeLineNode::HShapeLineNode(const QPointF &begin, const QPointF &end,
                                const QJsonObject &param)
-    : HFillNode(QList<QPointF>{begin, end}, GL_LINES, param) {
-  _shape_type = "shape line";
-}
+    : HFillNode(QList<QPointF>{begin, end}, GL_LINES, param) {}
 
 void HShapeLineNode::move(const QPointF &p) {
   HFillNode::move(p);
@@ -52,6 +50,8 @@ void HShapeLineNode::move(const QPointF &p) {
     flushMayiLine();
   }
 }
+
+HNodeBase::NODETYPE HShapeLineNode::nodeType() { return NODETYPE::SHAPELINE; }
 
 QSGNode *HShapeLineNode::buildDragNode() {
   QSGNode *node = new QSGNode();
@@ -70,12 +70,10 @@ void HShapeLineNode::updateIndexPoint(int index, const QPointF &point) {
   HNodeBase::updateIndexPoint(index, point);
 }
 
-HShapeRectNode::HShapeRectNode() { _shape_type = "shape rect"; }
+HShapeRectNode::HShapeRectNode() {}
 
 HShapeRectNode::HShapeRectNode(const QRectF &rect, const QJsonObject &param)
-    : HFillNode(rect, GL_LINE_LOOP, param) {
-  _shape_type = "shape rect";
-}
+    : HFillNode(rect, GL_LINE_LOOP, param) {}
 
 QSGNode *HShapeRectNode::buildDragNode() {
   QSGNode *node = new QSGNode();
@@ -87,6 +85,10 @@ QSGNode *HShapeRectNode::buildDragNode() {
 void HShapeRectNode::move(const QPointF &p) {
   HFillNode::move(p);
   updateDragNodes(_drag_node, getBoundRect());
+}
+
+HNodeBase::NODETYPE HShapeRectNode::nodeType() {
+  return HNodeBase::NODETYPE::SHAPERECT;
 }
 
 void HShapeRectNode::updateIndexPoint(int index, const QPointF &point) {
@@ -184,12 +186,14 @@ QMap<int, HShapeRectNode::dragNodeMsg> HShapeRectNode::getRectDragNodeMap(
   return map;
 }
 
-HShapeCurveNode::HShapeCurveNode() { _shape_type = "shape curve"; }
+HShapeCurveNode::HShapeCurveNode() {}
 
 HShapeCurveNode::HShapeCurveNode(const QList<QPointF> &list,
                                  const QJsonObject &param)
-    : HFillNode(list, GL_LINE_STRIP, param) {
-  _shape_type = "shape curve";
+    : HFillNode(list, GL_LINE_STRIP, param) {}
+
+HNodeBase::NODETYPE HShapeCurveNode::nodeType() {
+  return HNodeBase::NODETYPE::SHAPECURVE;
 }
 
 void HShapeCurveNode::move(const QPointF &p) {
@@ -216,19 +220,21 @@ void HShapeCurveNode::updateIndexPoint(int index, const QPointF &point) {
   HNodeBase::updateIndexPoint(index, point);
 }
 
-HShapePolyNode::HShapePolyNode() { _shape_type = "shape poly"; }
+HShapePolyNode::HShapePolyNode() {}
 
 HShapePolyNode::HShapePolyNode(const QList<QPointF> &list,
                                const QJsonObject &param)
-    : HFillNode(list, GL_LINE_STRIP, param) {
-  _shape_type = "shape poly";
-}
+    : HFillNode(list, GL_LINE_STRIP, param) {}
 
 void HShapePolyNode::move(const QPointF &p) {
   HFillNode::move(p);
   if (_drag_node) {
     moveDragNode(_drag_node, getPointList());
   }
+}
+
+HNodeBase::NODETYPE HShapePolyNode::nodeType() {
+  return HNodeBase::NODETYPE::SHAPEPOLY;
 }
 
 QSGNode *HShapePolyNode::buildDragNode() {
@@ -259,17 +265,19 @@ void HShapePolyNode::updateIndexPoint(int index, const QPointF &point) {
   }
 }
 
-HShapeFillRectNode::HShapeFillRectNode() { _shape_type = "shape fill rect"; }
+HShapeFillRectNode::HShapeFillRectNode() {}
 
 HShapeFillRectNode::HShapeFillRectNode(const QRectF &rect,
                                        const QJsonObject &param)
-    : HFillNode(rect, GL_QUADS, param) {
-  _shape_type = "shape fill rect";
-}
+    : HFillNode(rect, GL_QUADS, param) {}
 
 void HShapeFillRectNode::move(const QPointF &p) {
   HFillNode::move(p);
   HShapeRectNode::updateDragNodes(_drag_node, getBoundRect());
+}
+
+HNodeBase::NODETYPE HShapeFillRectNode::nodeType() {
+  return HNodeBase::NODETYPE::SHAPEFILLRECT;
 }
 
 QSGNode *HShapeFillRectNode::buildDragNode() {
@@ -291,26 +299,32 @@ void HShapeFillRectNode::updateIndexPoint(int index, const QPointF &point) {
   }
 }
 
-HShapeCircleNode::HShapeCircleNode() { _shape_type = "shape circle"; }
+HShapeCircleNode::HShapeCircleNode() {}
+
+HNodeBase::NODETYPE HShapeCircleNode::nodeType() {
+  return HNodeBase::NODETYPE::SHAPECIRCLE;
+}
 
 HShapeCircleNode::HShapeCircleNode(const QPointF &center, double radius,
                                    const QJsonObject &param)
     : HFillNode(HCommon::BuildCircle(center, radius, 360), GL_LINE_LOOP,
-                param) {
-  _shape_type = "shape circle";
-}
+                param) {}
 
-HShapeFillCircleNode::HShapeFillCircleNode() {
-  _shape_type = "shape fill circle";
+HShapeFillCircleNode::HShapeFillCircleNode() {}
+
+HNodeBase::NODETYPE HShapeFillCircleNode::nodeType() {
+  return HNodeBase::NODETYPE::SHAPEFILLCIRCLE;
 }
 
 HShapeFillCircleNode::HShapeFillCircleNode(const QPointF &center, double radius,
                                            const QJsonObject &param)
-    : HFillNode(HCommon::BuildCircle(center, radius, 360), GL_POLYGON, param) {
-  _shape_type = "shape fill circle";
-}
+    : HFillNode(HCommon::BuildCircle(center, radius, 360), GL_POLYGON, param) {}
 
-HShapeCrossNode::HShapeCrossNode() { _shape_type = "shape cross"; }
+HShapeCrossNode::HShapeCrossNode() {}
+
+HNodeBase::NODETYPE HShapeCrossNode::nodeType() {
+  return HNodeBase::NODETYPE::SHAPECROSS;
+}
 
 HShapeCrossNode::HShapeCrossNode(const QPointF &center, double size,
                                  const QJsonObject &param)
@@ -322,11 +336,13 @@ HShapeCrossNode::HShapeCrossNode(const QPointF &center, double size,
                                {center.x() - size, center.y()},
                                center,
                                {center.x() + size, center.y()}},
-                GL_LINES, param) {
-  _shape_type = "shape cross";
-}
+                GL_LINES, param) {}
 
-HShapeXNode::HShapeXNode() { _shape_type = "shape x node"; }
+HShapeXNode::HShapeXNode() {}
+
+HNodeBase::NODETYPE HShapeXNode::nodeType() {
+  return HNodeBase::NODETYPE::SHAPEXNODE;
+}
 
 HShapeXNode::HShapeXNode(const QPointF &center, double size,
                          const QJsonObject &param)
@@ -338,6 +354,4 @@ HShapeXNode::HShapeXNode(const QPointF &center, double size,
                                {center.x() + size, center.y() - size},
                                center,
                                {center.x() - size, center.y() + size}},
-                GL_LINES, param) {
-  _shape_type = "shape x node";
-}
+                GL_LINES, param) {}

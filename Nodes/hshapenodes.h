@@ -15,6 +15,8 @@ class HBOARD_EXPORT HShapeLineNode : public HFillNode {
 
   virtual void move(const QPointF& p) override;
 
+  virtual HNodeBase::NODETYPE nodeType() override;
+
   virtual QSGNode* buildDragNode() override;
 
   virtual void updateIndexPoint(int index, const QPointF& point) override;
@@ -35,6 +37,8 @@ class HBOARD_EXPORT HShapeRectNode : public HFillNode {
 
   virtual void move(const QPointF& p) override;
 
+  virtual HNodeBase::NODETYPE nodeType() override;
+
   virtual void updateIndexPoint(int index, const QPointF& point) override;
 
  public:
@@ -54,6 +58,8 @@ class HBOARD_EXPORT HShapeCurveNode : public HFillNode {
   HShapeCurveNode();
   HShapeCurveNode(const QList<QPointF>& list, const QJsonObject& param);
 
+  virtual HNodeBase::NODETYPE nodeType() override;
+
   virtual void move(const QPointF& p) override;
 
   virtual QSGNode* buildDragNode() override;
@@ -68,6 +74,8 @@ class HBOARD_EXPORT HShapePolyNode : public HFillNode {
 
   virtual void move(const QPointF& p) override;
 
+  virtual HNodeBase::NODETYPE nodeType() override;
+
   virtual QSGNode* buildDragNode() override;
 
   virtual void updateIndexPoint(int index, const QPointF& point) override;
@@ -80,6 +88,8 @@ class HBOARD_EXPORT HShapeFillRectNode : public HFillNode {
 
   virtual void move(const QPointF& p) override;
 
+  virtual HNodeBase::NODETYPE nodeType() override;
+
   virtual QSGNode* buildDragNode() override;
 
   virtual void updateIndexPoint(int index, const QPointF& point) override;
@@ -88,6 +98,9 @@ class HBOARD_EXPORT HShapeFillRectNode : public HFillNode {
 class HBOARD_EXPORT HShapeCircleNode : public HFillNode {
  public:
   HShapeCircleNode();
+
+  virtual HNodeBase::NODETYPE nodeType() override;
+
   HShapeCircleNode(const QPointF& center, double radius,
                    const QJsonObject& param);
 };
@@ -95,6 +108,9 @@ class HBOARD_EXPORT HShapeCircleNode : public HFillNode {
 class HBOARD_EXPORT HShapeFillCircleNode : public HFillNode {
  public:
   HShapeFillCircleNode();
+
+  virtual HNodeBase::NODETYPE nodeType() override;
+
   HShapeFillCircleNode(const QPointF& center, double radius,
                        const QJsonObject& param);
 };
@@ -102,12 +118,17 @@ class HBOARD_EXPORT HShapeFillCircleNode : public HFillNode {
 class HBOARD_EXPORT HShapeCrossNode : public HFillNode {
  public:
   HShapeCrossNode();
+
+  virtual HNodeBase::NODETYPE nodeType() override;
+
   HShapeCrossNode(const QPointF& center, double size, const QJsonObject& param);
 };
 
 class HBOARD_EXPORT HShapeXNode : public HFillNode {
  public:
   HShapeXNode();
+
+  virtual HNodeBase::NODETYPE nodeType() override;
   HShapeXNode(const QPointF& center, double size, const QJsonObject& param);
 };
 

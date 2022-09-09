@@ -9,9 +9,7 @@
 #include "../Common/hjsoncommon.h"
 #include "../Common/hsgnodecommon.h"
 #define DEBUG qDebug() << __FUNCTION__ << " " << __LINE__ << " "
-HFillNode::HFillNode() : _node(new QSGGeometryNode()), _drawMode(0) {
-  _shape_type = "fill node";
-}
+HFillNode::HFillNode() : _node(new QSGGeometryNode()), _drawMode(0) {}
 
 HFillNode::HFillNode(const QList<QPointF> &points, unsigned long type,
                      const QJsonObject &p)
@@ -19,13 +17,11 @@ HFillNode::HFillNode(const QList<QPointF> &points, unsigned long type,
   _param = p;
   setOurGeometry(points, type);
   setColor(getColor(p));
-  _shape_type = "fill node";
 }
 
 HFillNode::HFillNode(const QRectF &rect, unsigned long type,
                      const QJsonObject &p)
     : _node(new QSGGeometryNode()), _drawMode(0) {
-  _shape_type = "fill node";
   _param = p;
   auto list = HCommon::BuildRectList(rect);
   setOurGeometry(list, type);

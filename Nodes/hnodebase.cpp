@@ -118,16 +118,17 @@ void HNodeBase::timeOut() {
         }
       }
     } else {
-      _dash = new QSGGeometryNode();
       QList<QPointF> list;
       switch (nodeType()) {
-        case SHAPE:
-          list = HCommon::BuildPolyLinesList(getPointList());
-          break;
         case IMAGE:
           list = HCommon::BuildRectLinesList(getBoundRect());
           break;
+        default:
+          list = HCommon::BuildPolyLinesList(getPointList());
+          break;
       }
+      if (list.empty()) return;
+      _dash = new QSGGeometryNode();
       if (list.size() > STEP) {
         double step = list.size() / STEP;
         _dash_list.clear();
@@ -215,7 +216,6 @@ int HNodeBase::save(QJsonObject &d) {
   d.insert("text_rect", rect);
   d.insert("text_pixel_size", _pixel_size);
   d.insert("data", _data);
-  d.insert("shape_type", _shape_type);
   return 0;
 }
 
@@ -244,8 +244,6 @@ void HNodeBase::setData(const QJsonObject &d) { _data = d; }
 void HNodeBase::insertData(const QString &key, const QJsonValue &value) {
   _data.insert(key, value);
 }
-
-QString HNodeBase::shapeType() { return _shape_type; }
 
 void HNodeBase::buildTextNode(HBoard *board) {
   if (_text.isEmpty()) return;

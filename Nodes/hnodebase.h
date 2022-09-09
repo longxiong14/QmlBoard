@@ -16,8 +16,17 @@ class HBOARD_EXPORT HNodeBase : public HStorageBase<QJsonObject> {
  public:
   typedef enum {
     SHAPE = 1001,  //距离判断（按照点与轮廓的最近距离判断）
-    IMAGE          //点在封闭形状内的判断
-  } NODETYPE;      // node type
+    IMAGE,         //点在封闭形状内的判断
+    SHAPELINE,
+    SHAPERECT,
+    SHAPECURVE,
+    SHAPEPOLY,
+    SHAPEFILLRECT,
+    SHAPECIRCLE,
+    SHAPEFILLCIRCLE,
+    SHAPECROSS,
+    SHAPEXNODE
+  } NODETYPE;  // node type
 
   typedef enum {
     CANSELECT = 1,  //能否选取
@@ -75,8 +84,6 @@ class HBOARD_EXPORT HNodeBase : public HStorageBase<QJsonObject> {
 
   void insertData(const QString &key, const QJsonValue &value);
 
-  QString shapeType();
-
  public:
   void buildTextNode(HBoard *board);
 
@@ -99,7 +106,6 @@ class HBOARD_EXPORT HNodeBase : public HStorageBase<QJsonObject> {
   int _pixel_size;
   bool _destory;
   int _flag;
-  QString _shape_type;
 };
 
 #endif  // HNODEBASE_H

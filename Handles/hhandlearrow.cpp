@@ -87,7 +87,6 @@ void HHandleArrow::mouseReleaseEvent(HBoard *board, QMouseEvent *event,
     if (_drag_node) {
       return;
     }
-
     if (isButtonPress(event) && !middleButtonPress(event) && !_moved) {
       if (!ctrlKeyPress(board->keys())) {
         board->clearSelect();
@@ -164,7 +163,7 @@ bool HHandleArrow::canSelect(HNodeBase *node, const QPointF &pos,
         return true;
       }
       break;
-    case HNodeBase::SHAPE: {
+    default: {
       auto min = vec.ptmPoly(pos, points);
       if (std::fabs(min) < (_distance / scale)) {
         return true;

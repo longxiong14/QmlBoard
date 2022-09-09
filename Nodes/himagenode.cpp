@@ -16,9 +16,10 @@
 #define DEBUG qDebug() << __FUNCTION__ << " " << __LINE__ << " "
 
 HImageNode::HImageNode()
-    : HNodeBase(), _split_size(1920, 1080), _node(nullptr), _start_point(0, 0) {
-  _shape_type = "image";
-}
+    : HNodeBase(),
+      _split_size(1920, 1080),
+      _node(nullptr),
+      _start_point(0, 0) {}
 
 HImageNode::HImageNode(const QString &path, const QPointF &start_point)
     : HNodeBase(),
@@ -30,7 +31,6 @@ HImageNode::HImageNode(const QString &path, const QPointF &start_point)
     _bound_rect =
         QRectF(start_point.x(), start_point.y(), _mat.width(), _mat.height());
   }
-  _shape_type = "image";
 }
 
 HImageNode::HImageNode(const QImage &mat, const QPointF &start_point)
@@ -43,7 +43,6 @@ HImageNode::HImageNode(const QImage &mat, const QPointF &start_point)
     _bound_rect =
         QRectF(start_point.x(), start_point.y(), _mat.width(), _mat.height());
   }
-  _shape_type = "image";
 }
 
 HImageNode::~HImageNode() {
