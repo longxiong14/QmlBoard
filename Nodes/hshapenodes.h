@@ -8,128 +8,158 @@
 #include "hfillnode.h"
 
 class HBOARD_EXPORT HShapeLineNode : public HFillNode {
- public:
+public:
   HShapeLineNode();
-  HShapeLineNode(const QPointF& begin, const QPointF& end,
-                 const QJsonObject& param);
+  HShapeLineNode(const QPointF &begin, const QPointF &end,
+                 const QJsonObject &param);
 
-  virtual void move(const QPointF& p) override;
+  virtual void move(const QPointF &p) override;
 
   virtual HNodeBase::NODETYPE nodeType() override;
 
-  virtual QSGNode* buildDragNode() override;
+  virtual QSGNode *buildDragNode() override;
 
-  virtual void updateIndexPoint(int index, const QPointF& point) override;
+  virtual void updateIndexPoint(int index, const QPointF &point) override;
 };
 
 class HBOARD_EXPORT HShapeRectNode : public HFillNode {
- protected:
+protected:
   struct dragNodeMsg {
     QPointF _point;
     Qt::CursorShape _cursor;
   };
 
- public:
+public:
   HShapeRectNode();
-  HShapeRectNode(const QRectF& rect, const QJsonObject& param);
+  HShapeRectNode(const QRectF &rect, const QJsonObject &param);
 
-  virtual QSGNode* buildDragNode() override;
+  virtual QSGNode *buildDragNode() override;
 
-  virtual void move(const QPointF& p) override;
+  virtual void move(const QPointF &p) override;
 
   virtual HNodeBase::NODETYPE nodeType() override;
 
-  virtual void updateIndexPoint(int index, const QPointF& point) override;
+  virtual void updateIndexPoint(int index, const QPointF &point) override;
 
- public:
-  static void updateDragNodes(QSGNode* drag_node, const QRectF& rect);
+  virtual int save(QJsonObject &o);
 
-  static void createRectDragNode(QSGNode* node, const QRectF& rect,
-                                 const QUuid& id, float size);
+  virtual int load(const QJsonObject &o) override;
 
-  static int updateRectDragNode(int index, const QRectF& rect,
-                                const QPointF& point, QRectF& out_rect);
+public:
+  static void updateDragNodes(QSGNode *drag_node, const QRectF &rect);
 
-  static QMap<int, dragNodeMsg> getRectDragNodeMap(const QRectF& rect);
+  static void createRectDragNode(QSGNode *node, const QRectF &rect,
+                                 const QUuid &id, float size);
+
+  static int updateRectDragNode(int index, const QRectF &rect,
+                                const QPointF &point, QRectF &out_rect);
+
+  static QMap<int, dragNodeMsg> getRectDragNodeMap(const QRectF &rect);
 };
 
 class HBOARD_EXPORT HShapeCurveNode : public HFillNode {
- public:
+public:
   HShapeCurveNode();
-  HShapeCurveNode(const QList<QPointF>& list, const QJsonObject& param);
+  HShapeCurveNode(const QList<QPointF> &list, const QJsonObject &param);
 
   virtual HNodeBase::NODETYPE nodeType() override;
 
-  virtual void move(const QPointF& p) override;
+  virtual void move(const QPointF &p) override;
 
-  virtual QSGNode* buildDragNode() override;
+  virtual QSGNode *buildDragNode() override;
 
-  virtual void updateIndexPoint(int index, const QPointF& point) override;
+  virtual void updateIndexPoint(int index, const QPointF &point) override;
 };
 
 class HBOARD_EXPORT HShapePolyNode : public HFillNode {
- public:
+public:
   HShapePolyNode();
-  HShapePolyNode(const QList<QPointF>& list, const QJsonObject& param);
+  HShapePolyNode(const QList<QPointF> &list, const QJsonObject &param);
 
-  virtual void move(const QPointF& p) override;
+  virtual void move(const QPointF &p) override;
 
   virtual HNodeBase::NODETYPE nodeType() override;
 
-  virtual QSGNode* buildDragNode() override;
+  virtual QSGNode *buildDragNode() override;
 
-  virtual void updateIndexPoint(int index, const QPointF& point) override;
+  virtual void updateIndexPoint(int index, const QPointF &point) override;
 };
 
 class HBOARD_EXPORT HShapeFillRectNode : public HFillNode {
- public:
+public:
   HShapeFillRectNode();
-  HShapeFillRectNode(const QRectF& rect, const QJsonObject& param);
+  HShapeFillRectNode(const QRectF &rect, const QJsonObject &param);
 
-  virtual void move(const QPointF& p) override;
+  virtual void move(const QPointF &p) override;
 
   virtual HNodeBase::NODETYPE nodeType() override;
 
-  virtual QSGNode* buildDragNode() override;
+  virtual QSGNode *buildDragNode() override;
 
-  virtual void updateIndexPoint(int index, const QPointF& point) override;
+  virtual void updateIndexPoint(int index, const QPointF &point) override;
+
+  virtual int save(QJsonObject &o);
+
+  virtual int load(const QJsonObject &o) override;
 };
 
 class HBOARD_EXPORT HShapeCircleNode : public HFillNode {
- public:
+public:
   HShapeCircleNode();
+
+  HShapeCircleNode(const QPointF &center, double radius,
+                   const QJsonObject &param);
 
   virtual HNodeBase::NODETYPE nodeType() override;
 
-  HShapeCircleNode(const QPointF& center, double radius,
-                   const QJsonObject& param);
+  virtual int save(QJsonObject &o) override;
+
+  virtual int load(const QJsonObject &o) override;
 };
 
 class HBOARD_EXPORT HShapeFillCircleNode : public HFillNode {
- public:
+public:
   HShapeFillCircleNode();
 
   virtual HNodeBase::NODETYPE nodeType() override;
 
-  HShapeFillCircleNode(const QPointF& center, double radius,
-                       const QJsonObject& param);
+  HShapeFillCircleNode(const QPointF &center, double radius,
+                       const QJsonObject &param);
+
+  virtual int save(QJsonObject &o) override;
+
+  virtual int load(const QJsonObject &o) override;
 };
 
 class HBOARD_EXPORT HShapeCrossNode : public HFillNode {
- public:
+public:
   HShapeCrossNode();
+
+  HShapeCrossNode(const QPointF &center, double size, const QJsonObject &param);
 
   virtual HNodeBase::NODETYPE nodeType() override;
 
-  HShapeCrossNode(const QPointF& center, double size, const QJsonObject& param);
+  virtual int save(QJsonObject &o) override;
+
+  virtual int load(const QJsonObject &o) override;
+
+protected:
+  double _size;
 };
 
 class HBOARD_EXPORT HShapeXNode : public HFillNode {
- public:
+public:
   HShapeXNode();
 
+  HShapeXNode(const QPointF &center, double size, const QJsonObject &param);
+
   virtual HNodeBase::NODETYPE nodeType() override;
-  HShapeXNode(const QPointF& center, double size, const QJsonObject& param);
+
+  virtual int save(QJsonObject &o) override;
+
+  virtual int load(const QJsonObject &o) override;
+protected:
+  double _size;
 };
 
-#endif  // HSHAPENODES_H
+#endif // HSHAPENODES_H

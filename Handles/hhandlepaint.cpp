@@ -121,6 +121,7 @@ HHandleDrawPoly::HHandleDrawPoly() { _name = "poly"; }
 
 void HHandleDrawPoly::mousePressEvent(HBoard *board, QMouseEvent *event,
                                       const QJsonObject &object) {
+  HHandleMove::mousePressEvent(board, event);
   if (board && event && isButtonPress(event)) {
     auto point = board->WCS2LCS(event->pos());
     if (_node.isNull()) {
@@ -251,7 +252,8 @@ QJsonObject HHandleDrawCircle::getDefaultParam() {
 void HHandleDrawCircle::updateCirclePosition(HBoard *board,
                                              const QPointF &center,
                                              const QJsonObject &object) {
-  if (!board) return;
+  if (!board)
+    return;
   if (_node.isNull()) {
     auto node = std::make_shared<HShapeCircleNode>(
         center, object.value("radius").toInt(), object);
@@ -280,7 +282,8 @@ void HHandleDrawFillCircle::mousePressEvent(HBoard *board, QMouseEvent *event,
 void HHandleDrawFillCircle::updateCirclePosition(HBoard *board,
                                                  const QPointF &center,
                                                  const QJsonObject &object) {
-  if (!board) return;
+  if (!board)
+    return;
   if (_node.isNull()) {
     auto node = std::make_shared<HShapeFillCircleNode>(
         center, object.value("radius").toInt(), object);

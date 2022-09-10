@@ -40,7 +40,8 @@ QSGNode *HFillNode::build(HBoard *b) {
 QRectF HFillNode::getBoundRect() {
   QRectF r;
   auto geo = _node->geometry();
-  if (!geo) return r;
+  if (!geo)
+    return r;
   auto count = geo->vertexCount();
   auto point_list = static_cast<QSGGeometry::Point2D *>(geo->vertexData());
   float left = float(INT_MAX), right = float(INT_MIN), bottom = float(INT_MIN),
@@ -60,7 +61,8 @@ QRectF HFillNode::getBoundRect() {
 QList<QPointF> HFillNode::getPointList() {
   QList<QPointF> list;
   auto geo = _node->geometry();
-  if (!geo) return list;
+  if (!geo)
+    return list;
   auto count = geo->vertexCount();
   auto point_list = static_cast<QSGGeometry::Point2D *>(geo->vertexData());
   for (int i = 0; i < count; i++) {
@@ -72,7 +74,8 @@ QList<QPointF> HFillNode::getPointList() {
 
 void HFillNode::move(const QPointF &p) {
   auto geo = _node->geometry();
-  if (!geo) return;
+  if (!geo)
+    return;
   auto count = geo->vertexCount();
   auto point_list = static_cast<QSGGeometry::Point2D *>(geo->vertexData());
   for (int i = 0; i < count; i++) {
@@ -146,10 +149,7 @@ int HFillNode::save(QJsonObject &o) {
     type = static_cast<int>(_node->geometry()->drawingMode());
   }
   o.insert("drawingMode", type);
-  o.insert("param", _param);
   o.insert("points", l);
-  o.insert("nodeType", nodeType());
-  o.insert("id", _id.toString());
   return HNodeBase::save(o);
 }
 
@@ -201,7 +201,8 @@ void HFillNode::clear() {
 
 void HFillNode::setOurGeometry(const QList<QPointF> &points,
                                unsigned long type) {
-  if (!_node) return;
+  if (!_node)
+    return;
   QSGGeometry *geometry = HSGNodeCommon::buildGeometry(points, type);
   if (_param.contains("line_width")) {
     geometry->setLineWidth(_param.value("line_width").toInt());
