@@ -8,7 +8,7 @@
 #include "HBoard_global.h"
 class HBOARD_EXPORT HBoardUIControl : public QObject {
   Q_OBJECT
-public:
+ public:
   explicit HBoardUIControl(QObject *parent = nullptr);
 
   Q_INVOKABLE
@@ -42,14 +42,14 @@ public:
   Q_INVOKABLE
   void test();
 
-public:
+ public:
   void setTranslateMap(const QJsonObject &object);
 
-signals:
+ signals:
 
-public slots:
-protected:
+ public slots:
+ protected:
   QJsonObject _translate_map;
 };
 
-#endif // HBOARDUICONTROL_H
+#endif  // HBOARDUICONTROL_H
