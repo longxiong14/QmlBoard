@@ -221,8 +221,7 @@ void HHandleDrawCircle::mousePressEvent(HBoard *board, QMouseEvent *event,
   HHandleMove::mousePressEvent(board, event, object);
   if (board && event && isButtonPress(event)) {
     auto center = board->WCS2LCS(event->pos());
-    auto node = std::make_shared<HShapeCircleNode>(
-        center, object.value("radius").toInt(), object);
+    auto node = std::make_shared<HShapeCircleNode>(center, object);
     board->pushNode(node);
   }
 }
@@ -252,16 +251,15 @@ QJsonObject HHandleDrawCircle::getDefaultParam() {
 void HHandleDrawCircle::updateCirclePosition(HBoard *board,
                                              const QPointF &center,
                                              const QJsonObject &object) {
-  if (!board)
-    return;
+  if (!board) return;
   if (_node.isNull()) {
-    auto node = std::make_shared<HShapeCircleNode>(
-        center, object.value("radius").toInt(), object);
+    auto node = std::make_shared<HShapeCircleNode>(center, object);
     _node = node->id();
     board->pushNode(node);
   } else {
-    auto list =
-        HCommon::BuildCircle(center, object.value("radius").toInt(), 360);
+    auto r = object.value("radius").toInt();
+    auto radius = (0 == r ? 50 : object.value("radius").toInt());
+    auto list = HCommon::BuildCircle(center, radius, 360);
     board->drawNodePoint(_node, list);
   }
 }
@@ -273,8 +271,7 @@ void HHandleDrawFillCircle::mousePressEvent(HBoard *board, QMouseEvent *event,
   HHandleMove::mousePressEvent(board, event);
   if (board && event && isButtonPress(event)) {
     auto center = board->WCS2LCS(event->pos());
-    auto node = std::make_shared<HShapeFillCircleNode>(
-        center, object.value("radius").toInt(), object);
+    auto node = std::make_shared<HShapeFillCircleNode>(center, object);
     board->pushNode(node);
   }
 }
@@ -282,16 +279,17 @@ void HHandleDrawFillCircle::mousePressEvent(HBoard *board, QMouseEvent *event,
 void HHandleDrawFillCircle::updateCirclePosition(HBoard *board,
                                                  const QPointF &center,
                                                  const QJsonObject &object) {
-  if (!board)
-    return;
+  if (!board) return;
   if (_node.isNull()) {
-    auto node = std::make_shared<HShapeFillCircleNode>(
-        center, object.value("radius").toInt(), object);
+    auto node = std::make_shared<HShapeFillCircleNode>(center, object);
     _node = node->id();
     board->pushNode(node);
   } else {
-    auto list =
-        HCommon::BuildCircle(center, object.value("radius").toInt(), 360);
+    auto list = HCommon::BuildCircle(center,
+                                     0 == object.value("radius").toInt()
+                                         ? 50
+                                         : object.value("radius").toInt(),
+                                     360);
     board->drawNodePoint(_node, list);
   }
 }
