@@ -29,7 +29,7 @@ class HBOARD_EXPORT HBoard : public QQuickItem {
   virtual ~HBoard() override;
 
  public:
-  void home();
+  virtual void home();
   void checkItems();
   int save(const QString &path);
   int save(QJsonArray &save);
@@ -48,8 +48,8 @@ class HBOARD_EXPORT HBoard : public QQuickItem {
   QTransform transform();
   QHash<QUuid, std::shared_ptr<HNodeBase>> nodes();
   QHash<QUuid, std::shared_ptr<HNodeBase>> visibleNodes();
-  void moveNode(const QUuid &n, QPointF dlt);      // move node delta
-  void nodeMoveTo(const QUuid &n, QPointF point);  // move node to point
+  virtual void moveNode(const QUuid &n, QPointF dlt);      // move node delta
+  virtual void nodeMoveTo(const QUuid &n, QPointF point);  // move node to point
   void drawNodePoint(const QUuid &node,
                      const QList<QPointF> points);  // draw handle move event
   void updateNodeIndexPoint(const QUuid &node, int index,
@@ -88,6 +88,7 @@ class HBOARD_EXPORT HBoard : public QQuickItem {
   QPointF WCS2LCS(const QPointF &point);
   QPointF LCS2WCS(const QPointF &point);
   double getScale();
+  QRectF getWCSBoundRect();
 
  public:
   virtual QSGNode *updatePaintNode(QSGNode *node,
@@ -110,6 +111,9 @@ class HBOARD_EXPORT HBoard : public QQuickItem {
   void updateRule();
   void buildTopRule(QList<QPointF> &list);
   void buildLeftRule(QList<QPointF> &list);
+  bool containNodes(std::shared_ptr<HNodeBase> node);
+  bool containNodes(const QUuid &id);
+  int removeNodeToList(const QUuid &id);
  signals:
   void nameChanged();
   void hoverPoint(int x, int y);
@@ -120,7 +124,8 @@ class HBOARD_EXPORT HBoard : public QQuickItem {
   QSGTransformNode *_trans_node;
   HHandleBase *_handle;
   QMutex _mutex;
-  QHash<QUuid, std::shared_ptr<HNodeBase>> _nodes;
+  //  QHash<QUuid, std::shared_ptr<HNodeBase>> _nodes;
+  QList<std::shared_ptr<HNodeBase>> _nodes;
   QString _name;
   QQueue<task> _tasks;
   QSet<int> _keys;

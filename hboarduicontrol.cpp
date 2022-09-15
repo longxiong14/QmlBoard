@@ -6,6 +6,7 @@
 #include "Common/hplanvector.h"
 #include "Handles/hhandleflyweight.h"
 #include "Nodes/hfillnode.h"
+#include "Nodes/himagemapnode.h"
 #include "Nodes/himagenode.h"
 #include "Nodes/hnodebase.h"
 #include "Nodes/hshapenodes.h"
@@ -44,7 +45,7 @@ int HBoardUIControl::openBoardPicture(const QString &board,
     DEBUG << "hasn't this board " << board;
     return -1;
   }
-  auto node = std::make_shared<HImageNode>(path);
+  auto node = std::make_shared<HImageMapNode>(path);
   node->setText(node->id().toString());
   ptr->pushNode(node);
   ptr->home();

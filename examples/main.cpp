@@ -1,6 +1,8 @@
-﻿#include <QGuiApplication>
+﻿#include <QDebug>
+#include <QGuiApplication>
 #include <QQmlApplicationEngine>
 
+#include "../Common/hthreadpool.h"
 #include "../HChart/hhistogramchart.h"
 #include "../Handles/hhandlearrow.h"
 #include "../Handles/hhandleflyweight.h"
@@ -11,6 +13,7 @@
 #include "../hboard.h"
 #include "../hboardmanager.h"
 #include "../hboarduicontrol.h"
+#include "../himagemapboard.h"
 int main(int argc, char *argv[]) {
   QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
 
@@ -18,7 +21,7 @@ int main(int argc, char *argv[]) {
 
   QQmlApplicationEngine engine;
 
-  qmlRegisterType<HBoard>("hBoard", 1, 0, "HBoard");
+  qmlRegisterType<HImageMapBoard>("hBoard", 1, 0, "HBoard");
   qmlRegisterType<HHistogramChart>("hHistogramChart", 1, 0, "HHistogramChart");
   qmlRegisterType<HBoardUIControl>("hUIControl", 1, 0, "HUIControl");
 

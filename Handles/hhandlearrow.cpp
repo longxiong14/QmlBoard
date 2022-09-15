@@ -156,10 +156,12 @@ bool HHandleArrow::canSelect(HNodeBase *node, const QPointF &pos,
                              double scale) {
   auto type = node->nodeType();
   auto points = node->getPointList();
+  auto rect = node->getBoundRect();
   HPlanVector vec;
   switch (type) {
     case HNodeBase::IMAGE:
-      if (HCommon::PointInContour(pos, points)) {
+    case HNodeBase::MAPINAGE:
+      if (HCommon::PointInRect(pos, rect)) {
         return true;
       }
       break;

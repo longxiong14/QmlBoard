@@ -25,7 +25,8 @@ class HBOARD_EXPORT HNodeBase : public HStorageBase<QJsonObject> {
     SHAPECIRCLE,
     SHAPEFILLCIRCLE,
     SHAPECROSS,
-    SHAPEXNODE
+    SHAPEXNODE,
+    MAPINAGE
   } NODETYPE;  // node type
 
   typedef enum {
