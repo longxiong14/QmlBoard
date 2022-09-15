@@ -37,8 +37,8 @@ class HBOARD_EXPORT HBoard : public QQuickItem {
   int load(const QJsonArray &nodes);
 
  public:
-  void pushTransform(const QTransform &trans);
-  void pushNode(std::shared_ptr<HNodeBase> node, bool flag = true);
+  virtual void pushTransform(const QTransform &trans);
+  virtual void pushNode(std::shared_ptr<HNodeBase> node, bool flag = true);
   //  void pushDashNode(HNodeBase* node);
   void removeNode(const QUuid &id);
   void clearNode();

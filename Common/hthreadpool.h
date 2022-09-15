@@ -18,24 +18,49 @@ class HBOARD_EXPORT HThreadPool {
   template <class Func, class... ARGS>
   void push(Func &&f, ARGS &&... args);
 
-  void run(bool f = true);
+  void run();
 
-  void stop(bool f = true);
+  void stop();
 
  protected:
   std::list<std::thread> _works;
   std::queue<std::function<void()>> _tasks;
   std::condition_variable _condition;
   std::mutex _mutex;
-  bool _running;
-  bool _stop;
+  int _flag;
   std::function<void()> _task_end;
+  std::atomic_size_t _waiter;
+};
+
+class HBOARD_EXPORT HSyncThreadPool {
+ public:
+  HSyncThreadPool(std::size_t size);
+  ~HSyncThreadPool();
+
+  template <class Func, class... ARGS>
+  void push(Func &&f, ARGS &&... args);
+
+  void run();
+
+  void stop();
+
+ protected:
+  std::condition_variable _condition;
+  std::mutex _mutex;
+  std::shared_ptr<HThreadPool> _pool;
+  bool _flag;
 };
 
 template <class Func, class... ARGS>
 void HThreadPool::push(Func &&f, ARGS &&... args) {
   auto func = std::bind(std::forward<Func>(f), std::forward<ARGS>(args)...);
   _tasks.push(func);
-  if (_running) _condition.notify_one();
+  _condition.notify_one();
 }
+
+template <class Func, class... ARGS>
+void HSyncThreadPool::push(Func &&f, ARGS &&... args) {
+  _pool->push(std::forward<Func>(f), std::forward<ARGS>(args)...);
+}
+
 #endif  // HTHREADPOOL_H
