@@ -32,6 +32,11 @@ void HImageMapBoard::pushNode(std::shared_ptr<HNodeBase> node, bool flag) {
   }
 }
 
+void HImageMapBoard::removeNode(const QUuid &id) {
+  HBoard::removeNode(id);
+  updateImageTask();
+}
+
 void HImageMapBoard::pushTransform(const QTransform &trans) {
   HBoard::pushTransform(trans);
   updateImageTask();
@@ -82,7 +87,6 @@ bool HImageMapBoard::scaleChanged() {
 
 void HImageMapBoard::updateImages() {
   if (true) {
-    auto scale = getScale();
     auto r = getWCSBoundRect();
     QImage screen_image(int(width()), int(height()),
                         QImage::Format::Format_ARGB32);
@@ -100,22 +104,22 @@ void HImageMapBoard::updateImages() {
           auto size = dst.size();
           auto tl = dst.topLeft() - rect.topLeft();
           auto clone_dst = QRectF(tl, size);
-
           auto image = map_image_node->getImage();
-          image = image.copy(clone_dst.toRect());
-          image = image.scaled(int(image.width() * scale),
-                               int(image.height() * scale));
           auto lcs_rect =
               QRectF(LCS2WCS(dst.topLeft()), LCS2WCS(dst.bottomRight()));
-          DEBUG << image.size();
-          painter.drawImage(lcs_rect, image);
+          DEBUG << lcs_rect;
+          DEBUG << screen_image.size();
+          painter.drawImage(lcs_rect, image, clone_dst);
           flag = true;
         }
       }
     }
+
+    DEBUG << screen_image.byteCount();
     if (flag) {
       QSGImageNode *image_node = window()->createImageNode();
       auto texture = window()->createTextureFromImage(screen_image);
+
       image_node->setTexture(texture);
       image_node->setRect(0, 0, width(), height());
       if (_image_node) {

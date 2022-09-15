@@ -10,6 +10,7 @@ class HBOARD_EXPORT HImageMapBoard : public HBoard {
 
   virtual void pushNode(std::shared_ptr<HNodeBase> node,
                         bool flag = true) override;
+  virtual void removeNode(const QUuid &id) override;
 
   virtual void pushTransform(const QTransform &trans) override;
 
