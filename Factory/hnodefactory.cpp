@@ -2,6 +2,7 @@
 
 #include <QDebug>
 
+#include "../Nodes/himagemapnode.h"
 #include "../Nodes/himagenode.h"
 #include "../Nodes/hshapenodes.h"
 #define DEBUG qDebug() << __FUNCTION__ << __LINE__
@@ -44,6 +45,9 @@ std::shared_ptr<HNodeBase> HNodeFactory::create(const QJsonObject &param) {
       break;
     case HNodeBase::NODETYPE::SHAPEXNODE:
       node = std::make_shared<HShapeXNode>();
+      break;
+    case HNodeBase::NODETYPE::MAPINAGE:
+      node = std::make_shared<HImageMapNode>();
       break;
   }
   return node;

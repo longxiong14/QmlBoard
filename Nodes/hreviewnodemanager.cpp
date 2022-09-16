@@ -4,6 +4,7 @@
 
 #include "../hboard.h"
 #include "../hboardmanager.h"
+#include "himagemapnode.h"
 #include "himagenode.h"
 #define DEBUG qDebug() << __FUNCTION__ << " " << __LINE__ << " "
 HReviewNodeManager::HReviewNodeManager(const QString &name)
@@ -72,6 +73,21 @@ int HReviewNodeManager::pushNode(const QString &key, const QImage &mat,
   }
   std::shared_ptr<HImageNode> node =
       std::make_shared<HImageNode>(mat, start_point);
+  return pushNode(key, node);
+}
+
+int HReviewNodeManager::pushMapImage(const QString &key, const QImage &image,
+                                     const QPointF &start_point) {
+  if (_nodes.contains(key)) {
+    DEBUG << "had this node " << key;
+    return -1;
+  }
+  if (image.isNull()) {
+    DEBUG << "mat is empty";
+    return -1;
+  }
+  std::shared_ptr<HImageMapNode> node =
+      std::make_shared<HImageMapNode>(image, start_point);
   return pushNode(key, node);
 }
 

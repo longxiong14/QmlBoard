@@ -95,6 +95,7 @@ bool HImageMapBoard::scaleChanged() {
 
 void HImageMapBoard::updateImages() {
   if (true) {
+    double scale = getScale();
     auto r = getWCSBoundRect();
     QImage screen_image(int(width()), int(height()),
                         QImage::Format::Format_ARGB32);
@@ -112,12 +113,15 @@ void HImageMapBoard::updateImages() {
           auto size = dst.size();
           auto tl = dst.topLeft() - rect.topLeft();
           auto clone_dst = QRectF(tl, size);
-          auto image = map_image_node->getImage();
           auto lcs_rect =
               QRectF(LCS2WCS(dst.topLeft()), LCS2WCS(dst.bottomRight()));
-          //          DEBUG << lcs_rect;
-          //          DEBUG << screen_image.size();
-          painter.drawImage(lcs_rect, image, clone_dst);
+          if (false) {
+            auto image = map_image_node->getImage();
+            painter.drawImage(lcs_rect, image, clone_dst);
+          } else {
+            auto image = map_image_node->getImage(clone_dst, scale);
+            painter.drawImage(lcs_rect, image);
+          }
           flag = true;
         }
       }

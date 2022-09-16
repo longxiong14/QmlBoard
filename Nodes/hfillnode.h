@@ -7,13 +7,10 @@
 #include "hnodebase.h"
 class HBOARD_EXPORT HFillNode : public HNodeBase /*, public QSGGeometryNode*/ {
  public:
-  HFillNode();
   HFillNode(const QList<QPointF> &points, unsigned long type = GL_LINE_LOOP,
             const QJsonObject &p = QJsonObject());
-  HFillNode(const QRectF &rect, unsigned long type = GL_LINE_LOOP,
+  HFillNode(const QRectF &rect = QRectF(), unsigned long type = GL_LINE_LOOP,
             const QJsonObject &p = QJsonObject());
-  //  virtual ~HFillNode() override;
-  //  HFillNode(const HFillNode &o) = delete;
 
  public:
   virtual QSGNode *get() override;
@@ -35,6 +32,14 @@ class HBOARD_EXPORT HFillNode : public HNodeBase /*, public QSGGeometryNode*/ {
   virtual int load(const QString &path) override;
 
   void clear();
+
+ public:
+  void setPointList(const QList<QPointF> &points,
+                    unsigned long type = GL_LINE_LOOP,
+                    const QJsonObject &p = QJsonObject());
+
+  void setRect(const QRectF &rect, unsigned long type = GL_LINE_LOOP,
+               const QJsonObject &p = QJsonObject());
 
  protected:
   void setOurGeometry(const QList<QPointF> &points, unsigned long type = false);

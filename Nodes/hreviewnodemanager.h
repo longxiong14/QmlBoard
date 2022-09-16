@@ -17,6 +17,8 @@ class HBOARD_EXPORT HReviewNodeManager {
   int pushNode(const QString& key, std::shared_ptr<HNodeBase> node);
   int pushNode(const QString& key, const QImage& image,
                const QPointF& start_point);
+  int pushMapImage(const QString& key, const QImage& image,
+                   const QPointF& start_point);
 
   int removeNode(const QString& key);
 
