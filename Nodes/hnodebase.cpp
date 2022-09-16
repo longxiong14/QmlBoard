@@ -12,8 +12,14 @@
 #define STEP 5e3
 #define DEBUG qDebug() << __FUNCTION__ << " " << __LINE__ << " "
 HNodeBase::HNodeBase()
-    : _select(false), _visible(true), _dash(nullptr), _enable_home(true),
-      _text_node(nullptr), _drag_node(nullptr), _pixel_size(10), _destory(true),
+    : _select(false),
+      _visible(true),
+      _dash(nullptr),
+      _enable_home(true),
+      _text_node(nullptr),
+      _drag_node(nullptr),
+      _pixel_size(10),
+      _destory(true),
       _flag(NODEFLAG::CANSELECT) {
   _id = QUuid::createUuid();
 }
@@ -23,8 +29,7 @@ HNodeBase::~HNodeBase() {
     int count = _text_node->childCount();
     for (int i = 0; i < count; i++) {
       auto n = dynamic_cast<QSGImageNode *>(_text_node->childAtIndex(0));
-      if (n)
-        HSGNodeCommon::releaseTextureNode(n);
+      if (n) HSGNodeCommon::releaseTextureNode(n);
     }
     delete _text_node;
     _text_node = nullptr;
@@ -115,15 +120,14 @@ void HNodeBase::timeOut() {
     } else {
       QList<QPointF> list;
       switch (nodeType()) {
-      case IMAGE:
-        list = HCommon::BuildRectLinesList(getBoundRect());
-        break;
-      default:
-        list = HCommon::BuildPolyLinesList(getPointList());
-        break;
+        case IMAGE:
+          list = HCommon::BuildRectLinesList(getBoundRect());
+          break;
+        default:
+          list = HCommon::BuildPolyLinesList(getPointList());
+          break;
       }
-      if (list.empty())
-        return;
+      if (list.empty()) return;
       if (list.size() > STEP) {
         double step = list.size() / STEP;
         _dash_list.clear();
@@ -167,11 +171,9 @@ void HNodeBase::setFlag(HNodeBase::NODEFLAG flag, bool open) {
 QSGNode *HNodeBase::buildDragNode() { return nullptr; }
 
 bool HNodeBase::pointInDragNode(const QPointF &point, HDragNode *&drag) {
-  if (!_drag_node)
-    return false;
+  if (!_drag_node) return false;
   auto count = _drag_node->childCount();
-  if (!count)
-    return false;
+  if (!count) return false;
   for (int i = 0; i < count; i++) {
     auto node = dynamic_cast<HDragNode *>(_drag_node->childAtIndex(i));
     if (node) {
@@ -197,6 +199,10 @@ void HNodeBase::updateIndexPoint(int index, const QPointF &point) {
   }
   flushMayiLine();
 }
+
+void HNodeBase::updateMat(HBoard *, const QImage &, const QPointF &) {}
+
+void HNodeBase::updateRoi(HBoard *, const QRectF &) {}
 
 int HNodeBase::save(QJsonObject &d) {
   if (!_text.isEmpty()) {
@@ -245,11 +251,9 @@ void HNodeBase::insertData(const QString &key, const QJsonValue &value) {
 }
 
 void HNodeBase::buildTextNode(HBoard *board) {
-  if (_text.isEmpty())
-    return;
+  if (_text.isEmpty()) return;
   auto node = get();
-  if (!board)
-    return;
+  if (!board) return;
   auto tl = getBoundRect().topLeft();
   QRectF rect;
   if (_text_rect.isEmpty()) {
@@ -275,8 +279,7 @@ void HNodeBase::buildTextNode(HBoard *board) {
     int count = _text_node->childCount();
     for (int i = 0; i < count; i++) {
       auto n = dynamic_cast<QSGImageNode *>(_text_node->childAtIndex(0));
-      if (n)
-        HSGNodeCommon::releaseTextureNode(n);
+      if (n) HSGNodeCommon::releaseTextureNode(n);
     }
     _text_node->removeAllChildNodes();
     auto image_node = func();

@@ -60,8 +60,8 @@ class HBOARD_EXPORT HBoard : public QQuickItem {
   int updateNodeDrawMode(const QUuid &node, unsigned long mode);
 
   // start: relate position
-  bool updateNodeMat(const QUuid &node, const QImage &mat,
-                     const QPointF &start);
+  virtual bool updateNodeMat(const QUuid &node, const QImage &mat,
+                             const QPointF &start);
   bool hasNode(const QUuid &node);
   void visibleNode(const QUuid &node, bool flag);
   std::shared_ptr<HNodeBase> getNodeById(const QUuid &id);

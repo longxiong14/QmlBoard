@@ -75,6 +75,14 @@ QSGNode *HImageMapBoard::updatePaintNode(
   return node;
 }
 
+bool HImageMapBoard::updateNodeMat(const QUuid &node, const QImage &mat,
+                                   const QPointF &start) {
+  bool flag = HBoard::updateNodeMat(node, mat, start);
+  auto n = getNodeById(node);
+  if (HNodeBase::NODETYPE::MAPINAGE == n->nodeType()) updateImageTask();
+  return flag;
+}
+
 bool HImageMapBoard::scaleChanged() {
   bool res = false;
   auto scale = getScale();
@@ -107,15 +115,17 @@ void HImageMapBoard::updateImages() {
           auto image = map_image_node->getImage();
           auto lcs_rect =
               QRectF(LCS2WCS(dst.topLeft()), LCS2WCS(dst.bottomRight()));
-          DEBUG << lcs_rect;
-          DEBUG << screen_image.size();
+          //          DEBUG << lcs_rect;
+          //          DEBUG << screen_image.size();
           painter.drawImage(lcs_rect, image, clone_dst);
           flag = true;
         }
       }
     }
 
-    DEBUG << screen_image.byteCount();
+    //    DEBUG << screen_image.byteCount();
+    //    DEBUG << screen_image.size();
+    //    DEBUG << screen_image.sizeInBytes();
     if (flag) {
       QSGImageNode *image_node = window()->createImageNode();
       auto texture = window()->createTextureFromImage(screen_image);

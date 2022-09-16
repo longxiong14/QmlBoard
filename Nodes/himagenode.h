@@ -20,10 +20,10 @@ class HBOARD_EXPORT HImageNode : public HNodeBase {
 
   // start: relative position
   virtual void updateMat(HBoard *board, const QImage &mat,
-                         const QPointF &start);
+                         const QPointF &start) override;
 
   // roi: relative rectangle
-  virtual void updateRoi(HBoard *board, const QRectF &roi);
+  virtual void updateRoi(HBoard *board, const QRectF &roi) override;
 
  public:
   virtual int save(QJsonObject &o) override;

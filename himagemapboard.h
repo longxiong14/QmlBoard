@@ -20,6 +20,9 @@ class HBOARD_EXPORT HImageMapBoard : public HBoard {
   virtual QSGNode *updatePaintNode(QSGNode *node,
                                    UpdatePaintNodeData *) override;
 
+  virtual bool updateNodeMat(const QUuid &node, const QImage &mat,
+                             const QPointF &start) override;
+
  protected:
   bool scaleChanged();
 

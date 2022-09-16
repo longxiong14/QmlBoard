@@ -7,6 +7,7 @@
 class HFillNode;
 class HBOARD_EXPORT HImageMapNode : public HNodeBase {
  public:
+  HImageMapNode();
   HImageMapNode(const QString &path, const QPointF &start_point = QPointF());
   HImageMapNode(const QImage &mat, const QPointF &start_point = QPointF());
   virtual ~HImageMapNode() override;
@@ -35,11 +36,19 @@ class HBOARD_EXPORT HImageMapNode : public HNodeBase {
 
   virtual void setFlag(NODEFLAG flag, bool open) override;
 
+  // start: relative position
+  virtual void updateMat(HBoard *board, const QImage &mat,
+                         const QPointF &start) override;
+
+  // roi: relative rectangle
+  virtual void updateRoi(HBoard *board, const QRectF &roi) override;
+
  public:
   virtual int load(const QString &path) override;
   virtual int save(const QString &path) override;
 
   QImage getImage();
+  void setImage(const QImage &i);
   QImage getScaleImage(double scale);
 
  protected:

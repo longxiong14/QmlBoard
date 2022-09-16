@@ -446,7 +446,7 @@ bool HBoard::updateNodeMat(const QUuid &node, const QImage &mat,
     return false;
   }
   auto n = getNodeById(node);
-  if (!n || HNodeBase::NODETYPE::IMAGE != n->nodeType()) {
+  if (!n) {
     return false;
   }
 
@@ -455,16 +455,12 @@ bool HBoard::updateNodeMat(const QUuid &node, const QImage &mat,
       return false;
     }
     auto n = getNodeById(node);
-    if (!n || HNodeBase::NODETYPE::IMAGE != n->nodeType()) {
-      return false;
-    }
-    auto image_node = dynamic_cast<HImageNode *>(n.get());
-    if (image_node) {
-      image_node->updateMat(this, mat, start);
+    if (n) {
+      n->updateMat(this, mat, start);
     }
     return true;
   });
-  return 0;
+  return true;
 }
 
 bool HBoard::hasNode(const QUuid &node) { return containNodes(node); }

@@ -142,9 +142,15 @@ QJsonArray HBoardUIControl::paramToUIItems(const QJsonObject &object) {
 void HBoardUIControl::test() {
   auto board = HBoardManager::getInstance()->getBoard("main_board");
   if (board) {
-    std::shared_ptr<HShapeXNode> node =
-        std::make_shared<HShapeXNode>(QPointF(), 100, QJsonObject());
-    board->pushNode(node);
+    auto sel = board->selects();
+    QImage imag(20, 20, QImage::Format::Format_ARGB32);
+    imag.fill(QColor(255, 0, 0, 120));
+    for (const auto &s : sel) {
+      board->updateNodeMat(s, imag, QPoint(0, 0));
+    }
+    //    std::shared_ptr<HShapeXNode> node =
+    //        std::make_shared<HShapeXNode>(QPointF(), 100, QJsonObject());
+    //    board->pushNode(node);
   }
 }
 

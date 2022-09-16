@@ -1,7 +1,7 @@
 ﻿#ifndef HNODEBASE_H
 #define HNODEBASE_H
-
 #include <QColor>
+#include <QImage>
 #include <QJsonObject>
 #include <QRectF>
 #include <QUuid>
@@ -71,6 +71,14 @@ class HBOARD_EXPORT HNodeBase : public HStorageBase<QJsonObject> {
   virtual QSGNode *buildDragNode();
   virtual bool pointInDragNode(const QPointF &point, HDragNode *&drag);
   virtual void updateIndexPoint(int index, const QPointF &point);
+
+ public:  // image node interface
+  // start: relative position
+  virtual void updateMat(HBoard *board, const QImage &mat,
+                         const QPointF &start);
+
+  // roi: relative rectangle
+  virtual void updateRoi(HBoard *board, const QRectF &roi);
 
  public:
   virtual int save(QJsonObject &d) override;

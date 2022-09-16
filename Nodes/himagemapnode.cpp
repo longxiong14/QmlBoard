@@ -1,9 +1,12 @@
 ﻿#include "himagemapnode.h"
 
 #include <QDebug>
+#include <QPainter>
 
 #include "hfillnode.h"
 #define DEBUG qDebug() << __FUNCTION__ << __LINE__
+HImageMapNode::HImageMapNode() {}
+
 HImageMapNode::HImageMapNode(const QString &path, const QPointF &start_point)
     : _image(path), _scale(0) {
   DEBUG << _image.size();
@@ -72,11 +75,27 @@ void HImageMapNode::setFlag(HNodeBase::NODEFLAG flag, bool open) {
   return _fill_node->setFlag(flag, open);
 }
 
+void HImageMapNode::updateMat(HBoard *board, const QImage &mat,
+                              const QPointF &start) {
+  QPainter p(&_image);
+  auto roi = QRectF(start, mat.size());
+  DEBUG << _image.size();
+  DEBUG << mat.size() << roi;
+  p.drawImage(roi, mat);
+  updateRoi(board, roi);
+}
+
+void HImageMapNode::updateRoi(HBoard *board, const QRectF &roi) {
+  //
+}
+
 int HImageMapNode::load(const QString &path) { return -1; }
 
 int HImageMapNode::save(const QString &path) { return -1; }
 
 QImage HImageMapNode::getImage() { return _image; }
+
+void HImageMapNode::setImage(const QImage &i) { _image = i; }
 
 QImage HImageMapNode::getScaleImage(double scale) {
   if (std::fabs(scale - _scale) > 1E-10) {
