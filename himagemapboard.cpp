@@ -120,7 +120,7 @@ void HImageMapBoard::updateImages() {
             painter.drawImage(lcs_rect, image, clone_dst);
           } else {
             auto image = map_image_node->getImage(clone_dst, scale);
-            painter.drawImage(lcs_rect, image);
+            painter.drawImage(lcs_rect.topLeft(), image);
           }
           flag = true;
         }
