@@ -106,7 +106,7 @@ void HImageMapBoard::updateImages() {
     bool flag = false;
     for (auto node : _nodes) {
       if (node && HNodeBase::NODETYPE::MAPINAGE == node->nodeType()) {
-        auto map_image_node = dynamic_cast<HImageMapNode *>(node.get());
+        auto map_image_node = dynamic_cast<HImageMapNodeDelegate *>(node.get());
         if (map_image_node) {
           auto rect = node->getBoundRect();
           auto dst = r & rect;
@@ -115,13 +115,10 @@ void HImageMapBoard::updateImages() {
           auto clone_dst = QRectF(tl, size);
           auto lcs_rect =
               QRectF(LCS2WCS(dst.topLeft()), LCS2WCS(dst.bottomRight()));
-          if (false) {
-            auto image = map_image_node->getImage();
-            painter.drawImage(lcs_rect, image, clone_dst);
-          } else {
-            auto image = map_image_node->getImage(clone_dst, scale);
-            painter.drawImage(lcs_rect.topLeft(), image);
-          }
+
+          auto image = map_image_node->getImage(clone_dst, scale);
+          painter.drawImage(lcs_rect.topLeft(), image);
+
           flag = true;
         }
       }

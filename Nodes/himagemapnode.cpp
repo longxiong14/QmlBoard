@@ -70,6 +70,10 @@ void HImageMapNodeDelegate::setFlag(HNodeBase::NODEFLAG flag, bool open) {
   _fill_node->setFlag(flag, open);
 }
 
+HNodeBase::NODETYPE HImageMapNodeDelegate::nodeType() {
+  return NODETYPE::MAPINAGE;
+}
+
 void HImageMapNodeDelegate::setRect(const QRectF &rect) {
   _fill_node->setRect(rect);
 }
@@ -98,8 +102,6 @@ HImageMapNode &HImageMapNode::operator=(const HImageMapNode &node) {
 }
 
 HImageMapNode::~HImageMapNode() {}
-
-HNodeBase::NODETYPE HImageMapNode::nodeType() { return NODETYPE::MAPINAGE; }
 
 void HImageMapNode::updateMat(HBoard *, const QImage &mat,
                               const QPointF &start) {

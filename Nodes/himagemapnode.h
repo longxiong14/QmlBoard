@@ -50,6 +50,8 @@ class HBOARD_EXPORT HImageMapNodeDelegate : public HNodeBase {
 
   virtual QImage getImage(const QRectF &roi, double scale) = 0;
 
+  virtual NODETYPE nodeType() override;
+
   void setRect(const QRectF &rect);
 
  protected:
@@ -64,8 +66,6 @@ class HBOARD_EXPORT HImageMapNode : public HImageMapNodeDelegate {
   HImageMapNode(const HImageMapNode &node);
   HImageMapNode &operator=(const HImageMapNode &node);
   virtual ~HImageMapNode() override;
-
-  virtual NODETYPE nodeType() override;
 
   // start: relative position
   virtual void updateMat(HBoard *board, const QImage &mat,
