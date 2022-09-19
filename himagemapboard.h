@@ -8,8 +8,8 @@ class HBOARD_EXPORT HImageMapBoard : public HBoard {
 
   virtual void home() override;
 
-  virtual void pushNode(std::shared_ptr<HNodeBase> node,
-                        bool flag = true) override;
+  //  virtual void pushNode(std::shared_ptr<HNodeBase> node,
+  //                        bool flag = true) override;
   virtual void removeNode(const QUuid &id) override;
 
   virtual void pushTransform(const QTransform &trans) override;
@@ -24,8 +24,6 @@ class HBOARD_EXPORT HImageMapBoard : public HBoard {
                              const QPointF &start) override;
 
  protected:
-  bool scaleChanged();
-
   void updateImages();
 
   void clearImageNodes();
@@ -37,7 +35,6 @@ class HBOARD_EXPORT HImageMapBoard : public HBoard {
  protected:
   QSGNode *_image_node;
   QSGNode *_shape_node;
-  double _scale;
 };
 
 #endif  // HIMAGEMAPBOARD_H

@@ -46,9 +46,9 @@ class HBOARD_EXPORT HFillNode : public HNodeBase /*, public QSGGeometryNode*/ {
   float getLineWidth();
 
   QColor getColor(const QJsonObject &p);
-  QSGGeometryNode *_node;
 
  protected:
+  QSGGeometryNode *_node;
   unsigned long _drawMode;
 };
 

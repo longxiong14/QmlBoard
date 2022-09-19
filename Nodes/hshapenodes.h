@@ -41,7 +41,7 @@ class HBOARD_EXPORT HShapeRectNode : public HFillNode {
 
   virtual void updateIndexPoint(int index, const QPointF &point) override;
 
-  virtual int save(QJsonObject &o);
+  virtual int save(QJsonObject &o) override;
 
   virtual int load(const QJsonObject &o) override;
 
@@ -98,7 +98,7 @@ class HBOARD_EXPORT HShapeFillRectNode : public HFillNode {
 
   virtual void updateIndexPoint(int index, const QPointF &point) override;
 
-  virtual int save(QJsonObject &o);
+  virtual int save(QJsonObject &o) override;
 
   virtual int load(const QJsonObject &o) override;
 };

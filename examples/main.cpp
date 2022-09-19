@@ -10,7 +10,6 @@
 #include "../Handles/hhandlepaint.h"
 #include "../Nodes/hfillnode.h"
 #include "../Nodes/hnodebase.h"
-#include "../hboard.h"
 #include "../hboardmanager.h"
 #include "../hboarduicontrol.h"
 #include "../himagemapboard.h"
@@ -22,8 +21,8 @@ int main(int argc, char *argv[]) {
   QQmlApplicationEngine engine;
 
   qmlRegisterType<HImageMapBoard>("hBoard", 1, 0, "HBoard");
-  qmlRegisterType<HHistogramChart>("hHistogramChart", 1, 0, "HHistogramChart");
   qmlRegisterType<HBoardUIControl>("hUIControl", 1, 0, "HUIControl");
+  qmlRegisterType<HHistogramChart>("hHistogramChart", 1, 0, "HHistogramChart");
 
   const QUrl url(QStringLiteral("qrc:/qml/ICProgram/ICProgramMain.qml"));
   QObject::connect(

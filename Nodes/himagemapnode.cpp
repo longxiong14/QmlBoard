@@ -78,6 +78,14 @@ void HImageMapNodeDelegate::setRect(const QRectF &rect) {
   _fill_node->setRect(rect);
 }
 
+int HImageMapNodeDelegate::save(QJsonObject &) { return -1; }
+
+int HImageMapNodeDelegate::load(const QJsonObject &) { return -1; }
+
+int HImageMapNodeDelegate::save(const QString &) { return -1; }
+
+int HImageMapNodeDelegate::load(const QString &) { return -1; }
+
 HImageMapNode::HImageMapNode() : HImageMapNodeDelegate() {}
 
 HImageMapNode::HImageMapNode(const QString &path, const QPointF &start_point)
@@ -121,11 +129,3 @@ QImage HImageMapNode::getImage(const QRectF &roi, double scale) {
   painter.drawImage(s, _image, roi);
   return out;
 }
-
-int HImageMapNode::save(QJsonObject &) { return -1; }
-
-int HImageMapNode::load(const QJsonObject &) { return -1; }
-
-int HImageMapNode::save(const QString &) { return -1; }
-
-int HImageMapNode::load(const QString &) { return -1; }

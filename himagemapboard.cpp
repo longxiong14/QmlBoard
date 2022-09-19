@@ -11,30 +11,34 @@
 #include "Nodes/himagemapnode.h"
 #include "Nodes/hnodebase.h"
 #define DEBUG qDebug() << __FUNCTION__ << __LINE__
-HImageMapBoard::HImageMapBoard()
-    : _image_node(nullptr), _shape_node(nullptr), _scale(0) {}
+HImageMapBoard::HImageMapBoard() : _image_node(nullptr), _shape_node(nullptr) {}
 
 void HImageMapBoard::home() {
   HBoard::home();
   updateImageTask();
 }
 
-void HImageMapBoard::pushNode(std::shared_ptr<HNodeBase> node, bool flag) {
-  if (HNodeBase::NODETYPE::IMAGE == node->nodeType()) {
-    pushTask([=]() {
-      if (_image_node && node) {
-        _image_node->appendChildNode(node->build(this));
-        _nodes.push_back(node);
-      }
-    });
-  } else {
-    HBoard::pushNode(node, flag);
-  }
-}
+// void HImageMapBoard::pushNode(std::shared_ptr<HNodeBase> node, bool flag) {
+//  //  if (!node) return;
+//  //  DEBUG << node->nodeType() << HNodeBase::NODETYPE::MAPINAGE;
+//  //  if (HNodeBase::NODETYPE::MAPINAGE == node->nodeType()) {
+//  //    pushTask([=]() {
+//  //      if (_image_node && node) {
+//  //        _image_node->appendChildNode(node->build(this));
+//  //        _nodes.push_back(node);
+//  //      }
+//  //    });
+//  //  } else {
+//  //  }
+//  HBoard::pushNode(node, flag);
+//}
 
 void HImageMapBoard::removeNode(const QUuid &id) {
   HBoard::removeNode(id);
-  updateImageTask();
+  auto node = getNodeById(id);
+  if (node && HNodeBase::NODETYPE::MAPINAGE == node->nodeType()) {
+    updateImageTask();
+  }
 }
 
 void HImageMapBoard::pushTransform(const QTransform &trans) {
@@ -83,16 +87,6 @@ bool HImageMapBoard::updateNodeMat(const QUuid &node, const QImage &mat,
   return flag;
 }
 
-bool HImageMapBoard::scaleChanged() {
-  bool res = false;
-  auto scale = getScale();
-  if (std::fabs(_scale - scale) > 1E-10) {
-    _scale = scale;
-    res = true;
-  }
-  return res;
-}
-
 void HImageMapBoard::updateImages() {
   if (true) {
     double scale = getScale();
@@ -115,7 +109,6 @@ void HImageMapBoard::updateImages() {
           auto clone_dst = QRectF(tl, size);
           auto lcs_rect =
               QRectF(LCS2WCS(dst.topLeft()), LCS2WCS(dst.bottomRight()));
-
           auto image = map_image_node->getImage(clone_dst, scale);
           painter.drawImage(lcs_rect.topLeft(), image);
 
@@ -124,9 +117,6 @@ void HImageMapBoard::updateImages() {
       }
     }
 
-    //    DEBUG << screen_image.byteCount();
-    //    DEBUG << screen_image.size();
-    //    DEBUG << screen_image.sizeInBytes();
     if (flag) {
       QSGImageNode *image_node = window()->createImageNode();
       auto texture = window()->createTextureFromImage(screen_image);
@@ -157,7 +147,10 @@ void HImageMapBoard::updateImages() {
                                int(image.height() * scale));
           auto lcs_rect =
               QRectF(LCS2WCS(dst.topLeft()), LCS2WCS(dst.bottomRight()));
-          DEBUG << image.size();
+          if (image.isNull()) {
+            DEBUG << "image is null";
+            continue;
+          }
           auto image_node = window()->createImageNode();
           auto texture = window()->createTextureFromImage(image);
           image_node->setTexture(texture);

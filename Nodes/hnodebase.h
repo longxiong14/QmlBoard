@@ -36,8 +36,8 @@ class HBOARD_EXPORT HNodeBase : public HStorageBase<QJsonObject> {
  public:
   HNodeBase();
   HNodeBase(const HNodeBase &other) = default;
-  virtual ~HNodeBase();
   HNodeBase &operator=(const HNodeBase &other) = default;
+  virtual ~HNodeBase() override;
 
   virtual QSGNode *get() { return nullptr; }
   virtual QSGNode *build(HBoard *);

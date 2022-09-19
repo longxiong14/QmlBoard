@@ -54,6 +54,12 @@ class HBOARD_EXPORT HImageMapNodeDelegate : public HNodeBase {
 
   void setRect(const QRectF &rect);
 
+ public:
+  virtual int save(QJsonObject &o) override;
+  virtual int load(const QJsonObject &o) override;
+  virtual int save(const QString &path) override;
+  virtual int load(const QString &path) override;
+
  protected:
   std::shared_ptr<HFillNode> _fill_node;
 };
@@ -72,12 +78,6 @@ class HBOARD_EXPORT HImageMapNode : public HImageMapNodeDelegate {
                          const QPointF &start) override;
 
   virtual QImage getImage(const QRectF &roi, double scale) override;
-
- public:
-  virtual int save(QJsonObject &o) override;
-  virtual int load(const QJsonObject &o) override;
-  virtual int save(const QString &path) override;
-  virtual int load(const QString &path) override;
 
   QImage getImage();
   void setImage(const QImage &i);

@@ -56,7 +56,6 @@ int HBoardUIControl::setBoardHandleParam(const QString &board,
                                          const QString &handle,
                                          const QString &key,
                                          const QJsonValue &value) {
-  DEBUG << board << " " << handle << " " << key << " " << value;
   auto weight = HHandleFlyWeight::getInstance();
   if (!weight) {
     DEBUG << "HHandleFlyWeight::getInstance() nullptr";
@@ -79,7 +78,6 @@ QJsonObject HBoardUIControl::getBoardHandleParam(const QString &board,
     return o;
   }
   o = weight->getBoardHandleParam(board, handle);
-  DEBUG << o;
   return o;
 }
 
@@ -142,16 +140,29 @@ QJsonArray HBoardUIControl::paramToUIItems(const QJsonObject &object) {
 void HBoardUIControl::test() {
   auto board = HBoardManager::getInstance()->getBoard("main_board");
   if (board) {
-    auto sel = board->selects();
-    QImage imag(20, 20, QImage::Format::Format_ARGB32);
-    imag.fill(QColor(255, 0, 0, 120));
-    for (const auto &s : sel) {
-      board->updateNodeMat(s, imag, QPoint(0, 0));
+    int cols = 30, rows = 6, x_step = 2248, y_step = 1552;
+    for (int i = 0; i < cols; i++) {
+      for (int j = 0; j < rows; j++) {
+        if (0 == i && 0 == j) continue;
+        auto review_node =
+            std::make_shared<HFillNode>(QRect(0, 0, 100, 100), GL_LINE_LOOP);
+        board->pushNode(review_node);
+        board->moveNode(review_node->id(), QPointF(i * x_step, j * y_step));
+        //          _review.insert(review_node->id());
+      }
     }
-    //    std::shared_ptr<HShapeXNode> node =
-    //        std::make_shared<HShapeXNode>(QPointF(), 100, QJsonObject());
-    //    board->pushNode(node);
   }
+  //  if (board) {
+  //    auto sel = board->selects();
+  //    QImage imag(20, 20, QImage::Format::Format_ARGB32);
+  //    imag.fill(QColor(255, 0, 0, 120));
+  //    for (const auto &s : sel) {
+  //      board->updateNodeMat(s, imag, QPoint(0, 0));
+  //    }
+  //    //    std::shared_ptr<HShapeXNode> node =
+  //    //        std::make_shared<HShapeXNode>(QPointF(), 100, QJsonObject());
+  //    //    board->pushNode(node);
+  //  }
 }
 
 void HBoardUIControl::setTranslateMap(const QJsonObject &object) {
