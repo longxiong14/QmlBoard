@@ -18,20 +18,12 @@ void HImageMapBoard::home() {
   updateImageTask();
 }
 
-// void HImageMapBoard::pushNode(std::shared_ptr<HNodeBase> node, bool flag) {
-//  //  if (!node) return;
-//  //  DEBUG << node->nodeType() << HNodeBase::NODETYPE::MAPINAGE;
-//  //  if (HNodeBase::NODETYPE::MAPINAGE == node->nodeType()) {
-//  //    pushTask([=]() {
-//  //      if (_image_node && node) {
-//  //        _image_node->appendChildNode(node->build(this));
-//  //        _nodes.push_back(node);
-//  //      }
-//  //    });
-//  //  } else {
-//  //  }
-//  HBoard::pushNode(node, flag);
-//}
+void HImageMapBoard::pushNode(std::shared_ptr<HNodeBase> node, bool flag) {
+  HBoard::pushNode(node, flag);
+  if (node && HNodeBase::NODETYPE::MAPINAGE == node->nodeType()) {
+    updateImageTask();
+  }
+}
 
 void HImageMapBoard::removeNode(const QUuid &id) {
   HBoard::removeNode(id);
