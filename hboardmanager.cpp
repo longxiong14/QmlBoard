@@ -34,7 +34,7 @@ int HBoardManager::removeBoard(const QString &name) {
   return 0;
 }
 
-void HBoardManager::changeBoardNmae(const QString &old, HBoard *board) {
+void HBoardManager::changeBoardName(const QString &old, HBoard *board) {
   QMutexLocker lock(&_mutex);
   if (_boards.contains(old)) {
     _boards.remove(old);

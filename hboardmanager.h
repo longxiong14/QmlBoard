@@ -17,7 +17,7 @@ class HBOARD_EXPORT HBoardManager {
 
   int removeBoard(const QString& name);
 
-  void changeBoardNmae(const QString& old, HBoard* board);
+  void changeBoardName(const QString& old, HBoard* board);
 
  private:
   QHash<QString, HBoard*> _boards;

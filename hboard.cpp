@@ -297,7 +297,7 @@ void HBoard::pushSelect(const QUuid &s) {
   update();
 }
 
-void HBoard::removdSelect(const QUuid &s) {
+void HBoard::removeSelect(const QUuid &s) {
   pushTask([=]() {
     if (containNodes(s)) {
       auto n = getNodeById(s);
@@ -313,7 +313,7 @@ void HBoard::changeSelectStatus(const QUuid &s) {
   if (containNodes(s)) {
     auto n = getNodeById(s);
     if (n && n->isSelect()) {
-      removdSelect(s);
+      removeSelect(s);
     } else {
       pushSelect(s);
     }
@@ -503,7 +503,7 @@ void HBoard::setName(const QString &name) {
   if (name != _name) {
     auto old = _name;
     _name = name;
-    HBoardManager::getInstance()->changeBoardNmae(old, this);
+    HBoardManager::getInstance()->changeBoardName(old, this);
     nameChanged();
   }
 }

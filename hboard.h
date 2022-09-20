@@ -70,7 +70,7 @@ class HBOARD_EXPORT HBoard : public QQuickItem {
   void setSelect(const QUuid &s);
   void clearSelect();
   void pushSelect(const QUuid &s);
-  void removdSelect(const QUuid &s);
+  void removeSelect(const QUuid &s);
   void changeSelectStatus(const QUuid &s);
   void changeSelectParam(const QString &key, const QJsonValue &value);
   QSet<QUuid> selects();
