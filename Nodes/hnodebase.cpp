@@ -65,6 +65,8 @@ void HNodeBase::changedSelectStatus() {
         }
         if (_drag_node) {
           n->removeChildNode(_drag_node);
+          delete _drag_node;
+          _drag_node = nullptr;
         }
       }
     }
