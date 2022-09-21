@@ -12,20 +12,17 @@
 #define STEP 5e3
 #define DEBUG qDebug() << __FUNCTION__ << " " << __LINE__ << " "
 HNodeBase::HNodeBase()
-    : _select(false),
-      _visible(true),
-      _dash(nullptr),
+    : _dash(nullptr),
       _enable_home(true),
       _text_node(nullptr),
       _drag_node(nullptr),
       _pixel_size(10),
-      _destory(true),
-      _flag(NODEFLAG::CANSELECT) {
+      _flag(CANSELECT | CANDESTORY | VISIBLE) {
   _id = QUuid::createUuid();
 }
 
 HNodeBase::~HNodeBase() {
-  if (_destory && _text_node) {
+  if (_flag & NODEFLAG::CANDESTORY && _text_node) {
     int count = _text_node->childCount();
     for (int i = 0; i < count; i++) {
       auto n = dynamic_cast<QSGImageNode *>(_text_node->childAtIndex(0));
@@ -45,9 +42,13 @@ QUuid HNodeBase::id() { return _id; }
 void HNodeBase::setId(const QUuid &id) { _id = id; }
 
 void HNodeBase::changedSelectStatus() {
-  if (_flag & NODEFLAG::CANSELECT) {
-    _select = !_select;
-    if (_select) {
+  if (canSelect()) {
+    bool f = true;
+    if (isSelect()) {
+      f = false;
+    }
+    setFlag(NODEFLAG::SELECTED, f);
+    if (isSelect()) {
       auto node = get();
       if (node) {
         _drag_node = buildDragNode();
@@ -91,18 +92,20 @@ void HNodeBase::move(const QPointF &p) {
   }
 }
 
+bool HNodeBase::isSelect() { return _flag & NODEFLAG::SELECTED; }
+
 unsigned long HNodeBase::drawingMode() { return 0; }
 
 void HNodeBase::updateDrawMode(unsigned long) {}
 
-void HNodeBase::setVisible(bool flag) { _visible = flag; }
+void HNodeBase::setVisible(bool flag) { setFlag(NODEFLAG::VISIBLE, flag); }
 
-bool HNodeBase::visible() { return _visible; }
+bool HNodeBase::visible() { return NODEFLAG::VISIBLE & _flag; }
 
 void HNodeBase::timeOut() {
   auto node = get();
   int line_width = 2;
-  if (node && _select) {
+  if (node && isSelect()) {
     if (_dash) {
       auto geo = _dash->geometry();
       if (geo) {
@@ -160,7 +163,9 @@ bool HNodeBase::enableHome() { return _enable_home; }
 
 void HNodeBase::setEnableHome(bool f) { _enable_home = f; }
 
-void HNodeBase::setDestory(bool flag) { _destory = flag; }
+void HNodeBase::setDestory(bool flag) {
+  setFlag(HNodeBase::NODEFLAG::CANDESTORY, flag);
+}
 
 void HNodeBase::setFlag(HNodeBase::NODEFLAG flag, bool open) {
   if (open) {
@@ -169,6 +174,8 @@ void HNodeBase::setFlag(HNodeBase::NODEFLAG flag, bool open) {
     _flag = _flag & ~flag;
   }
 }
+
+bool HNodeBase::canSelect() { return _flag & NODEFLAG::CANSELECT; }
 
 QSGNode *HNodeBase::buildDragNode() { return nullptr; }
 

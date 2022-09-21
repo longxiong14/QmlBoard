@@ -30,7 +30,10 @@ class HBOARD_EXPORT HNodeBase : public HStorageBase<QJsonObject> {
   } NODETYPE;  // node type
 
   typedef enum {
-    CANSELECT = 1,  //能否选取
+    CANSELECT = 1,        //能否选取
+    CANDESTORY = 1 << 1,  //是否销毁
+    VISIBLE = 1 << 2,     // visible
+    SELECTED = 1 << 3     //是否选中
   } NODEFLAG;
 
  public:
@@ -48,7 +51,7 @@ class HBOARD_EXPORT HNodeBase : public HStorageBase<QJsonObject> {
   virtual void changedSelectStatus();
   virtual void move(const QPointF &);
   virtual void moveTo(const QPointF &) {}  // move to point
-  virtual bool isSelect() { return _select; }
+  virtual bool isSelect();
   virtual void drawPoints(const QList<QPointF> &) {}
   virtual void setColor(const QColor &) {}
   virtual NODETYPE nodeType() { return SHAPE; }
@@ -66,6 +69,7 @@ class HBOARD_EXPORT HNodeBase : public HStorageBase<QJsonObject> {
   virtual void setDestory(bool flag);
 
   virtual void setFlag(NODEFLAG flag, bool open);
+  bool canSelect();
 
  public:
   virtual QSGNode *buildDragNode();
@@ -103,8 +107,6 @@ class HBOARD_EXPORT HNodeBase : public HStorageBase<QJsonObject> {
   QJsonObject _param;
   QJsonObject _data;
   QUuid _id;
-  bool _select;
-  bool _visible;
   QList<QPointF> _dash_list;
   QSGGeometryNode *_dash;
   bool _enable_home;
@@ -113,7 +115,6 @@ class HBOARD_EXPORT HNodeBase : public HStorageBase<QJsonObject> {
   QRectF _text_rect;
   QString _text;
   int _pixel_size;
-  bool _destory;
   int _flag;
 };
 

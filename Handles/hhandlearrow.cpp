@@ -94,7 +94,7 @@ void HHandleArrow::mouseReleaseEvent(HBoard *board, QMouseEvent *event,
       auto nodes = board->visibleNodes();
       double scale = board->getScale();
       for (const auto &n : nodes.values()) {
-        if (canSelect(n.get(), pos, scale)) {
+        if (n && n->canSelect() && canSelect(n.get(), pos, scale)) {
           board->changeSelectStatus(n->id());
         }
       }

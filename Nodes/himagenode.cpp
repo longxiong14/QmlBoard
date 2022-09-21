@@ -46,8 +46,9 @@ HImageNode::HImageNode(const QImage &mat, const QPointF &start_point)
 }
 
 HImageNode::~HImageNode() {
-  if (_destory && _node) {
-    DEBUG << "release HImageNode " << _destory;
+  bool destory = _flag & NODEFLAG::CANDESTORY;
+  if (destory && _node) {
+    DEBUG << "release HImageNode " << destory;
     int count = _node->childCount();
     for (int i = 0; i < count; i++) {
       auto n = _node->childAtIndex(0);
@@ -63,7 +64,7 @@ HImageNode::~HImageNode() {
     _node = nullptr;
     _mat = QImage();
   }
-  DEBUG << "release HImageNode " << _destory;
+  DEBUG << "release HImageNode " << destory;
 }
 
 QSGNode *HImageNode::build(HBoard *board) {
