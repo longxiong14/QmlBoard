@@ -30,11 +30,11 @@ void HHandleArrow::mousePressEvent(HBoard *board, QMouseEvent *event,
     }
     auto pos = board->WCS2LCS(event->pos());
     if (leftButtonPress(event)) {
-      auto nodes = board->visibleNodes();
+      auto nodes = board->selects();
       double scale = board->getScale();
-      HPlanVector vec;
-      for (const auto &n : nodes.values()) {
-        if (canSelect(n.get(), pos, scale)) {
+      for (const auto &s : nodes.values()) {
+        auto n = board->getNodeById(s);
+        if (n && canSelect(n.get(), pos, scale)) {
           _can_move = true;
           return;
         }
@@ -66,7 +66,8 @@ void HHandleArrow::mouseMoveEvent(HBoard *board, QMouseEvent *event,
         board->updateNodeIndexPoint(_drag_node->getParent(),
                                     _drag_node->getPointIndex(), pos);
       } else {
-        if (_can_move) _moved = true;
+        if (_can_move)
+          _moved = true;
         auto selects = board->selects();
         if (!selects.empty()) {
           auto nodes = board->visibleNodes();
@@ -114,7 +115,8 @@ void HHandleArrow::mouseReleaseEvent(HBoard *board, QMouseEvent *event,
       auto nodes = board->nodes();
       for (const auto &k : nodes.keys()) {
         auto n = nodes.value(k);
-        if (!n || n->isSelect() || n->id() == _select_node) continue;
+        if (!n || n->isSelect() || n->id() == _select_node)
+          continue;
         auto bound = nodes.value(k)->getBoundRect();
         if (HCommon::PointInRect(bound.topLeft(), r) &&
             HCommon::PointInRect(bound.bottomRight(), r)) {
@@ -169,22 +171,22 @@ bool HHandleArrow::canSelect(HNodeBase *node, const QPointF &pos,
   auto rect = node->getBoundRect();
   HPlanVector vec;
   switch (type) {
-    case HNodeBase::IMAGE:
-    case HNodeBase::MAPINAGE:
-    case HNodeBase::SHAPERECT:
-    case HNodeBase::SHAPEFILLRECT:
-      return HCommon::PointInRect(pos, rect);
-    case HNodeBase::SHAPECIRCLE:
-    case HNodeBase::SHAPEFILLCIRCLE:
-    case HNodeBase::SHAPEELLIPSE:
-    case HNodeBase::SHAPEFILLELLIPSE:
-      return HCommon::PointInContour(pos, points);
-    default: {
-      auto min = vec.ptmPoly(pos, points);
-      if (std::fabs(min) < (_distance / scale)) {
-        return true;
-      }
-    } break;
+  case HNodeBase::IMAGE:
+  case HNodeBase::MAPINAGE:
+  case HNodeBase::SHAPERECT:
+  case HNodeBase::SHAPEFILLRECT:
+    return HCommon::PointInRect(pos, rect);
+  case HNodeBase::SHAPECIRCLE:
+  case HNodeBase::SHAPEFILLCIRCLE:
+  case HNodeBase::SHAPEELLIPSE:
+  case HNodeBase::SHAPEFILLELLIPSE:
+    return HCommon::PointInContour(pos, points);
+  default: {
+    auto min = vec.ptmPoly(pos, points);
+    if (std::fabs(min) < (_distance / scale)) {
+      return true;
+    }
+  } break;
   }
   return false;
 }
