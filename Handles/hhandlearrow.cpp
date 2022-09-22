@@ -25,6 +25,9 @@ void HHandleArrow::mousePressEvent(HBoard *board, QMouseEvent *event,
   _can_move = false;
   _moved = false;
   if (board && event) {
+    if (!_select_node.isNull()) {
+      board->removeNode(_select_node);
+    }
     auto pos = board->WCS2LCS(event->pos());
     if (leftButtonPress(event)) {
       auto nodes = board->visibleNodes();
@@ -38,7 +41,13 @@ void HHandleArrow::mousePressEvent(HBoard *board, QMouseEvent *event,
       }
       _point = pos;
     } else if (rightButtonPress(event)) {
-      auto node = std::make_shared<HFillNode>(QRectF(0, 0, 1, 1));
+      QJsonObject o;
+      o.insert("b", 200);
+      o.insert("g", 200);
+      o.insert("r", 0);
+      o.insert("a", 255);
+      auto node =
+          std::make_shared<HFillNode>(QRectF(0, 0, 1, 1), GL_LINE_LOOP, o);
       board->pushNode(node);
       _select_node = node->id();
       _select_start_point = pos;
@@ -112,9 +121,9 @@ void HHandleArrow::mouseReleaseEvent(HBoard *board, QMouseEvent *event,
           board->changeSelectStatus(k);
         }
       }
-      board->removeNode(_select_node);
-      _select_node = "";
     }
+    board->removeNode(_select_node);
+    _select_node = "";
   }
   HHandleMove::mouseReleaseEvent(board, event);
 }

@@ -41,6 +41,10 @@ void HHandleMove::mouseReleaseEvent(HBoard *board, QMouseEvent *event,
   if (board && event) {
     _last_point = QPointF();
     _last_trans = QTransform();
+    if (!_node.isNull()) {
+      board->clearSelect();
+      board->setSelect(_node);
+    }
   }
 }
 

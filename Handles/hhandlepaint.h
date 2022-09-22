@@ -133,6 +133,9 @@ class HBOARD_EXPORT HHandleDrawCircle : public HHandleMove {
  protected:
   virtual void updateCirclePosition(HBoard* board, const QPointF& center,
                                     const QJsonObject& object);
+
+ protected:
+  QUuid _circle_node;
 };
 
 class HBOARD_EXPORT HHandleDrawFillCircle : public HHandleDrawCircle {
