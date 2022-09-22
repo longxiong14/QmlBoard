@@ -49,6 +49,12 @@ std::shared_ptr<HNodeBase> HNodeFactory::create(const QJsonObject &param) {
     case HNodeBase::NODETYPE::MAPINAGE:
       node = std::make_shared<HImageMapNode>();
       break;
+    case HNodeBase::NODETYPE::SHAPEELLIPSE:
+      node = std::make_shared<HShapeEllipseNode>();
+      break;
+    case HNodeBase::NODETYPE::SHAPEFILLELLIPSE:
+      node = std::make_shared<HShapeFillEllipseNode>();
+      break;
   }
   return node;
 }

@@ -26,7 +26,10 @@ class HBOARD_EXPORT HNodeBase : public HStorageBase<QJsonObject> {
     SHAPEFILLCIRCLE,
     SHAPECROSS,
     SHAPEXNODE,
-    MAPINAGE
+    MAPINAGE,  //点在封闭形状内的判断
+    SHAPEELLIPSE,
+    SHAPEFILLELLIPSE
+
   } NODETYPE;  // node type
 
   typedef enum {

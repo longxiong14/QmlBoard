@@ -99,3 +99,7 @@ QColor HHandleMove::getCursorColor() {
   color.setNamedColor(_cursor_color);
   return color;
 }
+
+double HHandleMove::getScale() { return _scale; }
+
+void HHandleMove::setScale(double s) { _scale = s; }

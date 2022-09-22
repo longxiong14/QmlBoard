@@ -320,3 +320,22 @@ void HHandleDrawFillCircle::updateCirclePosition(HBoard *board,
 //    board->drawNodePoint(_node, l);
 //  }
 //}
+
+HHandleDrawEllipse::HHandleDrawEllipse() { _name = "ellipse"; }
+
+void HHandleDrawEllipse::mousePressEvent(HBoard *board, QMouseEvent *event,
+                                         const QJsonObject &object) {
+  if (board && event) {
+  }
+  HHandleMove::mousePressEvent(board, event, object);
+}
+
+void HHandleDrawEllipse::mouseMoveEvent(HBoard *board, QMouseEvent *event,
+                                        const QJsonObject &object) {
+  HHandleMove::mouseMoveEvent(board, event, object);
+}
+
+void HHandleDrawEllipse::mouseReleaseEvent(HBoard *board, QMouseEvent *event,
+                                           const QJsonObject &object) {
+  HHandleMove::mouseReleaseEvent(board, event, object);
+}

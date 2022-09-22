@@ -34,6 +34,10 @@ class HBOARD_EXPORT HHandleMove : public HHandleBase {
 
   QColor getCursorColor();
 
+  double getScale();
+
+  void setScale(double s);
+
  protected:
   QPointF _last_point;
   QTransform _last_trans;

@@ -30,6 +30,8 @@ class HBOARD_EXPORT HCommon {
   static QList<QPointF> BuildCircle(const QPointF &center, double radius,
                                     int parts);
 
+  static QList<QPointF> BuildEllipse(const QRectF &rect, int parts);
+
   static QList<QPointF> BuildWideLine(const QList<QPointF> &list,
                                       double line_width);
 

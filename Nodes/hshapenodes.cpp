@@ -522,7 +522,96 @@ int HShapeXNode::load(const QJsonObject &o) {
                              center, {center.x(), center.y() + _size},
                              center, {center.x() - _size, center.y()},
                              center, {center.x() + _size, center.y()}};
-  setOurGeometry(list, GL_LINES);
+  setOurGeometry(list, GL_LINE_LOOP);
+  setColor(getColor(_param));
+  return 0;
+}
+
+HShapeEllipseNode::HShapeEllipseNode() {}
+
+HShapeEllipseNode::HShapeEllipseNode(const QRectF &rect,
+                                     const QJsonObject &param) {
+  setParam(param);
+  auto list = HCommon::BuildEllipse(rect, 360);
+  setOurGeometry(list, GL_LINE_LOOP);
+  setColor(getColor(_param));
+}
+
+QSGNode *HShapeEllipseNode::buildDragNode() {
+  QSGNode *node = new QSGNode();
+  auto rect = getBoundRect();
+  HShapeRectNode::createRectDragNode(node, rect, id(), 5 * getLineWidth());
+  return node;
+}
+
+void HShapeEllipseNode::move(const QPointF &p) {
+  HFillNode::move(p);
+  HShapeRectNode::updateDragNodes(_drag_node, getBoundRect());
+}
+
+void HShapeEllipseNode::updateIndexPoint(int index, const QPointF &point) {
+  auto rect = getBoundRect();
+  QRectF out_rect;
+  QList<QPointF> list;
+  if (0 == HShapeRectNode::updateRectDragNode(index, rect, point, out_rect)) {
+    list = HCommon::BuildEllipse(out_rect, 360);
+    if (!list.empty()) drawPoints(list);
+    HShapeRectNode::updateDragNodes(_drag_node, out_rect);
+    flushMayiLine();
+  }
+}
+
+HNodeBase::NODETYPE HShapeEllipseNode::nodeType() {
+  return NODETYPE::SHAPEELLIPSE;
+}
+
+int HShapeEllipseNode::save(QJsonObject &o) {
+  auto rect = getBoundRect();
+  QJsonObject r;
+  r.insert("x", rect.x());
+  r.insert("y", rect.y());
+  r.insert("width", rect.width());
+  r.insert("height", rect.height());
+  o.insert("rect", r);
+  return HNodeBase::save(o);
+}
+
+int HShapeEllipseNode::load(const QJsonObject &o) {
+  HNodeBase::load(o);
+  QJsonObject r = o.value("rect").toObject();
+  double x = r.value("x").toDouble(), y = r.value("y").toDouble(),
+         width = r.value("width").toDouble(),
+         height = r.value("height").toDouble();
+  QRectF rect(x, y, width, height);
+  auto list = HCommon::BuildEllipse(rect, 360);
+  setOurGeometry(list, GL_LINE_LOOP);
+  setColor(getColor(_param));
+  return 0;
+}
+
+HShapeFillEllipseNode::HShapeFillEllipseNode() {}
+
+HShapeFillEllipseNode::HShapeFillEllipseNode(const QRectF &rect,
+                                             const QJsonObject &param) {
+  setParam(param);
+  auto list = HCommon::BuildEllipse(rect, 360);
+  setOurGeometry(list, GL_POLYGON);
+  setColor(getColor(_param));
+}
+
+HNodeBase::NODETYPE HShapeFillEllipseNode::nodeType() {
+  return NODETYPE::SHAPEFILLELLIPSE;
+}
+
+int HShapeFillEllipseNode::load(const QJsonObject &o) {
+  HNodeBase::load(o);
+  QJsonObject r = o.value("rect").toObject();
+  double x = r.value("x").toDouble(), y = r.value("y").toDouble(),
+         width = r.value("width").toDouble(),
+         height = r.value("height").toDouble();
+  QRectF rect(x, y, width, height);
+  auto list = HCommon::BuildEllipse(rect, 360);
+  setOurGeometry(list, GL_POLYGON);
   setColor(getColor(_param));
   return 0;
 }

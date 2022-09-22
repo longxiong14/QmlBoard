@@ -165,4 +165,39 @@ class HBOARD_EXPORT HShapeXNode : public HFillNode {
   double _size;
 };
 
+class HBOARD_EXPORT HShapeEllipseNode : public HFillNode {
+ public:
+  HShapeEllipseNode();
+
+  HShapeEllipseNode(const QRectF &rect,
+                    const QJsonObject &param = QJsonObject());
+
+  virtual QSGNode *buildDragNode() override;
+
+  virtual void move(const QPointF &p) override;
+
+  virtual void updateIndexPoint(int index, const QPointF &point) override;
+
+  virtual HNodeBase::NODETYPE nodeType() override;
+
+  virtual int save(QJsonObject &o) override;
+
+  virtual int load(const QJsonObject &o) override;
+
+ protected:
+  double _size;
+};
+
+class HBOARD_EXPORT HShapeFillEllipseNode : public HShapeEllipseNode {
+ public:
+  HShapeFillEllipseNode();
+
+  HShapeFillEllipseNode(const QRectF &rect,
+                        const QJsonObject &param = QJsonObject());
+
+  virtual HNodeBase::NODETYPE nodeType() override;
+
+  virtual int load(const QJsonObject &o) override;
+};
+
 #endif  // HSHAPENODES_H

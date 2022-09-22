@@ -217,6 +217,20 @@ QList<QPointF> HCommon::BuildCircle(const QPointF &center, double radius,
   return list;
 }
 
+QList<QPointF> HCommon::BuildEllipse(const QRectF &rect, int parts) {
+  auto center = rect.center();
+  double w_r = rect.width() / 2, h_r = rect.height() / 2;
+  QList<QPointF> list;
+
+  double x, z;
+  for (int i = 0; i <= parts; i++) {
+    x = center.x() + std::sin(i * (PI / 180)) * w_r;
+    z = center.y() + std::cos(i * (PI / 180)) * h_r;
+    list.push_back(QPointF(x, z));
+  }
+  return list;
+}
+
 QList<QPointF> HCommon::BuildWideLine(const QList<QPointF> &list,
                                       double line_width) {
   QList<QPointF> out_line, in_line;

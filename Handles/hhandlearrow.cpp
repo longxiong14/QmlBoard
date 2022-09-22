@@ -171,10 +171,14 @@ bool HHandleArrow::canSelect(HNodeBase *node, const QPointF &pos,
   switch (type) {
     case HNodeBase::IMAGE:
     case HNodeBase::MAPINAGE:
-      if (HCommon::PointInRect(pos, rect)) {
-        return true;
-      }
-      break;
+    case HNodeBase::SHAPERECT:
+    case HNodeBase::SHAPEFILLRECT:
+      return HCommon::PointInRect(pos, rect);
+    case HNodeBase::SHAPECIRCLE:
+    case HNodeBase::SHAPEFILLCIRCLE:
+    case HNodeBase::SHAPEELLIPSE:
+    case HNodeBase::SHAPEFILLELLIPSE:
+      return HCommon::PointInContour(pos, points);
     default: {
       auto min = vec.ptmPoly(pos, points);
       if (std::fabs(min) < (_distance / scale)) {

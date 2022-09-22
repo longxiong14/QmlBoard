@@ -139,19 +139,27 @@ QJsonArray HBoardUIControl::paramToUIItems(const QJsonObject &object) {
 
 void HBoardUIControl::test() {
   auto board = HBoardManager::getInstance()->getBoard("main_board");
+
   if (board) {
-    int cols = 30, rows = 6, x_step = 2248, y_step = 1552;
-    for (int i = 0; i < cols; i++) {
-      for (int j = 0; j < rows; j++) {
-        if (0 == i && 0 == j) continue;
-        auto review_node =
-            std::make_shared<HFillNode>(QRect(0, 0, 100, 100), GL_LINE_LOOP);
-        board->pushNode(review_node);
-        board->moveNode(review_node->id(), QPointF(i * x_step, j * y_step));
-        //          _review.insert(review_node->id());
-      }
-    }
+    auto node = std::make_shared<HShapeFillEllipseNode>(QRectF(0, 0, 200, 100));
+    board->pushNode(node);
   }
+
+  //  if (board) {
+  //    int cols = 30, rows = 6, x_step = 2248, y_step = 1552;
+  //    for (int i = 0; i < cols; i++) {
+  //      for (int j = 0; j < rows; j++) {
+  //        if (0 == i && 0 == j) continue;
+  //        auto review_node =
+  //            std::make_shared<HFillNode>(QRect(0, 0, 100, 100),
+  //            GL_LINE_LOOP);
+  //        board->pushNode(review_node);
+  //        board->moveNode(review_node->id(), QPointF(i * x_step, j * y_step));
+  //        //          _review.insert(review_node->id());
+  //      }
+  //    }
+  //  }
+
   //  if (board) {
   //    auto sel = board->selects();
   //    QImage imag(20, 20, QImage::Format::Format_ARGB32);
