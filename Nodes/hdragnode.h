@@ -11,12 +11,12 @@ class HBOARD_EXPORT HDragNode : public QSGGeometryNode, public QJsonObject {
   HDragNode();
 
  public:
-  static HDragNode* buildNode(const QPointF& center, float size,
+  static HDragNode* buildNode(const QPointF& center, double size,
                               const QUuid& parent);
 
   void moveTo(const QPointF& center);
 
-  bool pointIn(const QPointF& point);
+  bool pointIn(const QPointF& point, double scale);
 
   void setPointIndex(int index);
 
@@ -37,7 +37,7 @@ class HBOARD_EXPORT HDragNode : public QSGGeometryNode, public QJsonObject {
  protected:
   QCursor _cursor;
   QUuid _parent;
-  float _size;
+  double _size;
 };
 
 #endif  // HDRAGNODE_H

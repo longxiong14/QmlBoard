@@ -73,7 +73,8 @@ class HBOARD_EXPORT HNodeBase : public HStorageBase<QJsonObject> {
 
  public:
   virtual QSGNode *buildDragNode();
-  virtual bool pointInDragNode(const QPointF &point, HDragNode *&drag);
+  virtual bool pointInDragNode(const QPointF &point, HDragNode *&drag,
+                               double scale);
   virtual void updateIndexPoint(int index, const QPointF &point);
 
  public:  // image node interface

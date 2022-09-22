@@ -147,7 +147,8 @@ void HHandleArrow::hoverMoveEvent(HBoard *board, QHoverEvent *e,
     _drag_node = nullptr;
     for (auto s : sels) {
       auto node = board->getNodeById(s);
-      if (node->isSelect() && node->pointInDragNode(pos, _drag_node) &&
+      if (node->isSelect() &&
+          node->pointInDragNode(pos, _drag_node, board->getScale()) &&
           _drag_node) {
         board->setCursor(_drag_node->getCursor());
         return;

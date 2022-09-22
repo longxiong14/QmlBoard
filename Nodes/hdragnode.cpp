@@ -4,6 +4,7 @@
 #include <QSize>
 
 #include "../Common/hcommons.h"
+#include "../Common/hplanvector.h"
 #include "../Common/hsgnodecommon.h"
 #define DEBUG qDebug() << __FUNCTION__ << __LINE__
 HDragNode::HDragNode()
@@ -11,13 +12,13 @@ HDragNode::HDragNode()
   setFollowIndex(-1);
 }
 
-HDragNode *HDragNode::buildNode(const QPointF &center, float size,
+HDragNode *HDragNode::buildNode(const QPointF &center, double size,
                                 const QUuid &parent) {
-  QRectF rect(center - QPointF(double(size / 2), double(size / 2)),
-              QSizeF(double(size), double(size)));
-  auto points = HCommon::BuildRectList(rect);
+  //  QRectF rect(center - QPointF(double(size / 2), double(size / 2)),
+  //              QSizeF(double(size), double(size)));
+  auto points = HCommon::BuildCircle(center, double(size), 360);
   auto node = new HDragNode();
-  auto geo = HSGNodeCommon::buildGeometry(points, GL_QUADS);
+  auto geo = HSGNodeCommon::buildGeometry(points, GL_POLYGON);
   auto c = HSGNodeCommon::buildColor(Qt::red);
   node->setGeometry(geo);
   node->setMaterial(c);
@@ -29,10 +30,11 @@ HDragNode *HDragNode::buildNode(const QPointF &center, float size,
 }
 
 void HDragNode::moveTo(const QPointF &center) {
-  QRectF rect(center - QPointF(double(_size / 2), double(_size / 2)),
-              QSizeF(double(_size), double(_size)));
-  auto points = HCommon::BuildRectList(rect);
-  auto geo = HSGNodeCommon::buildGeometry(points, GL_QUADS);
+  //  QRectF rect(center - QPointF(double(_size / 2), double(_size / 2)),
+  //              QSizeF(double(_size), double(_size)));
+  //  auto points = HCommon::BuildRectList(rect);
+  auto points = HCommon::BuildCircle(center, double(_size), 360);
+  auto geo = HSGNodeCommon::buildGeometry(points, GL_POLYGON);
   auto c = HSGNodeCommon::buildColor(Qt::red);
   setGeometry(geo);
   setMaterial(c);
@@ -40,7 +42,7 @@ void HDragNode::moveTo(const QPointF &center) {
   setFlag(QSGNode::OwnsGeometry);
 }
 
-bool HDragNode::pointIn(const QPointF &point) {
+bool HDragNode::pointIn(const QPointF &point, double scale) {
   auto geo = geometry();
   if (!geo) return false;
   auto count = geo->vertexCount();
@@ -51,7 +53,15 @@ bool HDragNode::pointIn(const QPointF &point) {
     list.push_back(QPointF(double(p.x), double(p.y)));
   }
   auto rect = HCommon::FindRect(list);
-  return HCommon::PointInRect(point, rect);
+  bool inrect = HCommon::PointInRect(point, rect);
+  if (inrect) {
+    HPlanVector vec;
+    auto dis = vec.dis(rect.center(), point);
+    if (dis * scale < _size) {
+      return true;
+    }
+  }
+  return false;
 }
 
 void HDragNode::setPointIndex(int index) { insert("point_index", index); }

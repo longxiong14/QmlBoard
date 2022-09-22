@@ -179,14 +179,15 @@ bool HNodeBase::canSelect() { return _flag & NODEFLAG::CANSELECT; }
 
 QSGNode *HNodeBase::buildDragNode() { return nullptr; }
 
-bool HNodeBase::pointInDragNode(const QPointF &point, HDragNode *&drag) {
+bool HNodeBase::pointInDragNode(const QPointF &point, HDragNode *&drag,
+                                double scale) {
   if (!_drag_node) return false;
   auto count = _drag_node->childCount();
   if (!count) return false;
   for (int i = 0; i < count; i++) {
     auto node = dynamic_cast<HDragNode *>(_drag_node->childAtIndex(i));
     if (node) {
-      if (node->pointIn(point)) {
+      if (node->pointIn(point, scale)) {
         drag = node;
         return true;
       }
