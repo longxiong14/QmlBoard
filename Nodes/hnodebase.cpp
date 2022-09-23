@@ -13,11 +13,10 @@
 #define DEBUG qDebug() << __FUNCTION__ << " " << __LINE__ << " "
 HNodeBase::HNodeBase()
     : _dash(nullptr),
-      _enable_home(true),
       _text_node(nullptr),
       _drag_node(nullptr),
       _pixel_size(10),
-      _flag(CANSELECT | CANDESTORY | VISIBLE) {
+      _flag(CANSELECT | CANDESTORY | VISIBLE | EABLEHOME) {
   _id = QUuid::createUuid();
 }
 
@@ -159,9 +158,18 @@ int HNodeBase::setText(const QString &text, const QRectF &position,
 
 QString HNodeBase::getText() { return _text; }
 
-bool HNodeBase::enableHome() { return _enable_home; }
+QRectF HNodeBase::getTextRect() {
+  auto r = getBoundRect();
+  auto tl = _text_rect.topLeft() - r.topLeft();
+  QRectF out(tl, _text_rect.size());
+  return out;
+}
 
-void HNodeBase::setEnableHome(bool f) { _enable_home = f; }
+int HNodeBase::getPixelSize() { return _pixel_size; }
+
+bool HNodeBase::enableHome() { return _flag & EABLEHOME; }
+
+void HNodeBase::setEnableHome(bool f) { setFlag(EABLEHOME, f); }
 
 void HNodeBase::setDestory(bool flag) {
   setFlag(HNodeBase::NODEFLAG::CANDESTORY, flag);

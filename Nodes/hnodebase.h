@@ -36,7 +36,8 @@ class HBOARD_EXPORT HNodeBase : public HStorageBase<QJsonObject> {
     CANSELECT = 1,        //能否选取
     CANDESTORY = 1 << 1,  //是否销毁
     VISIBLE = 1 << 2,     // visible
-    SELECTED = 1 << 3     //是否选中
+    SELECTED = 1 << 3,    //是否选中
+    EABLEHOME = 1 << 4    // home 时参与计算
   } NODEFLAG;
 
  public:
@@ -65,7 +66,9 @@ class HBOARD_EXPORT HNodeBase : public HStorageBase<QJsonObject> {
   virtual void timeOut();
   virtual int setText(const QString &text, const QRectF &position = QRectF(),
                       int pixel_size = 10);
-  virtual QString getText();
+  QString getText();
+  QRectF getTextRect();
+  int getPixelSize();
 
   virtual bool enableHome();
   virtual void setEnableHome(bool f);
@@ -113,7 +116,6 @@ class HBOARD_EXPORT HNodeBase : public HStorageBase<QJsonObject> {
   QUuid _id;
   QList<QPointF> _dash_list;
   QSGGeometryNode *_dash;
-  bool _enable_home;
   QSGNode *_text_node;
   QSGNode *_drag_node;
   QRectF _text_rect;

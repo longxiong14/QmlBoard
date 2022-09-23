@@ -144,8 +144,12 @@ void HBoardUIControl::test() {
     //    auto node = std::make_shared<HShapeFillEllipseNode>(QRectF(0, 0, 200,
     //    100)); board->pushNode(node);
     //      board->setRule(false);
-    auto f = board->rule();
-    board->setRule(!f);
+    //    auto f = board->rule();
+    //    board->setRule(!f);
+    auto sel = board->selects();
+    for (const auto &s : sel) {
+      board->updateNodeText(s, "111");
+    }
   }
 
   //  if (board) {
