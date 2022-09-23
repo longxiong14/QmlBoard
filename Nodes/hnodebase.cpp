@@ -158,12 +158,7 @@ int HNodeBase::setText(const QString &text, const QRectF &position,
 
 QString HNodeBase::getText() { return _text; }
 
-QRectF HNodeBase::getTextRect() {
-  auto r = getBoundRect();
-  auto tl = _text_rect.topLeft() - r.topLeft();
-  QRectF out(tl, _text_rect.size());
-  return out;
-}
+QRectF HNodeBase::getTextRect() { return _text_rect; }
 
 int HNodeBase::getPixelSize() { return _pixel_size; }
 
