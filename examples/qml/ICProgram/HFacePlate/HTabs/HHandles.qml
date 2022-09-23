@@ -129,6 +129,28 @@ Tab {
                 HImageButton{
                     width: iconWidth
                     height: iconWidth
+                    mSource:"qrc:/qml/ICProgram/HIcons/HTools/ellipse.png"
+                    backColor: icon === mSource ? "red" : "transparent"
+                    onSigClick: {
+                        icon = mSource
+                        setHandle("ellipse")
+                    }
+                }
+
+                HImageButton{
+                    width: iconWidth
+                    height: iconWidth
+                    mSource:"qrc:/qml/ICProgram/HIcons/HTools/fill_ellipse.png"
+                    backColor: icon === mSource ? "red" : "transparent"
+                    onSigClick: {
+                        icon = mSource
+                        setHandle("fill ellipse")
+                    }
+                }
+
+                HImageButton{
+                    width: iconWidth
+                    height: iconWidth
                     mSource:"qrc:/qml/ICProgram/HIcons/HTools/close.png"
                     backColor: icon === mSource ? "red" : "transparent"
                     onSigClick: {

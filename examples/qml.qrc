@@ -31,5 +31,7 @@
         <file>qml/ICProgram/HIcons/HTools/wide_line.png</file>
         <file>qml/ICProgram/HIcons/HTools/curve.png</file>
         <file>qml/ICProgram/HIcons/HTools/rule.png</file>
+        <file>qml/ICProgram/HIcons/HTools/ellipse.png</file>
+        <file>qml/ICProgram/HIcons/HTools/fill_ellipse.png</file>
     </qresource>
 </RCC>

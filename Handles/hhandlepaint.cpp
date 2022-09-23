@@ -325,7 +325,13 @@ HHandleDrawEllipse::HHandleDrawEllipse() { _name = "ellipse"; }
 
 void HHandleDrawEllipse::mousePressEvent(HBoard *board, QMouseEvent *event,
                                          const QJsonObject &object) {
-  if (board && event) {
+  if (board && event && isButtonPress(event, Qt::LeftButton) &&
+      _node.isNull()) {
+    auto pos = board->WCS2LCS(event->pos());
+    auto node = std::make_shared<HShapeEllipseNode>(QRectF(pos, pos), object);
+    board->pushNode(node);
+    _node = node->id();
+    _point = pos;
   }
   HHandleMove::mousePressEvent(board, event, object);
 }
@@ -333,9 +339,66 @@ void HHandleDrawEllipse::mousePressEvent(HBoard *board, QMouseEvent *event,
 void HHandleDrawEllipse::mouseMoveEvent(HBoard *board, QMouseEvent *event,
                                         const QJsonObject &object) {
   HHandleMove::mouseMoveEvent(board, event, object);
+  if (board && event && leftButtonPress(event)) {
+    auto pos = board->WCS2LCS(event->pos());
+    auto list = HCommon::BuildEllipse(HCommon::BuildRect(_point, pos), 360);
+    board->drawNodePoint(_node, list);
+  }
 }
 
 void HHandleDrawEllipse::mouseReleaseEvent(HBoard *board, QMouseEvent *event,
                                            const QJsonObject &object) {
   HHandleMove::mouseReleaseEvent(board, event, object);
+  _node = "";
+}
+
+QJsonObject HHandleDrawEllipse::getDefaultParam() {
+  QJsonObject object;
+  object.insert("b", 0);
+  object.insert("g", 0);
+  object.insert("r", 255);
+  object.insert("a", 255);
+  return object;
+}
+
+HHandleDrawFillEllipse::HHandleDrawFillEllipse() { _name = "fill ellipse"; }
+
+void HHandleDrawFillEllipse::mousePressEvent(HBoard *board, QMouseEvent *event,
+                                             const QJsonObject &object) {
+  if (board && event && isButtonPress(event, Qt::LeftButton) &&
+      _node.isNull()) {
+    auto pos = board->WCS2LCS(event->pos());
+    auto node =
+        std::make_shared<HShapeFillEllipseNode>(QRectF(pos, pos), object);
+    board->pushNode(node);
+    _node = node->id();
+    _point = pos;
+  }
+  HHandleMove::mousePressEvent(board, event, object);
+}
+
+void HHandleDrawFillEllipse::mouseMoveEvent(HBoard *board, QMouseEvent *event,
+                                            const QJsonObject &object) {
+  HHandleMove::mouseMoveEvent(board, event, object);
+  if (board && event && leftButtonPress(event)) {
+    auto pos = board->WCS2LCS(event->pos());
+    auto list = HCommon::BuildEllipse(HCommon::BuildRect(_point, pos), 360);
+    board->drawNodePoint(_node, list);
+  }
+}
+
+void HHandleDrawFillEllipse::mouseReleaseEvent(HBoard *board,
+                                               QMouseEvent *event,
+                                               const QJsonObject &object) {
+  HHandleMove::mouseReleaseEvent(board, event, object);
+  _node = "";
+}
+
+QJsonObject HHandleDrawFillEllipse::getDefaultParam() {
+  QJsonObject object;
+  object.insert("b", 0);
+  object.insert("g", 0);
+  object.insert("r", 255);
+  object.insert("a", 255);
+  return object;
 }

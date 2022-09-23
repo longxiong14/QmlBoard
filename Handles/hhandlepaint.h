@@ -167,6 +167,30 @@ class HBOARD_EXPORT HHandleDrawEllipse : public HHandleMove {
       HBoard* board, QMouseEvent* event,
       const QJsonObject& object = QJsonObject()) override;
 
+  virtual QJsonObject getDefaultParam() override;
+
+ protected:
+  QPointF _point;
+};
+
+class HBOARD_EXPORT HHandleDrawFillEllipse : public HHandleMove {
+ public:
+  HHandleDrawFillEllipse();
+
+  virtual void mousePressEvent(
+      HBoard* board, QMouseEvent* event,
+      const QJsonObject& object = QJsonObject()) override;
+
+  virtual void mouseMoveEvent(
+      HBoard* board, QMouseEvent* event,
+      const QJsonObject& object = QJsonObject()) override;
+
+  virtual void mouseReleaseEvent(
+      HBoard* board, QMouseEvent* event,
+      const QJsonObject& object = QJsonObject()) override;
+
+  virtual QJsonObject getDefaultParam() override;
+
  protected:
   QPointF _point;
 };
