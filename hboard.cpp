@@ -30,7 +30,8 @@ HBoard::HBoard(QQuickItem *parent)
       _trans_node(nullptr),
       _handle(new HHandleArrow()),
       _name(""),
-      _rule(nullptr) {
+      _rule(nullptr),
+      _rule_flag(true) {
   setFlag(QQuickItem::ItemHasContents, true);
   setClip(true);
   setAcceptHoverEvents(true);
@@ -515,6 +516,16 @@ void HBoard::setItems(const QJsonObject &item) {
   itemsChanged();
 }
 
+bool HBoard::rule() { return _rule_flag; }
+
+void HBoard::setRule(bool f) {
+  if (_rule_flag != f) {
+    _rule_flag = f;
+    ruleChanged();
+    update();
+  }
+}
+
 QPointF HBoard::WCS2LCS(const QPointF &point) {
   QPointF pt;
   if (_trans_node) {
@@ -567,18 +578,17 @@ QSGNode *HBoard::updatePaintNode(QSGNode *node,
     _trans_node->setMatrix(QMatrix4x4(QTransform()));
     node->appendChildNode(_trans_node);
     node->setFlag(QSGNode::OwnedByParent);
-    _rule = new QSGGeometryNode();
-    updateRule();
-    node->appendChildNode(_rule);
-  }
-  {
-    QMutexLocker lock(&_mutex);
-    while (!_tasks.empty()) {
-      auto f = _tasks.dequeue();
-      f();
+    updateRule(node);
+  } else {
+    {
+      QMutexLocker lock(&_mutex);
+      while (!_tasks.empty()) {
+        auto f = _tasks.dequeue();
+        f();
+      }
     }
+    updateRule(node);
   }
-  updateRule();
   emit updated();
   return node;
 }
@@ -663,31 +673,45 @@ QJsonObject HBoard::getHandleParam() {
   return object;
 }
 
-void HBoard::updateRule() {
-  if (_rule) {
-    QList<QPointF> list;
-    int count = _rule->childCount();
-    for (int i = 0; i < count; i++) {
-      auto node = _rule->childAtIndex(0);
-      _rule->removeChildNode(node);
-      auto image = dynamic_cast<QSGImageNode *>(node);
-      if (image) {
-        HSGNodeCommon::releaseTextureNode(image);
-      } else {
-        delete node;
-        node = nullptr;
+void HBoard::updateRule(QSGNode *parent) {
+  if (_rule_flag) {
+    bool f = false;
+    if (!_rule) {
+      _rule = new QSGGeometryNode();
+      f = true;
+    }
+    if (_rule) {
+      QList<QPointF> list;
+      int count = _rule->childCount();
+      for (int i = 0; i < count; i++) {
+        auto node = _rule->childAtIndex(0);
+        _rule->removeChildNode(node);
+        auto image = dynamic_cast<QSGImageNode *>(node);
+        if (image) {
+          HSGNodeCommon::releaseTextureNode(image);
+        } else {
+          delete node;
+          node = nullptr;
+        }
       }
+      _rule->removeAllChildNodes();
+      buildTopRule(list);
+      buildLeftRule(list);
+      auto geo = HSGNodeCommon::buildGeometry(list, GL_LINES);
+      _rule->setGeometry(geo);
+      if (!_rule->material()) {
+        _rule->setMaterial(HSGNodeCommon::buildColor(Qt::red));
+        _rule->setFlag(QSGNode::OwnsMaterial);
+      }
+      _rule->setFlag(QSGNode::OwnsGeometry);
     }
-    _rule->removeAllChildNodes();
-    buildTopRule(list);
-    buildLeftRule(list);
-    auto geo = HSGNodeCommon::buildGeometry(list, GL_LINES);
-    _rule->setGeometry(geo);
-    if (!_rule->material()) {
-      _rule->setMaterial(HSGNodeCommon::buildColor(Qt::red));
-      _rule->setFlag(QSGNode::OwnsMaterial);
+    if (f) parent->appendChildNode(_rule);
+  } else {
+    if (_rule) {
+      parent->removeChildNode(_rule);
+      delete _rule;
+      _rule = nullptr;
     }
-    _rule->setFlag(QSGNode::OwnsGeometry);
   }
 }
 

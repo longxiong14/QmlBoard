@@ -24,6 +24,7 @@ class HBOARD_EXPORT HBoard : public QQuickItem {
   Q_OBJECT
   Q_PROPERTY(QString name READ name WRITE setName NOTIFY nameChanged)
   Q_PROPERTY(QJsonObject items READ items WRITE setItems NOTIFY itemsChanged)
+  Q_PROPERTY(bool rule READ rule WRITE setRule NOTIFY ruleChanged)
  public:
   explicit HBoard(QQuickItem *parent = nullptr);
   virtual ~HBoard() override;
@@ -83,6 +84,8 @@ class HBOARD_EXPORT HBoard : public QQuickItem {
   void setName(const QString &name);
   QJsonObject items();
   void setItems(const QJsonObject &item);
+  bool rule();
+  void setRule(bool f);
 
  public:
   QPointF WCS2LCS(const QPointF &point);
@@ -108,7 +111,7 @@ class HBOARD_EXPORT HBoard : public QQuickItem {
  protected:
   void pushTask(const task &t);
   QJsonObject getHandleParam();
-  void updateRule();
+  void updateRule(QSGNode *parent);
   void buildTopRule(QList<QPointF> &list);
   void buildLeftRule(QList<QPointF> &list);
   bool containNodes(std::shared_ptr<HNodeBase> node);
@@ -119,6 +122,7 @@ class HBOARD_EXPORT HBoard : public QQuickItem {
   void hoverPoint(int x, int y);
   void itemsChanged();
   void updated();
+  void ruleChanged();
 
  protected:
   QSGTransformNode *_trans_node;
@@ -132,6 +136,7 @@ class HBOARD_EXPORT HBoard : public QQuickItem {
   QTimer _timer;
   QJsonObject _items;
   QSGGeometryNode *_rule;
+  bool _rule_flag;
 };
 
 #endif  // HBOARD_H
