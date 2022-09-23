@@ -57,7 +57,8 @@ QSGNode *HShapeLineNode::buildDragNode() {
   QSGNode *node = new QSGNode();
   auto pts = getPointList();
   for (int i = 0; i < pts.size(); i++) {
-    HDragNode *n = HDragNode::buildNode(pts[i], 5 * getLineWidth(), id());
+    HDragNode *n =
+        HDragNode::buildNode(pts[i], double(3 + getLineWidth()), id());
     n->setPointIndex(i);
     n->setCurSor(Qt::CursorShape::SizeAllCursor);
     node->appendChildNode(n);
@@ -78,7 +79,7 @@ HShapeRectNode::HShapeRectNode(const QRectF &rect, const QJsonObject &param)
 QSGNode *HShapeRectNode::buildDragNode() {
   QSGNode *node = new QSGNode();
   auto rect = getBoundRect();
-  createRectDragNode(node, rect, id(), 5 * getLineWidth());
+  createRectDragNode(node, rect, id(), double(3 + getLineWidth()));
   return node;
 }
 
@@ -231,7 +232,8 @@ QSGNode *HShapeCurveNode::buildDragNode() {
   QSGNode *node = new QSGNode();
   auto pts = getPointList();
   for (int i = 0; i < pts.size(); i++) {
-    HDragNode *n = HDragNode::buildNode(pts[i], 5 * getLineWidth(), id());
+    HDragNode *n =
+        HDragNode::buildNode(pts[i], double(3 + getLineWidth()), id());
     n->setPointIndex(i);
     n->setCurSor(Qt::CursorShape::SizeAllCursor);
     node->appendChildNode(n);
@@ -266,7 +268,8 @@ QSGNode *HShapePolyNode::buildDragNode() {
   auto points = getPointList();
   int size = points.size();
   for (int i = 0; i < size - 1; i++) {
-    auto drag = HDragNode::buildNode(points[i], 5 * getLineWidth(), id());
+    auto drag =
+        HDragNode::buildNode(points[i], double(3 + getLineWidth()), id());
     drag->setPointIndex(i);
     drag->setCurSor(Qt::CursorShape::SizeAllCursor);
     if (0 == i) drag->setFollowIndex(size - 1);
@@ -307,7 +310,8 @@ HNodeBase::NODETYPE HShapeFillRectNode::nodeType() {
 QSGNode *HShapeFillRectNode::buildDragNode() {
   QSGNode *node = new QSGNode();
   auto rect = getBoundRect();
-  HShapeRectNode::createRectDragNode(node, rect, id(), 5 * getLineWidth());
+  HShapeRectNode::createRectDragNode(node, rect, id(),
+                                     double(3 + getLineWidth()));
   return node;
 }
 
@@ -540,7 +544,8 @@ HShapeEllipseNode::HShapeEllipseNode(const QRectF &rect,
 QSGNode *HShapeEllipseNode::buildDragNode() {
   QSGNode *node = new QSGNode();
   auto rect = getBoundRect();
-  HShapeRectNode::createRectDragNode(node, rect, id(), 5 * getLineWidth());
+  HShapeRectNode::createRectDragNode(node, rect, id(),
+                                     double(3 + getLineWidth()));
   return node;
 }
 
