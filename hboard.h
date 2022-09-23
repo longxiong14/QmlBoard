@@ -30,6 +30,7 @@ class HBOARD_EXPORT HBoard : public QQuickItem {
   virtual ~HBoard() override;
 
  public:
+  Q_INVOKABLE
   virtual void home();
   void checkItems();
   int save(const QString &path);
