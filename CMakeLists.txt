@@ -42,3 +42,4 @@ target_compile_definitions(${PROJECT_NAME} PRIVATE HBOARD_LIBRARY)
 
 add_subdirectory(examples/picture)
 add_subdirectory(examples/nodes)
+add_subdirectory(examples/handles)
