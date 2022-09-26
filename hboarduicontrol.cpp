@@ -148,7 +148,7 @@ void HBoardUIControl::test() {
     //    board->setRule(!f);
     auto sel = board->selects();
     for (const auto &s : sel) {
-      board->updateNodeText(s, "111");
+      board->updateNodeText(s, "111", QRectF(0, -13, 30, 30));
     }
   }
 
