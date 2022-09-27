@@ -8,6 +8,7 @@
 #include "../../Nodes/hnodebase.h"
 #include "../../hboard.h"
 #include "../../hboardmanager.h"
+#include "../../hboarduicontrol.h"
 #define DEBUG qDebug() << __FUNCTION__ << __LINE__
 HHandleHistogramChart::HHandleHistogramChart(QObject *parent)
     : QObject(parent), _image_node(nullptr) {}
@@ -15,15 +16,16 @@ HHandleHistogramChart::HHandleHistogramChart(QObject *parent)
 void HHandleHistogramChart::mouseReleaseEvent(HBoard *board, QMouseEvent *event,
                                               const QJsonObject &object) {
   (void)object;
-  if (board && event) {
+  if (board && event && isButtonPress(event)) {
     board->removeNode(_last_node);
     if (!_node.isNull()) {
       auto rect_node = board->getNodeById(_node);
       if (rect_node) {
-        auto node_rect = rect_node->getBoundRect();
-
         if (_image_node) {
+          auto node_rect =
+              rect_node->getBoundRect() & _image_node->getBoundRect();
           auto topleft = _image_node->getBoundRect().topLeft();
+
           QRectF rect(node_rect.topLeft() - topleft, node_rect.size());
           auto image = _image_node->getImage(rect, board->getScale());
           unsigned int arr[3][256] = {{0}, {0}, {0}};
@@ -61,8 +63,8 @@ void HHandleHistogramChart::mouseReleaseEvent(HBoard *board, QMouseEvent *event,
         }
       }
     }
+    _last_node = _node;
   }
-  _last_node = _node;
   HHandleDrawRect::mouseReleaseEvent(board, event, object);
 }
 
@@ -85,4 +87,6 @@ int HHandleHistogramChart::openPicture(const QString &path,
     board->home();
   }
   return 0;
+  //  HBoardUIControl control;
+  //  return control.openBoardPicture(name, path);
 }

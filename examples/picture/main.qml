@@ -30,7 +30,6 @@ ApplicationWindow {
             right:parent.right
             bottom: parent.bottom
         }
-        anchors.margins: 5
         onHoverPoint: {
             hoverd.text = "x:"+x + " y:"+y
         }
@@ -51,7 +50,7 @@ ApplicationWindow {
         id:idFile
         selectFolder : false
         selectExisting : true
-        nameFilters : ["png (*.png)", "jpg (*.jpn)", "bmp (*.bmp)"]
+        nameFilters : ["png (*.png)", "jpg (*.jpn)", "bmp (*.bmp)", "all (*.*)"]
         onAccepted: {
             let destPath = String(fileUrl)
             destPath = destPath.substr(8)
@@ -59,14 +58,5 @@ ApplicationWindow {
         }
     }
 
-    FileDialog{
-        id:idCppFile
-        selectFolder : false
-        selectExisting : true
-        nameFilters : ["png (*.png)", "jpg (*.jpn)", "bmp (*.bmp)"]
-        onAccepted: {
-            let destPath = String(fileUrl)
-            destPath = destPath.substr(8)
-        }
-    }
+
 }

@@ -46,7 +46,6 @@ int HBoardUIControl::openBoardPicture(const QString &board,
     return -1;
   }
   auto node = std::make_shared<HImageMapNode>(path);
-  node->setText(node->id().toString());
   ptr->pushNode(node);
   ptr->home();
   return 0;
