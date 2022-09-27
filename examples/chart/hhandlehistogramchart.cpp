@@ -38,6 +38,15 @@ void HHandleHistogramChart::mouseReleaseEvent(HBoard *board, QMouseEvent *event,
                   arr[2][px.red()]++;
                 }
               }
+            } else if (QImage::Format_Grayscale8 == image.format()) {
+              for (int l = 0; l < image.height(); l++) {
+                auto line = image.scanLine(l);
+                if (line) {
+                  for (int w = 0; w < image.width(); w++) {
+                    arr[0][line[w]]++;
+                  }
+                }
+              }
             }
           }
           QJsonArray array;
@@ -73,6 +82,7 @@ int HHandleHistogramChart::openPicture(const QString &path,
   if (board) {
     _image_node = std::make_shared<HImageMapNode>(path);
     board->pushNode(_image_node);
+    board->home();
   }
   return 0;
 }
