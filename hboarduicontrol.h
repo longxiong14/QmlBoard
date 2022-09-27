@@ -39,9 +39,6 @@ class HBOARD_EXPORT HBoardUIControl : public QObject {
   Q_INVOKABLE
   QJsonArray paramToUIItems(const QJsonObject &object);
 
-  Q_INVOKABLE
-  void test();
-
  public:
   void setTranslateMap(const QJsonObject &object);
 

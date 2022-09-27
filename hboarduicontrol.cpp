@@ -33,7 +33,7 @@ int HBoardUIControl::setBoardHandle(const QString &board,
     DEBUG << "hasn't this handle " << handle;
     return -1;
   }
-  ptr->setHandle(h.get());
+  ptr->setHandle(h);
   return 0;
 }
 
@@ -135,49 +135,6 @@ QJsonArray HBoardUIControl::paramToUIItems(const QJsonObject &object) {
     array.push_back(item);
   }
   return array;
-}
-
-void HBoardUIControl::test() {
-  auto board = HBoardManager::getInstance()->getBoard("main_board");
-
-  if (board) {
-    //    auto node = std::make_shared<HShapeFillEllipseNode>(QRectF(0, 0, 200,
-    //    100)); board->pushNode(node);
-    //      board->setRule(false);
-    //    auto f = board->rule();
-    //    board->setRule(!f);
-    auto sel = board->selects();
-    for (const auto &s : sel) {
-      board->updateNodeText(s, "111", QRectF(0, -13, 30, 30));
-    }
-  }
-
-  //  if (board) {
-  //    int cols = 30, rows = 6, x_step = 2248, y_step = 1552;
-  //    for (int i = 0; i < cols; i++) {
-  //      for (int j = 0; j < rows; j++) {
-  //        if (0 == i && 0 == j) continue;
-  //        auto review_node =
-  //            std::make_shared<HFillNode>(QRect(0, 0, 100, 100),
-  //            GL_LINE_LOOP);
-  //        board->pushNode(review_node);
-  //        board->moveNode(review_node->id(), QPointF(i * x_step, j * y_step));
-  //        //          _review.insert(review_node->id());
-  //      }
-  //    }
-  //  }
-
-  //  if (board) {
-  //    auto sel = board->selects();
-  //    QImage imag(20, 20, QImage::Format::Format_ARGB32);
-  //    imag.fill(QColor(255, 0, 0, 120));
-  //    for (const auto &s : sel) {
-  //      board->updateNodeMat(s, imag, QPoint(0, 0));
-  //    }
-  //    //    std::shared_ptr<HShapeXNode> node =
-  //    //        std::make_shared<HShapeXNode>(QPointF(), 100, QJsonObject());
-  //    //    board->pushNode(node);
-  //  }
 }
 
 void HBoardUIControl::setTranslateMap(const QJsonObject &object) {

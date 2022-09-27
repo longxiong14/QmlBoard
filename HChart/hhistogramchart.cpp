@@ -107,10 +107,8 @@ void HHistogramChart::hoverMoveEvent(QHoverEvent *event) {
 QJsonArray HHistogramChart::array() { return _array; }
 
 void HHistogramChart::setArray(const QJsonArray &array) {
-  if (256 == array.size()) {
-    _array = array;
-    arrayChanged();
-  }
+  _array = array;
+  arrayChanged();
 }
 
 int HHistogramChart::left() { return _left; }

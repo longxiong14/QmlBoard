@@ -45,7 +45,7 @@ class HBOARD_EXPORT HBoard : public QQuickItem {
   virtual void removeNode(const QUuid &id);
   void clearNode();
   void removeSelectNode();
-  void setHandle(HHandleBase *handle);
+  void setHandle(std::shared_ptr<HHandleBase> handle);
   QSGTransformNode *transformNode();
   QTransform transform();
   QHash<QUuid, std::shared_ptr<HNodeBase>> nodes();
@@ -127,7 +127,7 @@ class HBOARD_EXPORT HBoard : public QQuickItem {
 
  protected:
   QSGTransformNode *_trans_node;
-  HHandleBase *_handle;
+  std::shared_ptr<HHandleBase> _handle;
   QMutex _mutex;
   //  QHash<QUuid, std::shared_ptr<HNodeBase>> _nodes;
   QList<std::shared_ptr<HNodeBase>> _nodes;

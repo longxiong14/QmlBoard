@@ -265,7 +265,7 @@ void HBoard::removeSelectNode() {
   update();
 }
 
-void HBoard::setHandle(HHandleBase *handle) {
+void HBoard::setHandle(std::shared_ptr<HHandleBase> handle) {
   if (_handle) _handle->boardLeaveOffThisHandle(this);
   _handle = handle;
 }
