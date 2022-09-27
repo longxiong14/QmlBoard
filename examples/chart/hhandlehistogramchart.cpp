@@ -59,6 +59,7 @@ void HHandleHistogramChart::mouseReleaseEvent(HBoard *board, QMouseEvent *event,
             }
             array.push_back(tmp);
           }
+          DEBUG << array;
           setCharts(array);
         }
       }

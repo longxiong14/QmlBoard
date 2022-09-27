@@ -19,6 +19,7 @@
 #include "hhandlehistogramchart.h"
 int main(int argc, char *argv[]) {
   QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
+  QCoreApplication::setOrganizationName("qmlboard chart example");
 
   QGuiApplication app(argc, argv);
 

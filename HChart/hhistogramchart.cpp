@@ -108,6 +108,8 @@ QJsonArray HHistogramChart::array() { return _array; }
 
 void HHistogramChart::setArray(const QJsonArray &array) {
   _array = array;
+  setLeft(0);
+  setRight(_array.size() - 1);
   arrayChanged();
 }
 
@@ -122,8 +124,11 @@ void HHistogramChart::setLeft(int l) {
 int HHistogramChart::right() { return _right; }
 
 void HHistogramChart::setRight(int r) {
-  if (_right != r && _left < r && r >= 0 && r <= 255) {
-    _right = r;
+  if (_right != r && _left < r && r >= 0) {
+    if (r >= _array.size())
+      _right = _array.size() - 1;
+    else
+      _right = r;
   }
 }
 
