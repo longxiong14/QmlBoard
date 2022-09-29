@@ -48,13 +48,13 @@ void HNodeBase::changedSelectStatus() {
     }
     setFlag(NODEFLAG::SELECTED, f);
     if (isSelect()) {
-      auto node = get();
-      if (node) {
-        _drag_node = buildDragNode();
-        if (_drag_node) {
-          node->appendChildNode(_drag_node);
-        }
-      }
+      //      auto node = get();
+      //      if (node) {
+      //        _drag_node = buildDragNode();
+      //        if (_drag_node) {
+      //          node->appendChildNode(_drag_node);
+      //        }
+      //      }
     } else {
       auto n = get();
       if (n) {
@@ -63,11 +63,11 @@ void HNodeBase::changedSelectStatus() {
           delete _dash;
           _dash = nullptr;
         }
-        if (_drag_node) {
-          n->removeChildNode(_drag_node);
-          delete _drag_node;
-          _drag_node = nullptr;
-        }
+        //        if (_drag_node) {
+        //          n->removeChildNode(_drag_node);
+        //          delete _drag_node;
+        //          _drag_node = nullptr;
+        //        }
       }
     }
   }
@@ -180,7 +180,17 @@ void HNodeBase::setFlag(HNodeBase::NODEFLAG flag, bool open) {
 
 bool HNodeBase::canSelect() { return _flag & NODEFLAG::CANSELECT; }
 
-QSGNode *HNodeBase::buildDragNode() { return nullptr; }
+QSGNode *HNodeBase::buildDragNode(HBoard *) { return nullptr; }
+
+QSGNode *HNodeBase::getDragNode() { return _drag_node; }
+
+void HNodeBase::destroyDragNode() {
+  if (_drag_node) {
+    _drag_node->removeAllChildNodes();
+    delete _drag_node;
+    _drag_node = nullptr;
+  }
+}
 
 bool HNodeBase::pointInDragNode(const QPointF &point, HDragNode *&drag,
                                 double scale) {
@@ -200,17 +210,34 @@ bool HNodeBase::pointInDragNode(const QPointF &point, HDragNode *&drag,
 }
 
 void HNodeBase::updateIndexPoint(int index, const QPointF &point) {
-  if (_drag_node) {
-    auto size = _drag_node->childCount();
-    if (size > index && index >= 0) {
-      HDragNode *drag =
-          dynamic_cast<HDragNode *>(_drag_node->childAtIndex(index));
-      if (drag && drag->getPointIndex() == index) {
-        drag->moveTo(point);
+  //  if (_drag_node) {
+  //    auto size = _drag_node->childCount();
+  //    if (size > index && index >= 0) {
+  //      HDragNode *drag =
+  //          dynamic_cast<HDragNode *>(_drag_node->childAtIndex(index));
+  //      if (drag && drag->getPointIndex() == index) {
+  //        drag->moveTo(point);
+  //      }
+  //    }
+  //  }
+  flushMayiLine();
+}
+
+void HNodeBase::updateDragNodePoint(HBoard *board) {
+  if (_drag_node && board) {
+    auto count = _drag_node->childCount();
+    auto pts = getPointList();
+    for (int i = 0; i < count; i++) {
+      auto node = dynamic_cast<HDragNode *>(_drag_node->childAtIndex(i));
+      if (node) {
+        auto index = node->getPointIndex();
+        if (index >= 0 && index < pts.size()) {
+          auto point = board->LCS2WCS(pts[i]);
+          node->moveTo(point);
+        }
       }
     }
   }
-  flushMayiLine();
 }
 
 void HNodeBase::updateMat(HBoard *, const QImage &, const QPointF &) {}

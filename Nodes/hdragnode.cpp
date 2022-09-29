@@ -57,7 +57,7 @@ bool HDragNode::pointIn(const QPointF &point, double scale) {
   if (inrect) {
     HPlanVector vec;
     auto dis = vec.dis(rect.center(), point);
-    if (dis * scale < _size) {
+    if (dis < _size) {
       return true;
     }
   }

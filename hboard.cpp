@@ -31,6 +31,7 @@ HBoard::HBoard(QQuickItem *parent)
       _handle(new HHandleArrow()),
       _name(""),
       _rule(nullptr),
+      _drag_nodes(nullptr),
       _rule_flag(true) {
   setFlag(QQuickItem::ItemHasContents, true);
   setClip(true);
@@ -98,7 +99,10 @@ void HBoard::home() {
 
     trans.translate(x, y);
     trans.scale(scale, scale);
-    if (_trans_node) _trans_node->setMatrix(trans);
+    if (_trans_node) {
+      _trans_node->setMatrix(trans);
+      updateSelectDragNodes();
+    }
   });
   update();
 }
@@ -182,6 +186,7 @@ int HBoard::load(const QJsonArray &nodes) {
 void HBoard::pushTransform(const QTransform &trans) {
   pushTask([=]() {
     if (_trans_node) _trans_node->setMatrix(trans);
+    updateSelectDragNodes();
   });
 }
 
@@ -230,6 +235,7 @@ void HBoard::removeNode(const QUuid &id) {
           auto g = node->get();
           if (n == g) {
             _trans_node->removeChildNode(node->get());
+            removeDragNode(node);
             break;
           }
         }
@@ -280,6 +286,7 @@ void HBoard::clearSelect() {
     for (auto n : _nodes) {
       if (n->isSelect()) {
         n->changedSelectStatus();
+        removeDragNode(n);
       }
     }
   });
@@ -292,6 +299,10 @@ void HBoard::pushSelect(const QUuid &s) {
       auto n = getNodeById(s);
       if (n && !n->isSelect()) {
         n->changedSelectStatus();
+        auto node = n->buildDragNode(this);
+        if (node && _drag_nodes && !node->parent()) {
+          _drag_nodes->appendChildNode(node);
+        }
       }
     }
   });
@@ -303,6 +314,7 @@ void HBoard::removeSelect(const QUuid &s) {
     if (containNodes(s)) {
       auto n = getNodeById(s);
       if (n && n->isSelect()) {
+        removeDragNode(n);
         n->changedSelectStatus();
       }
     }
@@ -373,7 +385,10 @@ void HBoard::moveNode(const QUuid &n, QPointF dlt) {
   pushTask([=]() {
     if (containNodes(n)) {
       auto node = getNodeById(n);
-      if (node) node->move(dlt);
+      if (node) {
+        node->move(dlt);
+        if (node->isSelect()) node->updateDragNodePoint(this);
+      }
     }
   });
   update();
@@ -406,6 +421,7 @@ void HBoard::updateNodeIndexPoint(const QUuid &node, int index,
       auto n = getNodeById(node);
       if (n) {
         n->updateIndexPoint(index, point);
+        updateSelectDragNodes();
       }
     }
   });
@@ -579,6 +595,8 @@ QSGNode *HBoard::updatePaintNode(QSGNode *node,
     node->appendChildNode(_trans_node);
     node->setFlag(QSGNode::OwnedByParent);
     updateRule(node);
+    _drag_nodes = new QSGNode();
+    node->appendChildNode(_drag_nodes);
   } else {
     {
       QMutexLocker lock(&_mutex);
@@ -804,4 +822,21 @@ int HBoard::removeNodeToList(const QUuid &id) {
     }
   }
   return res;
+}
+
+void HBoard::updateSelectDragNodes() {
+  for (const auto &node : _nodes) {
+    if (node->isSelect()) {
+      node->updateDragNodePoint(this);
+    }
+  }
+}
+
+void HBoard::removeDragNode(std::shared_ptr<HNodeBase> node) {
+  if (!node) return;
+  auto drag = node->getDragNode();
+  if (drag && drag->parent() == _drag_nodes) {
+    _drag_nodes->removeChildNode(drag);
+    node->destroyDragNode();
+  }
 }

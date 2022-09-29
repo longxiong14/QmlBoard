@@ -77,11 +77,15 @@ class HBOARD_EXPORT HNodeBase : public HStorageBase<QJsonObject> {
   virtual void setFlag(NODEFLAG flag, bool open);
   bool canSelect();
 
+  // drag nodes
  public:
-  virtual QSGNode *buildDragNode();
+  virtual QSGNode *buildDragNode(HBoard *board);
+  QSGNode *getDragNode();
+  void destroyDragNode();
   virtual bool pointInDragNode(const QPointF &point, HDragNode *&drag,
                                double scale);
   virtual void updateIndexPoint(int index, const QPointF &point);
+  virtual void updateDragNodePoint(HBoard *board);
 
  public:  // image node interface
   // start: relative position

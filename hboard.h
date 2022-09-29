@@ -118,6 +118,9 @@ class HBOARD_EXPORT HBoard : public QQuickItem {
   bool containNodes(std::shared_ptr<HNodeBase> node);
   bool containNodes(const QUuid &id);
   int removeNodeToList(const QUuid &id);
+
+  void updateSelectDragNodes();
+  void removeDragNode(std::shared_ptr<HNodeBase> node);
  signals:
   void nameChanged();
   void hoverPoint(int x, int y);
@@ -137,6 +140,7 @@ class HBOARD_EXPORT HBoard : public QQuickItem {
   QTimer _timer;
   QJsonObject _items;
   QSGGeometryNode *_rule;
+  QSGNode *_drag_nodes;
   bool _rule_flag;
 };
 

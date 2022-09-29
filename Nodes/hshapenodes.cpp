@@ -5,6 +5,7 @@
 
 #include "../Common/hcommons.h"
 #include "../Common/hsgnodecommon.h"
+#include "../hboard.h"
 #include "hdragnode.h"
 #define DEBUG qDebug() << __FUNCTION__ << __LINE__
 
@@ -45,25 +46,27 @@ HShapeLineNode::HShapeLineNode(const QPointF &begin, const QPointF &end,
 void HShapeLineNode::move(const QPointF &p) {
   HFillNode::move(p);
   auto list = getPointList();
-  if (_drag_node) {
-    moveDragNode(_drag_node, list);
-    flushMayiLine();
-  }
+  //  if (_drag_node) {
+  //    moveDragNode(_drag_node, list);
+  //    flushMayiLine();
+  //  }
 }
 
 HNodeBase::NODETYPE HShapeLineNode::nodeType() { return NODETYPE::SHAPELINE; }
 
-QSGNode *HShapeLineNode::buildDragNode() {
-  QSGNode *node = new QSGNode();
+QSGNode *HShapeLineNode::buildDragNode(HBoard *board) {
+  if (!board) return nullptr;
+  if (_drag_node) return _drag_node;
+  _drag_node = new QSGNode();
   auto pts = getPointList();
   for (int i = 0; i < pts.size(); i++) {
-    HDragNode *n =
-        HDragNode::buildNode(pts[i], double(3 + getLineWidth()), id());
+    HDragNode *n = HDragNode::buildNode(board->LCS2WCS(pts[i]),
+                                        double(3 + getLineWidth()), id());
     n->setPointIndex(i);
     n->setCurSor(Qt::CursorShape::SizeAllCursor);
-    node->appendChildNode(n);
+    _drag_node->appendChildNode(n);
   }
-  return node;
+  return _drag_node;
 }
 
 void HShapeLineNode::updateIndexPoint(int index, const QPointF &point) {
@@ -71,21 +74,42 @@ void HShapeLineNode::updateIndexPoint(int index, const QPointF &point) {
   HNodeBase::updateIndexPoint(index, point);
 }
 
+// void HShapeLineNode::updateDragNodePoint(HBoard *board) {
+//  if (_drag_node && board) {
+//    auto count = _drag_node->childCount();
+//    auto pts = getPointList();
+//    for (int i = 0; i < count; i++) {
+//      auto node = dynamic_cast<HDragNode *>(_drag_node->childAtIndex(i));
+//      if (node) {
+//        auto index = node->getPointIndex();
+//        if (index >= 0 && index < pts.size()) {
+//          node->moveTo(board->LCS2WCS(pts[i]));
+//        }
+//      }
+//    }
+//  }
+//}
+
 HShapeRectNode::HShapeRectNode() {}
 
 HShapeRectNode::HShapeRectNode(const QRectF &rect, const QJsonObject &param)
     : HFillNode(rect, GL_LINE_LOOP, param) {}
 
-QSGNode *HShapeRectNode::buildDragNode() {
-  QSGNode *node = new QSGNode();
+QSGNode *HShapeRectNode::buildDragNode(HBoard *board) {
+  if (!board) return nullptr;
+  if (_drag_node) return _drag_node;
+  _drag_node = new QSGNode();
   auto rect = getBoundRect();
-  createRectDragNode(node, rect, id(), double(3 + getLineWidth()));
-  return node;
+  auto tl = board->LCS2WCS(rect.topLeft());
+  auto br = board->LCS2WCS(rect.bottomRight());
+  createRectDragNode(_drag_node, QRectF(tl, br), id(),
+                     double(3 + getLineWidth()));
+  return _drag_node;
 }
 
 void HShapeRectNode::move(const QPointF &p) {
   HFillNode::move(p);
-  updateDragNodes(_drag_node, getBoundRect());
+  //  updateDragNodes(_drag_node, getBoundRect());
 }
 
 HNodeBase::NODETYPE HShapeRectNode::nodeType() {
@@ -99,7 +123,7 @@ void HShapeRectNode::updateIndexPoint(int index, const QPointF &point) {
   if (0 == updateRectDragNode(index, rect, point, out_rect)) {
     list = HCommon::BuildRectList(out_rect);
     if (!list.empty()) drawPoints(list);
-    updateDragNodes(_drag_node, out_rect);
+    //    updateDragNodes(_drag_node, out_rect);
     flushMayiLine();
   }
 }
@@ -128,6 +152,23 @@ int HShapeRectNode::load(const QJsonObject &o) {
   return 0;
 }
 
+void HShapeRectNode::updateDragNodePoint(HBoard *board) {
+  if (!board || !_drag_node) return;
+  auto bound = getBoundRect();
+  auto rect = QRectF(board->LCS2WCS(bound.topLeft()),
+                     board->LCS2WCS(bound.bottomRight()));
+  QMap<int, dragNodeMsg> map = getRectDragNodeMap(rect);
+  for (int i = 0; i < _drag_node->childCount(); i++) {
+    auto drag = dynamic_cast<HDragNode *>(_drag_node->childAtIndex(i));
+    if (drag) {
+      auto index = drag->getPointIndex();
+      if (map.contains(index)) {
+        drag->moveTo(map[index]._point);
+      }
+    }
+  }
+}
+
 void HShapeRectNode::updateDragNodes(QSGNode *drag_node, const QRectF &rect) {
   if (drag_node) {
     int size = drag_node->childCount();
@@ -142,7 +183,7 @@ void HShapeRectNode::updateDragNodes(QSGNode *drag_node, const QRectF &rect) {
 }
 
 void HShapeRectNode::createRectDragNode(QSGNode *node, const QRectF &rect,
-                                        const QUuid &id, float size) {
+                                        const QUuid &id, double size) {
   if (!node) return;
   QMap<int, dragNodeMsg> map = getRectDragNodeMap(rect);
   for (const auto &k : map.keys()) {
@@ -223,28 +264,46 @@ HNodeBase::NODETYPE HShapeCurveNode::nodeType() {
 
 void HShapeCurveNode::move(const QPointF &p) {
   HFillNode::move(p);
-  if (_drag_node) {
-    moveDragNode(_drag_node, getPointList());
-  }
+  //  if (_drag_node) {
+  //    moveDragNode(_drag_node, getPointList());
+  //  }
 }
 
-QSGNode *HShapeCurveNode::buildDragNode() {
-  QSGNode *node = new QSGNode();
+QSGNode *HShapeCurveNode::buildDragNode(HBoard *board) {
+  if (!board) return nullptr;
+  if (_drag_node) return _drag_node;
+  _drag_node = new QSGNode();
   auto pts = getPointList();
   for (int i = 0; i < pts.size(); i++) {
-    HDragNode *n =
-        HDragNode::buildNode(pts[i], double(3 + getLineWidth()), id());
+    HDragNode *n = HDragNode::buildNode(board->LCS2WCS(pts[i]),
+                                        double(3 + getLineWidth()), id());
     n->setPointIndex(i);
     n->setCurSor(Qt::CursorShape::SizeAllCursor);
-    node->appendChildNode(n);
+    _drag_node->appendChildNode(n);
   }
-  return node;
+  return _drag_node;
 }
 
 void HShapeCurveNode::updateIndexPoint(int index, const QPointF &point) {
   updateShapeNodeIndexPoint(this, index, point);
   HNodeBase::updateIndexPoint(index, point);
 }
+
+// void HShapeCurveNode::updateDragNodePoint(HBoard *board) {
+//  if (_drag_node && board) {
+//    auto count = _drag_node->childCount();
+//    auto pts = getPointList();
+//    for (int i = 0; i < count; i++) {
+//      auto node = dynamic_cast<HDragNode *>(_drag_node->childAtIndex(i));
+//      if (node) {
+//        auto index = node->getPointIndex();
+//        if (index >= 0 && index < pts.size()) {
+//          node->moveTo(board->LCS2WCS(pts[i]));
+//        }
+//      }
+//    }
+//  }
+//}
 
 HShapePolyNode::HShapePolyNode() {}
 
@@ -254,28 +313,30 @@ HShapePolyNode::HShapePolyNode(const QList<QPointF> &list,
 
 void HShapePolyNode::move(const QPointF &p) {
   HFillNode::move(p);
-  if (_drag_node) {
-    moveDragNode(_drag_node, getPointList());
-  }
+  //  if (_drag_node) {
+  //    moveDragNode(_drag_node, getPointList());
+  //  }
 }
 
 HNodeBase::NODETYPE HShapePolyNode::nodeType() {
   return HNodeBase::NODETYPE::SHAPEPOLY;
 }
 
-QSGNode *HShapePolyNode::buildDragNode() {
-  QSGNode *node = new QSGNode();
+QSGNode *HShapePolyNode::buildDragNode(HBoard *board) {
+  if (!board) return nullptr;
+  if (_drag_node) return _drag_node;
+  _drag_node = new QSGNode();
   auto points = getPointList();
   int size = points.size();
   for (int i = 0; i < size - 1; i++) {
-    auto drag =
-        HDragNode::buildNode(points[i], double(3 + getLineWidth()), id());
+    auto drag = HDragNode::buildNode(board->LCS2WCS(points[i]),
+                                     double(3 + getLineWidth()), id());
     drag->setPointIndex(i);
     drag->setCurSor(Qt::CursorShape::SizeAllCursor);
     if (0 == i) drag->setFollowIndex(size - 1);
-    node->appendChildNode(drag);
+    _drag_node->appendChildNode(drag);
   }
-  return node;
+  return _drag_node;
 }
 
 void HShapePolyNode::updateIndexPoint(int index, const QPointF &point) {
@@ -292,6 +353,23 @@ void HShapePolyNode::updateIndexPoint(int index, const QPointF &point) {
   }
 }
 
+// void HShapePolyNode::updateDragNodePoint(HBoard *board) {
+//  if (_drag_node && board) {
+//    auto count = _drag_node->childCount();
+//    auto pts = getPointList();
+//    for (int i = 0; i < count; i++) {
+//      auto node = dynamic_cast<HDragNode *>(_drag_node->childAtIndex(i));
+//      if (node) {
+//        auto index = node->getPointIndex();
+//        if (index >= 0 && index < pts.size()) {
+//          auto point = board->LCS2WCS(pts[i]);
+//          node->moveTo(point);
+//        }
+//      }
+//    }
+//  }
+//}
+
 HShapeFillRectNode::HShapeFillRectNode() {}
 
 HShapeFillRectNode::HShapeFillRectNode(const QRectF &rect,
@@ -300,19 +378,24 @@ HShapeFillRectNode::HShapeFillRectNode(const QRectF &rect,
 
 void HShapeFillRectNode::move(const QPointF &p) {
   HFillNode::move(p);
-  HShapeRectNode::updateDragNodes(_drag_node, getBoundRect());
+  //  HShapeRectNode::updateDragNodes(_drag_node, getBoundRect());
 }
 
 HNodeBase::NODETYPE HShapeFillRectNode::nodeType() {
   return HNodeBase::NODETYPE::SHAPEFILLRECT;
 }
 
-QSGNode *HShapeFillRectNode::buildDragNode() {
-  QSGNode *node = new QSGNode();
+QSGNode *HShapeFillRectNode::buildDragNode(HBoard *board) {
+  if (!board) return nullptr;
+  if (!board) return nullptr;
+  if (_drag_node) return _drag_node;
+  _drag_node = new QSGNode();
   auto rect = getBoundRect();
-  HShapeRectNode::createRectDragNode(node, rect, id(),
+  auto tl = board->LCS2WCS(rect.topLeft());
+  auto br = board->LCS2WCS(rect.bottomRight());
+  HShapeRectNode::createRectDragNode(_drag_node, QRectF(tl, br), id(),
                                      double(3 + getLineWidth()));
-  return node;
+  return _drag_node;
 }
 
 void HShapeFillRectNode::updateIndexPoint(int index, const QPointF &point) {
@@ -322,7 +405,6 @@ void HShapeFillRectNode::updateIndexPoint(int index, const QPointF &point) {
   if (0 == HShapeRectNode::updateRectDragNode(index, rect, point, out_rect)) {
     list = HCommon::BuildRectList(out_rect);
     if (!list.empty()) drawPoints(list);
-    HShapeRectNode::updateDragNodes(_drag_node, out_rect);
     flushMayiLine();
   }
 }
@@ -541,17 +623,21 @@ HShapeEllipseNode::HShapeEllipseNode(const QRectF &rect,
   setColor(getColor(_param));
 }
 
-QSGNode *HShapeEllipseNode::buildDragNode() {
-  QSGNode *node = new QSGNode();
+QSGNode *HShapeEllipseNode::buildDragNode(HBoard *board) {
+  if (!board) return nullptr;
+  if (_drag_node) return _drag_node;
+  _drag_node = new QSGNode();
   auto rect = getBoundRect();
-  HShapeRectNode::createRectDragNode(node, rect, id(),
+  auto tl = board->LCS2WCS(rect.topLeft());
+  auto br = board->LCS2WCS(rect.bottomRight());
+  HShapeRectNode::createRectDragNode(_drag_node, QRectF(tl, br), id(),
                                      double(3 + getLineWidth()));
-  return node;
+  return _drag_node;
 }
 
 void HShapeEllipseNode::move(const QPointF &p) {
   HFillNode::move(p);
-  HShapeRectNode::updateDragNodes(_drag_node, getBoundRect());
+  //  HShapeRectNode::updateDragNodes(_drag_node, getBoundRect());
 }
 
 void HShapeEllipseNode::updateIndexPoint(int index, const QPointF &point) {
@@ -561,13 +647,31 @@ void HShapeEllipseNode::updateIndexPoint(int index, const QPointF &point) {
   if (0 == HShapeRectNode::updateRectDragNode(index, rect, point, out_rect)) {
     list = HCommon::BuildEllipse(out_rect, 360);
     if (!list.empty()) drawPoints(list);
-    HShapeRectNode::updateDragNodes(_drag_node, out_rect);
+    //    HShapeRectNode::updateDragNodes(_drag_node, out_rect);
     flushMayiLine();
   }
 }
 
 HNodeBase::NODETYPE HShapeEllipseNode::nodeType() {
   return NODETYPE::SHAPEELLIPSE;
+}
+
+void HShapeEllipseNode::updateDragNodePoint(HBoard *board) {
+  if (!board || !_drag_node) return;
+  auto bound = getBoundRect();
+  auto rect = QRectF(board->LCS2WCS(bound.topLeft()),
+                     board->LCS2WCS(bound.bottomRight()));
+  QMap<int, HShapeRectNode::dragNodeMsg> map =
+      HShapeRectNode::getRectDragNodeMap(rect);
+  for (int i = 0; i < _drag_node->childCount(); i++) {
+    auto drag = dynamic_cast<HDragNode *>(_drag_node->childAtIndex(i));
+    if (drag) {
+      auto index = drag->getPointIndex();
+      if (map.contains(index)) {
+        drag->moveTo(map[index]._point);
+      }
+    }
+  }
 }
 
 int HShapeEllipseNode::save(QJsonObject &o) {

@@ -149,12 +149,12 @@ void HHandleArrow::hoverMoveEvent(HBoard *board, QHoverEvent *e,
                                   const QJsonObject &) {
   if (board && e) {
     auto sels = board->selects();
-    auto pos = board->WCS2LCS(e->pos());
+    //    auto pos = board->WCS2LCS(e->pos());
     _drag_node = nullptr;
     for (auto s : sels) {
       auto node = board->getNodeById(s);
       if (node->isSelect() &&
-          node->pointInDragNode(pos, _drag_node, board->getScale()) &&
+          node->pointInDragNode(e->pos(), _drag_node, board->getScale()) &&
           _drag_node) {
         board->setCursor(_drag_node->getCursor());
         return;
