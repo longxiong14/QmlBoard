@@ -20,17 +20,17 @@ target_link_libraries(${PROJECT_NAME} Qt5::Gui Qt5::Core Qt5::Quick
     )
 target_compile_definitions(${PROJECT_NAME} PRIVATE HBOARD_LIBRARY)
 
-#FILE(GLOB_RECURSE sub_data_dirs RELATIVE "${CMAKE_SOURCE_DIR}" *.h)
-#LIST(FILTER sub_data_dirs EXCLUDE REGEX ".git.*")
-#LIST(FILTER sub_data_dirs EXCLUDE REGEX "Install/*")
-#foreach(data_dir ${sub_data_dirs})
-#add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
-#        COMMAND ${CMAKE_COMMAND} -E copy_if_different
-#            "${CMAKE_SOURCE_DIR}/${data_dir}"
-#        ${CMAKE_BINARY_DIR}/include/${data_dir}
-#        COMMENT "Copying  ${data_dir} =>
-#            $<TARGET_FILE_DIR:${PROJECT_NAME}>/${data_dir}.")
-#endforeach()
+FILE(GLOB_RECURSE sub_data_dirs RELATIVE "${CMAKE_SOURCE_DIR}" *.h)
+LIST(FILTER sub_data_dirs EXCLUDE REGEX ".git.*")
+LIST(FILTER sub_data_dirs EXCLUDE REGEX "Install/*")
+foreach(data_dir ${sub_data_dirs})
+add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different
+            "${CMAKE_SOURCE_DIR}/${data_dir}"
+        ${CMAKE_BINARY_DIR}/include/${data_dir}
+        COMMENT "Copying  ${data_dir} =>
+            $<TARGET_FILE_DIR:${PROJECT_NAME}>/${data_dir}.")
+endforeach()
 
 add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_if_different
