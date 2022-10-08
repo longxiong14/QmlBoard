@@ -118,6 +118,7 @@ class HBOARD_EXPORT HBoard : public QQuickItem {
   bool containNodes(std::shared_ptr<HNodeBase> node);
   bool containNodes(const QUuid &id);
   int removeNodeToList(const QUuid &id);
+  int removeNode(std::shared_ptr<HNodeBase> node);
 
   void updateSelectDragNodes();
   void removeDragNode(std::shared_ptr<HNodeBase> node);

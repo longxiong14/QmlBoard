@@ -62,6 +62,7 @@ HBoard::~HBoard() {
   for (const auto &node : nodes()) {
     node->setDestory(false);
   }
+  clearNode();
   DEBUG << "clear nodes";
   auto instance = HBoardManager::getInstance();
   if (instance) {
@@ -225,39 +226,23 @@ void HBoard::removeNode(const QUuid &id) {
       }
     });
   } else {
-    pushTask([=]() {
-      if (containNodes(id)) {
-        auto node = getNodeById(id);
-        if (node && node->isSelect()) node->changedSelectStatus();
-        removeNodeToList(id);
-        for (int i = 0; i < _trans_node->childCount(); i++) {
-          auto n = _trans_node->childAtIndex(i);
-          auto g = node->get();
-          if (n == g) {
-            _trans_node->removeChildNode(node->get());
-            removeDragNode(node);
-            break;
-          }
-        }
-        if (HNodeBase::NODETYPE::IMAGE == node->nodeType()) {
-          DEBUG << "remove image node " << node->id();
-          std::this_thread::sleep_for(std::chrono::milliseconds(100));
-        }
-      }
-    });
+    auto node = getNodeById(id);
+    if (!node) return;
+    removeNodeToList(id);
+    pushTask([=]() { removeNode(node); });
   }
   update();
 }
 
 void HBoard::clearNode() {
+  auto list = _nodes;
   {
     QMutexLocker lock(&_mutex);
     _nodes.clear();
   }
   pushTask([=]() {
-    int count = _trans_node->childCount();
-    for (int i = 0; i < count; i++) {
-      _trans_node->removeChildNode(_trans_node->childAtIndex(0));
+    for (auto node : list) {
+      removeNode(node);
     }
   });
   update();
@@ -822,6 +807,25 @@ int HBoard::removeNodeToList(const QUuid &id) {
     }
   }
   return res;
+}
+
+int HBoard::removeNode(std::shared_ptr<HNodeBase> node) {
+  if (!node) return -1;
+  if (node->isSelect()) node->changedSelectStatus();
+  for (int i = 0; i < _trans_node->childCount(); i++) {
+    auto n = _trans_node->childAtIndex(i);
+    auto g = node->get();
+    if (n == g) {
+      _trans_node->removeChildNode(node->get());
+      removeDragNode(node);
+      break;
+    }
+  }
+  if (HNodeBase::NODETYPE::IMAGE == node->nodeType()) {
+    DEBUG << "remove image node " << node->id();
+    std::this_thread::sleep_for(std::chrono::milliseconds(100));
+  }
+  return 0;
 }
 
 void HBoard::updateSelectDragNodes() {
