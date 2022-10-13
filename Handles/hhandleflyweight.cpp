@@ -81,6 +81,19 @@ int HHandleFlyWeight::setBoardHandleParam(const QString &board,
 }
 
 HHandleFlyWeight::HHandleFlyWeight() {
+  //  registHandle<HHandleArrow>();
+  //  registHandle<HHandleDrawPoly>();
+  //  registHandle<HHandleDrawRect>();
+  //  registHandle<HHandleDrawLine>();
+  //  registHandle<HHandleDrawCurve>();
+  //  registHandle<HHandleMove>();
+  //  registHandle<HHandleDrawFillRect>();
+  //  registHandle<HHandleDrawFillPoly>();
+  //  registHandle<HHandleDrawCircle>();
+  //  registHandle<HHandleDrawFillCircle>();
+  //  registHandle<HHandleRule>();
+  //  registHandle<HHandleDrawEllipse>();
+  //  registHandle<HHandleDrawFillEllipse>();
   auto func = [=](std::shared_ptr<HHandleBase> ptr) {
     _handles.insert(ptr->getName(), ptr);
   };
