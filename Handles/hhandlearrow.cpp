@@ -117,14 +117,19 @@ void HHandleArrow::mouseReleaseEvent(HBoard *board, QMouseEvent *event,
     }
     auto r = HCommon::BuildRect(_select_start_point, pos);
     if (isButtonPress(event, Qt::MouseButton::RightButton)) {
+      bool ctrl = board->keys().contains(Qt::Key_Control);
       auto nodes = board->nodes();
       for (const auto &k : nodes.keys()) {
         auto n = nodes.value(k);
-        if (!n || n->isSelect() || n->id() == _select_node) continue;
+        if (!n || n->id() == _select_node || (ctrl && n->isSelect())) continue;
         auto bound = nodes.value(k)->getBoundRect();
         if (HCommon::PointInRect(bound.topLeft(), r) &&
             HCommon::PointInRect(bound.bottomRight(), r)) {
-          board->changeSelectStatus(k);
+          if (!n->isSelect()) board->changeSelectStatus(k);
+        } else {
+          if (n->isSelect() && !ctrl) {
+            board->changeSelectStatus(k);
+          }
         }
       }
     }
