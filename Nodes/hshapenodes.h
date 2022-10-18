@@ -109,6 +109,8 @@ class HBOARD_EXPORT HShapeFillRectNode : public HFillNode {
   virtual int save(QJsonObject &o) override;
 
   virtual int load(const QJsonObject &o) override;
+
+  virtual void updateDragNodePoint(HBoard *board) override;
 };
 
 class HBOARD_EXPORT HShapeCircleNode : public HFillNode {

@@ -387,7 +387,6 @@ HNodeBase::NODETYPE HShapeFillRectNode::nodeType() {
 
 QSGNode *HShapeFillRectNode::buildDragNode(HBoard *board) {
   if (!board) return nullptr;
-  if (!board) return nullptr;
   if (_drag_node) return _drag_node;
   _drag_node = new QSGNode();
   auto rect = getBoundRect();
@@ -431,6 +430,24 @@ int HShapeFillRectNode::load(const QJsonObject &o) {
     setColor(getColor(o.value("param").toObject()));
   }
   return 0;
+}
+
+void HShapeFillRectNode::updateDragNodePoint(HBoard *board) {
+  if (!board || !_drag_node) return;
+  auto bound = getBoundRect();
+  auto rect = QRectF(board->LCS2WCS(bound.topLeft()),
+                     board->LCS2WCS(bound.bottomRight()));
+  QMap<int, HShapeRectNode::dragNodeMsg> map =
+      HShapeRectNode::getRectDragNodeMap(rect);
+  for (int i = 0; i < _drag_node->childCount(); i++) {
+    auto drag = dynamic_cast<HDragNode *>(_drag_node->childAtIndex(i));
+    if (drag) {
+      auto index = drag->getPointIndex();
+      if (map.contains(index)) {
+        drag->moveTo(map[index]._point);
+      }
+    }
+  }
 }
 
 HShapeCircleNode::HShapeCircleNode() {}

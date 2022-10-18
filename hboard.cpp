@@ -195,7 +195,8 @@ void HBoard::pushNode(std::shared_ptr<HNodeBase> node, bool flag) {
   pushTask([=]() {
     if (node) {
       if (containNodes(node->id())) return;
-      if (flag) _nodes.push_back(node);
+      //      if (flag) _nodes.push_back(node);
+      if (flag) _nodes.insert(node->id(), node);
       _trans_node->appendChildNode(node->build(this));
     }
   });
@@ -232,6 +233,15 @@ void HBoard::removeNode(const QUuid &id) {
     pushTask([=]() { removeNode(node); });
   }
   update();
+}
+
+void HBoard::removeNodes(const QList<QUuid> &nodes) {
+  //
+  pushTask([=]() {
+    for (const auto &n : nodes) {
+      removeNode(n);
+    }
+  });
 }
 
 void HBoard::clearNode() {
@@ -349,11 +359,11 @@ QSet<QUuid> HBoard::selects() {
 QSet<int> HBoard::keys() { return _keys; }
 
 QHash<QUuid, std::shared_ptr<HNodeBase>> HBoard::nodes() {
-  QHash<QUuid, std::shared_ptr<HNodeBase>> node;
-  for (const auto &n : _nodes) {
-    node.insert(n->id(), n);
-  }
-  return node;
+  //  QHash<QUuid, std::shared_ptr<HNodeBase>> node;
+  //  for (const auto &n : _nodes) {
+  //    node.insert(n->id(), n);
+  //  }
+  return _nodes;
 }
 
 QHash<QUuid, std::shared_ptr<HNodeBase>> HBoard::visibleNodes() {
@@ -490,12 +500,13 @@ void HBoard::visibleNode(const QUuid &node, bool flag) {
 
 std::shared_ptr<HNodeBase> HBoard::getNodeById(const QUuid &id) {
   std::shared_ptr<HNodeBase> node = nullptr;
-  for (const auto &n : _nodes) {
-    if (n && n->id() == id) {
-      node = n;
-      break;
-    }
-  }
+  if (_nodes.contains(id)) node = _nodes[id];
+  //  for (const auto &n : _nodes) {
+  //    if (n && n->id() == id) {
+  //      node = n;
+  //      break;
+  //    }
+  //  }
   return node;
 }
 
@@ -783,44 +794,41 @@ void HBoard::buildLeftRule(QList<QPointF> &list) {
 
 bool HBoard::containNodes(std::shared_ptr<HNodeBase> node) {
   if (!node) return false;
-  for (const auto &n : _nodes) {
-    if (n && n->id() == node->id()) return true;
-  }
-  return false;
+  //  for (const auto &n : _nodes) {
+  //    if (n && n->id() == node->id()) return true;
+  //  }
+  return _nodes.contains(node->id());
 }
 
 bool HBoard::containNodes(const QUuid &id) {
-  for (const auto &n : _nodes) {
-    if (n && n->id() == id) return true;
-  }
-  return false;
+  //  for (const auto &n : _nodes) {
+  //    if (n && n->id() == id) return true;
+  //  }
+  return _nodes.contains(id);
 }
 
 int HBoard::removeNodeToList(const QUuid &id) {
   int res = -1;
-  for (int i = 0; i < _nodes.size(); i++) {
-    auto n = _nodes[i];
-    if (n && n->id() == id) {
-      res = 0;
-      _nodes.removeAt(i);
-      break;
-    }
+  if (_nodes.contains(id)) {
+    _nodes.remove(id);
+    res = 0;
   }
+  //  for (int i = 0; i < _nodes.size(); i++) {
+  //    auto n = _nodes[i];
+  //    if (n && n->id() == id) {
+  //      res = 0;
+  //      _nodes.removeAt(i);
+  //      break;
+  //    }
+  //  }
   return res;
 }
 
 int HBoard::removeNode(std::shared_ptr<HNodeBase> node) {
   if (!node) return -1;
   if (node->isSelect()) node->changedSelectStatus();
-  for (int i = 0; i < _trans_node->childCount(); i++) {
-    auto n = _trans_node->childAtIndex(i);
-    auto g = node->get();
-    if (n == g) {
-      _trans_node->removeChildNode(node->get());
-      removeDragNode(node);
-      break;
-    }
-  }
+  _trans_node->removeChildNode(node->get());
+  removeDragNode(node);
   if (HNodeBase::NODETYPE::IMAGE == node->nodeType()) {
     DEBUG << "remove image node " << node->id();
     std::this_thread::sleep_for(std::chrono::milliseconds(100));
