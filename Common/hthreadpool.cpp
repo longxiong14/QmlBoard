@@ -29,8 +29,8 @@ HThreadPool::HThreadPool(std::size_t size, std::function<void()> t)
       }
       {
         std::unique_lock<std::mutex> lock(_mutex);
-        _waiter++;
-        if (_waiter == size && _task_end) {
+        //        _waiter++;
+        if (_task_end && ++_waiter == size) {
           _task_end();
         }
       }
@@ -67,15 +67,13 @@ HSyncThreadPool::HSyncThreadPool(std::size_t size)
                             })),
       _flag(false) {}
 
-HSyncThreadPool::~HSyncThreadPool() {
-  _pool = nullptr;
-  std::unique_lock<std::mutex> lock(_mutex);
-  _condition.wait(lock, [=]() { return _flag; });
-}
+HSyncThreadPool::~HSyncThreadPool() { _pool = nullptr; }
 
 void HSyncThreadPool::run() {
   _flag = false;
   _pool->run();
+  std::unique_lock<std::mutex> lock(_mutex);
+  _condition.wait(lock, [=]() { return _flag; });
 }
 
 void HSyncThreadPool::stop() { _pool->stop(); }

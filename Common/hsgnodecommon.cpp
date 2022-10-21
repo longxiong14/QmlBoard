@@ -11,6 +11,7 @@ QSGGeometry *HSGNodeCommon::buildGeometry(const QList<QPointF> &points,
   for (int i = 0; i < points.size(); i++) {
     geometry->vertexDataAsPoint2D()[i].set(float(points[i].x()),
                                            float(points[i].y()));
+    geometry->markIndexDataDirty();
   }
   return geometry;
 }

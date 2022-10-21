@@ -45,14 +45,19 @@ HBoard::HBoard(QQuickItem *parent)
   _timer.start(200);
   connect(&_timer, &QTimer::timeout, [this]() {
     if (_trans_node) {
-      pushTask([=]() {
-        for (auto node : _nodes) {
-          if (node->isSelect() && node->get()) {
-            node->timeOut();
-          }
+      for (auto node : _nodes) {
+        if (node && node->isSelect()) {
+          pushTask([=]() {
+            for (auto node : _nodes) {
+              if (node->isSelect() && node->get()) {
+                node->timeOut();
+              }
+            }
+          });
+          update();
+          break;
         }
-      });
-      update();
+      }
     }
   });
 }
@@ -584,6 +589,7 @@ QTransform HBoard::transform() {
 
 QSGNode *HBoard::updatePaintNode(QSGNode *node,
                                  QQuickItem::UpdatePaintNodeData *) {
+  DEBUG << "paint";
   if (!node) {
     node = new QSGNode();
     _trans_node = new QSGTransformNode();

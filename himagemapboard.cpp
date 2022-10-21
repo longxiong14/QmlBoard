@@ -11,7 +11,7 @@
 #include "Nodes/himagemapnode.h"
 #include "Nodes/hnodebase.h"
 #define DEBUG qDebug() << __FUNCTION__ << __LINE__
-HImageMapBoard::HImageMapBoard() : _image_node(nullptr), _shape_node(nullptr) {}
+HImageMapBoard::HImageMapBoard() : _image_node(nullptr) {}
 
 void HImageMapBoard::home() {
   HBoard::home();
@@ -54,20 +54,31 @@ void HImageMapBoard::nodeMoveTo(const QUuid &n, QPointF point) {
   }
 }
 
-QSGNode *HImageMapBoard::updatePaintNode(
-    QSGNode *node, QQuickItem::UpdatePaintNodeData *data) {
+QSGNode *HImageMapBoard::updatePaintNode(QSGNode *node,
+                                         QQuickItem::UpdatePaintNodeData *) {
   if (!node) {
     node = new QSGNode();
     if (!_image_node) {
       _image_node = new QSGNode();
       node->appendChildNode(_image_node);
     }
-    _shape_node = HBoard::updatePaintNode(_shape_node, data);
-    if (_shape_node) {
-      node->appendChildNode(_shape_node);
+    _trans_node = new QSGTransformNode();
+    _trans_node->setMatrix(QMatrix4x4(QTransform()));
+    node->appendChildNode(_trans_node);
+    node->setFlag(QSGNode::OwnedByParent);
+    updateRule(node);
+    _drag_nodes = new QSGNode();
+    node->appendChildNode(_drag_nodes);
+  } else {
+    {
+      QMutexLocker lock(&_mutex);
+      while (!_tasks.empty()) {
+        auto f = _tasks.dequeue();
+        f();
+      }
     }
+    updateRule(node);
   }
-  _shape_node = HBoard::updatePaintNode(_shape_node, data);
   return node;
 }
 

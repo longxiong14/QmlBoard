@@ -35,7 +35,6 @@ class HBOARD_EXPORT HImageMapBoard : public HBoard {
 
  protected:
   QSGNode *_image_node;
-  QSGNode *_shape_node;
 };
 
 #endif  // HIMAGEMAPBOARD_H
