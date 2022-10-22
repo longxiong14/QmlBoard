@@ -28,8 +28,8 @@ class HBOARD_EXPORT HNodeBase : public HStorageBase<QJsonObject> {
     SHAPEXNODE,
     MAPINAGE,  //点在封闭形状内的判断
     SHAPEELLIPSE,
-    SHAPEFILLELLIPSE
-
+    SHAPEFILLELLIPSE,
+    MULTSHAPE  //点在外接矩形内判断
   } NODETYPE;  // node type
 
   typedef enum {
@@ -98,6 +98,8 @@ class HBOARD_EXPORT HNodeBase : public HStorageBase<QJsonObject> {
  public:
   virtual int save(QJsonObject &d) override;
   virtual int load(const QJsonObject &o) override;
+  virtual int save(const QString &path) override;
+  virtual int load(const QString &path) override;
 
  public:
   QJsonObject param();
@@ -113,6 +115,8 @@ class HBOARD_EXPORT HNodeBase : public HStorageBase<QJsonObject> {
 
  protected:
   void flushMayiLine();
+  void updateDrawDash(QSGNode *parent, QSGGeometryNode *&dash,
+                      QList<QPointF> &dash_list, int line_width);
 
  protected:
   QJsonObject _param;

@@ -184,6 +184,7 @@ bool HHandleArrow::canSelect(HNodeBase *node, const QPointF &pos,
     case HNodeBase::MAPINAGE:
     case HNodeBase::SHAPERECT:
     case HNodeBase::SHAPEFILLRECT:
+    case HNodeBase::MULTSHAPE:
       return HCommon::PointInRect(pos, rect);
     case HNodeBase::SHAPECIRCLE:
     case HNodeBase::SHAPEFILLCIRCLE:

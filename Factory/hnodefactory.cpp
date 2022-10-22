@@ -4,6 +4,7 @@
 
 #include "../Nodes/himagemapnode.h"
 #include "../Nodes/himagenode.h"
+#include "../Nodes/hmultshapenode.h"
 #include "../Nodes/hshapenodes.h"
 #define DEBUG qDebug() << __FUNCTION__ << __LINE__
 HNodeFactory::HNodeFactory() {}
@@ -54,6 +55,9 @@ std::shared_ptr<HNodeBase> HNodeFactory::create(const QJsonObject &param) {
       break;
     case HNodeBase::NODETYPE::SHAPEFILLELLIPSE:
       node = std::make_shared<HShapeFillEllipseNode>();
+      break;
+    case HNodeBase::NODETYPE::MULTSHAPE:
+      node = std::make_shared<HMultShapeNode>();
       break;
   }
   return node;

@@ -6,6 +6,7 @@
 #include <QSGNode>
 
 #include "../Common/hcommons.h"
+#include "../Common/hjsoncommon.h"
 #include "../Common/hsgnodecommon.h"
 #include "../hboard.h"
 #include "hdragnode.h"
@@ -105,46 +106,48 @@ void HNodeBase::timeOut() {
   auto node = get();
   int line_width = 2;
   if (node && isSelect()) {
-    if (_dash) {
-      auto geo = _dash->geometry();
-      if (geo) {
-        int count = geo->vertexCount();
-        if (count == _dash_list.count()) {
-          auto list = _dash_list;
-          list.pop_front();
-          auto geo = HSGNodeCommon::buildGeometry(list, GL_LINES);
-          geo->setLineWidth(line_width);
-          _dash->setGeometry(geo);
-        } else {
-          auto geo = HSGNodeCommon::buildGeometry(_dash_list, GL_LINES);
-          geo->setLineWidth(line_width);
-          _dash->setGeometry(geo);
-        }
-      }
-    } else {
-      QList<QPointF> list;
-      switch (nodeType()) {
-        case IMAGE:
-          list = HCommon::BuildRectLinesList(getBoundRect());
-          break;
-        default:
-          list = HCommon::BuildPolyLinesList(getPointList());
-          break;
-      }
-      if (list.empty()) return;
-      if (list.size() > STEP) {
-        double step = list.size() / STEP;
-        _dash_list.clear();
-        for (double i = 0; i < list.size(); i += step) {
-          _dash_list.push_back(list[int(i)]);
-        }
-      } else {
-        _dash_list = list;
-      }
-      _dash = HSGNodeCommon::buildGeometryNode(_dash_list, Qt::blue, GL_LINES,
-                                               line_width);
-      node->appendChildNode(_dash);
-    }
+    updateDrawDash(node, _dash, _dash_list, line_width);
+    //    if (_dash) {
+    //      auto geo = _dash->geometry();
+    //      if (geo) {
+    //        int count = geo->vertexCount();
+    //        if (count == _dash_list.count()) {
+    //          auto list = _dash_list;
+    //          list.pop_front();
+    //          auto geo = HSGNodeCommon::buildGeometry(list, GL_LINES);
+    //          geo->setLineWidth(line_width);
+    //          _dash->setGeometry(geo);
+    //        } else {
+    //          auto geo = HSGNodeCommon::buildGeometry(_dash_list, GL_LINES);
+    //          geo->setLineWidth(line_width);
+    //          _dash->setGeometry(geo);
+    //        }
+    //      }
+    //    } else {
+    //      QList<QPointF> list;
+    //      switch (nodeType()) {
+    //        case IMAGE:
+    //          list = HCommon::BuildRectLinesList(getBoundRect());
+    //          break;
+    //        default:
+    //          list = HCommon::BuildPolyLinesList(getPointList());
+    //          break;
+    //      }
+    //      if (list.empty()) return;
+    //      if (list.size() > STEP) {
+    //        double step = list.size() / STEP;
+    //        _dash_list.clear();
+    //        for (double i = 0; i < list.size(); i += step) {
+    //          _dash_list.push_back(list[int(i)]);
+    //        }
+    //      } else {
+    //        _dash_list = list;
+    //      }
+    //      _dash = HSGNodeCommon::buildGeometryNode(_dash_list, Qt::blue,
+    //      GL_LINES,
+    //                                               line_width);
+    //      node->appendChildNode(_dash);
+    //    }
   }
 }
 
@@ -278,6 +281,20 @@ int HNodeBase::load(const QJsonObject &o) {
   return 0;
 }
 
+int HNodeBase::save(const QString &path) {
+  QJsonObject o;
+  save(o);
+  return HJsonCommon::writeJson(path, o);
+}
+
+int HNodeBase::load(const QString &path) {
+  QJsonObject o;
+  if (0 != HJsonCommon::readJsonObject(path, o)) {
+    return -1;
+  }
+  return load(o);
+}
+
 QJsonObject HNodeBase::param() { return _param; }
 
 void HNodeBase::setParam(const QJsonObject &p) { _param = p; }
@@ -336,5 +353,50 @@ void HNodeBase::flushMayiLine() {
       delete _dash;
       _dash = nullptr;
     }
+  }
+}
+
+void HNodeBase::updateDrawDash(QSGNode *parent, QSGGeometryNode *&dash,
+                               QList<QPointF> &dash_list, int line_width) {
+  if (!parent) return;
+  if (dash) {
+    auto geo = dash->geometry();
+    if (geo) {
+      int count = geo->vertexCount();
+      if (count == dash_list.count()) {
+        auto list = dash_list;
+        list.pop_front();
+        auto geo = HSGNodeCommon::buildGeometry(list, GL_LINES);
+        geo->setLineWidth(line_width);
+        dash->setGeometry(geo);
+      } else {
+        auto geo = HSGNodeCommon::buildGeometry(dash_list, GL_LINES);
+        geo->setLineWidth(line_width);
+        dash->setGeometry(geo);
+      }
+    }
+  } else {
+    QList<QPointF> list;
+    switch (nodeType()) {
+      case IMAGE:
+        list = HCommon::BuildRectLinesList(getBoundRect());
+        break;
+      default:
+        list = HCommon::BuildPolyLinesList(getPointList());
+        break;
+    }
+    if (list.empty()) return;
+    if (list.size() > STEP) {
+      double step = list.size() / STEP;
+      dash_list.clear();
+      for (double i = 0; i < list.size(); i += step) {
+        dash_list.push_back(list[int(i)]);
+      }
+    } else {
+      dash_list = list;
+    }
+    dash = HSGNodeCommon::buildGeometryNode(dash_list, Qt::blue, GL_LINES,
+                                            line_width);
+    parent->appendChildNode(dash);
   }
 }

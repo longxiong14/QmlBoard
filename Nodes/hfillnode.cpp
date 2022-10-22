@@ -11,13 +11,13 @@
 #define DEBUG qDebug() << __FUNCTION__ << " " << __LINE__ << " "
 HFillNode::HFillNode(const QList<QPointF> &points, unsigned long type,
                      const QJsonObject &p)
-    : _node(new QSGGeometryNode()), _drawMode(0) {
+    : _node(new QSGGeometryNode()) {
   setPointList(points, type, p);
 }
 
 HFillNode::HFillNode(const QRectF &rect, unsigned long type,
                      const QJsonObject &p)
-    : _node(new QSGGeometryNode()), _drawMode(0) {
+    : _node(new QSGGeometryNode()) {
   setRect(rect, type, p);
 }
 
@@ -117,7 +117,12 @@ void HFillNode::setParam(const QJsonObject &p) {
   HNodeBase::setParam(p);
 }
 
-unsigned long HFillNode::drawingMode() { return _drawMode; }
+unsigned long HFillNode::drawingMode() {
+  if (!_node) return 0;
+  auto ptr = _node->geometry();
+  if (!ptr) return 0;
+  return ptr->drawingMode();
+}
 
 void HFillNode::updateDrawMode(unsigned long mode) {
   auto pts = getPointList();
@@ -168,20 +173,6 @@ int HFillNode::load(const QJsonObject &o) {
   return HNodeBase::load(o);
 }
 
-int HFillNode::save(const QString &path) {
-  QJsonObject o;
-  save(o);
-  return HJsonCommon::writeJson(path, o);
-}
-
-int HFillNode::load(const QString &path) {
-  QJsonObject o;
-  if (0 != HJsonCommon::readJsonObject(path, o)) {
-    return -1;
-  }
-  return load(o);
-}
-
 void HFillNode::clear() {
   if (_node) {
     delete _node;
@@ -213,7 +204,6 @@ void HFillNode::setOurGeometry(const QList<QPointF> &points,
   }
   _node->setGeometry(geometry);
   _node->setFlag(QSGNode::OwnsGeometry);
-  _drawMode = type;
 }
 
 float HFillNode::getLineWidth() {
