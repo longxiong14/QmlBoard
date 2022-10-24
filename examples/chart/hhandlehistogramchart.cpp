@@ -27,7 +27,7 @@ void HHandleHistogramChart::mouseReleaseEvent(HBoard *board, QMouseEvent *event,
           auto topleft = _image_node->getBoundRect().topLeft();
 
           QRectF rect(node_rect.topLeft() - topleft, node_rect.size());
-          auto image = _image_node->getImage(rect, board->getScale());
+          auto image = _image_node->getImage(rect, 1.0);
           unsigned int arr[3][256] = {{0}, {0}, {0}};
           if (!image.isNull()) {
             if (QImage::Format_RGB32 == image.format() ||
@@ -80,7 +80,8 @@ int HHandleHistogramChart::openPicture(const QString &path,
                                        const QString &name) {
   //
   auto board = HBoardManager::getInstance()->getBoard(name);
-  if (!board) return -1;
+  if (!board)
+    return -1;
   board->clearNode();
   if (board) {
     _image_node = std::make_shared<HImageMapNode>(path);
