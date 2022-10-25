@@ -27,10 +27,7 @@ void HImageMapBoard::pushNode(std::shared_ptr<HNodeBase> node, bool flag) {
 
 void HImageMapBoard::removeNode(const QUuid &id) {
   HBoard::removeNode(id);
-  auto node = getNodeById(id);
-  if (node && HNodeBase::NODETYPE::MAPINAGE == node->nodeType()) {
-    updateImageTask();
-  }
+  updateImageTask();
 }
 
 void HImageMapBoard::pushTransform(const QTransform &trans) {

@@ -232,10 +232,15 @@ void HBoard::removeNode(const QUuid &id) {
       }
     });
   } else {
-    auto node = getNodeById(id);
-    if (!node) return;
-    removeNodeToList(id);
-    pushTask([=]() { removeNode(node); });
+    pushTask([=]() {
+      auto node = getNodeById(id);
+      if (!node) {
+        DEBUG << "hasn't node id" << id;
+        return;
+      }
+      removeNodeToList(id);
+      removeNode(node);
+    });
   }
   update();
 }
@@ -250,15 +255,11 @@ void HBoard::removeNodes(const QList<QUuid> &nodes) {
 }
 
 void HBoard::clearNode() {
-  auto list = _nodes;
-  {
-    QMutexLocker lock(&_mutex);
-    _nodes.clear();
-  }
   pushTask([=]() {
-    for (auto node : list) {
+    for (auto node : _nodes) {
       removeNode(node);
     }
+    _nodes.clear();
   });
   update();
 }
