@@ -76,6 +76,7 @@ void HHandleDrawCurve::mousePressEvent(HBoard *board, QMouseEvent *event,
   HHandleMove::mousePressEvent(board, event);
   if (board && event && isButtonPress(event)) {
     auto point = board->WCS2LCS(event->pos());
+    DEBUG << _node;
     if (_node.isNull()) {
       auto node = std::make_shared<HShapeCurveNode>(QList<QPointF>({point}), o);
       _points = {point};
@@ -85,6 +86,7 @@ void HHandleDrawCurve::mousePressEvent(HBoard *board, QMouseEvent *event,
       _points.push_back(point);
       board->drawNodePoint(_node, _points);
     }
+    DEBUG << _node;
   }
 }
 
@@ -102,9 +104,15 @@ void HHandleDrawCurve::hoverMoveEvent(HBoard *board, QHoverEvent *event,
 
 void HHandleDrawCurve::mouseReleaseEvent(HBoard *b, QMouseEvent *e,
                                          const QJsonObject &o) {
-  if (isButtonPress(e, Qt::MouseButton::RightButton))
+  if (isButtonPress(e, Qt::MouseButton::RightButton)) {
     boardLeaveOffThisHandle(b);
-  HHandleMove::mouseReleaseEvent(b, e, o);
+    HHandleMove::mouseReleaseEvent(b, e, o);
+  } else {
+    if (b) {
+      b->clearSelect();
+      b->setSelect(_node);
+    }
+  }
 }
 
 void HHandleDrawCurve::boardLeaveOffThisHandle(HBoard *board) {
@@ -153,8 +161,13 @@ void HHandleDrawPoly::mouseReleaseEvent(HBoard *board, QMouseEvent *event,
                                         const QJsonObject &) {
   if (isButtonPress(event, Qt::MouseButton::RightButton)) {
     boardLeaveOffThisHandle(board);
+    HHandleMove::mouseReleaseEvent(board, event);
+  } else {
+    if (board) {
+      board->clearSelect();
+      board->setSelect(_node);
+    }
   }
-  HHandleMove::mouseReleaseEvent(board, event);
 }
 
 void HHandleDrawPoly::boardLeaveOffThisHandle(HBoard *board) {

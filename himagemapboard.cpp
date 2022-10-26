@@ -20,7 +20,9 @@ void HImageMapBoard::home() {
 
 void HImageMapBoard::pushNode(std::shared_ptr<HNodeBase> node, bool flag) {
   HBoard::pushNode(node, flag);
-  DEBUG << (HNodeBase::NODETYPE::MAPINAGE == node->nodeType());
+  if (node)
+    DEBUG << (HNodeBase::NODETYPE::MAPINAGE == node->nodeType())
+          << node->getZOrder();
   if (node && HNodeBase::NODETYPE::MAPINAGE == node->nodeType()) {
     updateImageTask();
   }
@@ -102,6 +104,7 @@ void HImageMapBoard::updateImages() {
     auto nodes = getZOrderNodes();
     for (auto node : nodes) {
       if (node && HNodeBase::NODETYPE::MAPINAGE == node->nodeType()) {
+        DEBUG << node->getBoundRect();
         auto map_image_node = dynamic_cast<HImageMapNodeDelegate *>(node.get());
         if (map_image_node) {
           auto rect = node->getBoundRect();

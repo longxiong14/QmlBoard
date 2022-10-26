@@ -44,6 +44,7 @@ void HHandleMove::mouseReleaseEvent(HBoard *board, QMouseEvent *event,
     if (!_node.isNull()) {
       board->clearSelect();
       board->setSelect(_node);
+      _node = "";
     }
   }
 }
