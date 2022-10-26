@@ -20,6 +20,7 @@ void HImageMapBoard::home() {
 
 void HImageMapBoard::pushNode(std::shared_ptr<HNodeBase> node, bool flag) {
   HBoard::pushNode(node, flag);
+  DEBUG << (HNodeBase::NODETYPE::MAPINAGE == node->nodeType());
   if (node && HNodeBase::NODETYPE::MAPINAGE == node->nodeType()) {
     updateImageTask();
   }
@@ -98,7 +99,8 @@ void HImageMapBoard::updateImages() {
     painter.fillRect(screen_image.rect(), QColor(0, 0, 0, 0));
     painter.setCompositionMode(QPainter::CompositionMode_SourceOver);
     bool flag = false;
-    for (auto node : _nodes) {
+    auto nodes = getZOrderNodes();
+    for (auto node : nodes) {
       if (node && HNodeBase::NODETYPE::MAPINAGE == node->nodeType()) {
         auto map_image_node = dynamic_cast<HImageMapNodeDelegate *>(node.get());
         if (map_image_node) {
@@ -184,6 +186,23 @@ void HImageMapBoard::clearImageNodes() {
 }
 
 void HImageMapBoard::updateImageTask() {
-  pushTask([=]() { clearImageNodes(); });
-  pushTask([=]() { updateImages(); });
+  pushTask([=]() {
+    clearImageNodes();
+    updateImages();
+  });
+}
+
+QList<std::shared_ptr<HNodeBase> > HImageMapBoard::getZOrderNodes() {
+  QList<std::shared_ptr<HNodeBase> > out;
+  for (const auto &node : _nodes) {
+    if (node->nodeType() == HNodeBase::NODETYPE::MAPINAGE) {
+      out.push_back(node);
+    }
+  }
+  std::sort(out.begin(), out.end(),
+            [](const std::shared_ptr<HNodeBase> &f,
+               const std::shared_ptr<HNodeBase> &s) {
+              return f->getZOrder() < s->getZOrder();
+            });
+  return out;
 }

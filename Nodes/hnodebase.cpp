@@ -17,7 +17,8 @@ HNodeBase::HNodeBase()
       _text_node(nullptr),
       _drag_node(nullptr),
       _pixel_size(10),
-      _flag(CANSELECT | CANDESTORY | VISIBLE | EABLEHOME) {
+      _flag(CANSELECT | CANDESTORY | VISIBLE | EABLEHOME),
+      _z_order(0) {
   _id = QUuid::createUuid();
 }
 
@@ -158,6 +159,10 @@ int HNodeBase::setText(const QString &text, const QRectF &position,
   _pixel_size = pixel_size;
   return 0;
 }
+
+void HNodeBase::setZOrder(int z) { _z_order = z; }
+
+int HNodeBase::getZOrder() { return _z_order; }
 
 QString HNodeBase::getText() { return _text; }
 

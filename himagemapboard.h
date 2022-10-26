@@ -29,6 +29,8 @@ class HBOARD_EXPORT HImageMapBoard : public HBoard {
 
   void clearImageNodes();
   void updateImageTask();
+
+  QList<std::shared_ptr<HNodeBase>> getZOrderNodes();
  signals:
 
  public slots:

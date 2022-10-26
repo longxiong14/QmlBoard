@@ -58,6 +58,7 @@ class HBOARD_EXPORT HHistogramChart : public QQuickItem {
   void rightChanged();
   void colorChanged();
   void fontSizeChanged();
+  void valueChanged(int left, int right);
  public slots:
 
  protected:

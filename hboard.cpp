@@ -197,11 +197,10 @@ void HBoard::pushTransform(const QTransform &trans) {
 }
 
 void HBoard::pushNode(std::shared_ptr<HNodeBase> node, bool flag) {
+  if (containNodes(node->id())) return;
+  if (flag) _nodes.insert(node->id(), node);
   pushTask([=]() {
     if (node) {
-      if (containNodes(node->id())) return;
-      //      if (flag) _nodes.push_back(node);
-      if (flag) _nodes.insert(node->id(), node);
       _trans_node->appendChildNode(node->build(this));
     }
   });
@@ -209,67 +208,44 @@ void HBoard::pushNode(std::shared_ptr<HNodeBase> node, bool flag) {
 }
 
 void HBoard::removeNode(const QUuid &id) {
-  if (false) {
-    std::shared_ptr<HNodeBase> node = nullptr;
-    {
-      QMutexLocker lock(&_mutex);
-      if (containNodes(id)) {
-        node = getNodeById(id);
-        if (node && node->isSelect()) node->changedSelectStatus();
-        removeNodeToList(id);
-      }
-    }
-    pushTask([=]() {
-      if (node && node->get()) {
-        for (int i = 0; i < _trans_node->childCount(); i++) {
-          auto n = _trans_node->childAtIndex(i);
-          auto g = node->get();
-          if (n == g) {
-            _trans_node->removeChildNode(node->get());
-            break;
-          }
-        }
-      }
-    });
-  } else {
-    pushTask([=]() {
-      auto node = getNodeById(id);
-      if (!node) {
-        DEBUG << "hasn't node id" << id;
-        return;
-      }
-      removeNodeToList(id);
-      removeNode(node);
-    });
+  auto node = getNodeById(id);
+  if (!node) {
+    DEBUG << "hasn't node id" << id;
+    return;
   }
+  removeNodeToList(id);
+  pushTask([=]() { removeNode(node); });
   update();
 }
 
 void HBoard::removeNodes(const QList<QUuid> &nodes) {
   //
-  pushTask([=]() {
-    for (const auto &n : nodes) {
-      removeNode(n);
+  for (const auto &id : nodes) {
+    auto node = getNodeById(id);
+    if (!node) {
+      DEBUG << "hasn't node id" << id;
+      return;
     }
-  });
+    removeNodeToList(id);
+    pushTask([=]() { removeNode(node); });
+  }
+  update();
 }
 
 void HBoard::clearNode() {
+  auto nodes = _nodes;
+  _nodes.clear();
   pushTask([=]() {
-    for (auto node : _nodes) {
+    for (auto node : nodes) {
       removeNode(node);
     }
-    _nodes.clear();
   });
   update();
 }
 
 void HBoard::removeSelectNode() {
-  auto sel = selects();
-  for (const auto &id : sel) {
-    removeNode(id);
-  }
-  update();
+  auto sel = selects().toList();
+  removeNodes(sel);
 }
 
 void HBoard::setHandle(std::shared_ptr<HHandleBase> handle) {

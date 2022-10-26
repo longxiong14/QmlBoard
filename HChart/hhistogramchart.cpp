@@ -63,11 +63,13 @@ void HHistogramChart::mouseMoveEvent(QMouseEvent *event) {
     auto step = width() / _array.size();
     switch (_lor) {
       case LOR::LEFT:
-        setLeft(int(pos.x() / step));
+        _left = int(pos.x() / step);
+        //        setLeft(int(pos.x() / step));
         update();
         break;
       case LOR::RIGHT:
-        setRight(int(pos.x() / step));
+        _right = int(pos.x() / step);
+        //        setRight(int(pos.x() / step));
         update();
         break;
       case LOR::NONE:
@@ -80,10 +82,8 @@ void HHistogramChart::mouseReleaseEvent(QMouseEvent *) {
   //
   switch (_lor) {
     case LOR::LEFT:
-      leftChanged();
-      break;
     case LOR::RIGHT:
-      rightChanged();
+      valueChanged(left(), right());
       break;
     case LOR::NONE:
       break;
@@ -118,6 +118,7 @@ int HHistogramChart::left() { return _left; }
 void HHistogramChart::setLeft(int l) {
   if (_left != l && l < _right && l >= 0) {
     _left = l;
+    leftChanged();
   }
 }
 
@@ -129,6 +130,7 @@ void HHistogramChart::setRight(int r) {
       _right = _array.size() - 1;
     else
       _right = r;
+    rightChanged();
   }
 }
 

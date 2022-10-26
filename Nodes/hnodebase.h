@@ -66,6 +66,8 @@ class HBOARD_EXPORT HNodeBase : public HStorageBase<QJsonObject> {
   virtual void timeOut();
   virtual int setText(const QString &text, const QRectF &position = QRectF(),
                       int pixel_size = 10);
+  void setZOrder(int z);
+  int getZOrder();
   QString getText();
   QRectF getTextRect();
   int getPixelSize();
@@ -130,6 +132,7 @@ class HBOARD_EXPORT HNodeBase : public HStorageBase<QJsonObject> {
   QString _text;
   int _pixel_size;
   int _flag;
+  int _z_order;
 };
 
 #endif  // HNODEBASE_H
