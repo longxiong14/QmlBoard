@@ -129,6 +129,7 @@ class HBOARD_EXPORT HBoard : public QQuickItem {
   void itemsChanged();
   void updated();
   void ruleChanged();
+  void faceChanged();
 
  protected:
   QSGTransformNode *_trans_node;

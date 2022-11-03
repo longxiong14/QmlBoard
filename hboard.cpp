@@ -108,6 +108,7 @@ void HBoard::home() {
     if (_trans_node) {
       _trans_node->setMatrix(trans);
       updateSelectDragNodes();
+      faceChanged();
     }
   });
   update();
@@ -193,6 +194,7 @@ void HBoard::pushTransform(const QTransform &trans) {
   pushTask([=]() {
     if (_trans_node) _trans_node->setMatrix(trans);
     updateSelectDragNodes();
+    faceChanged();
   });
 }
 

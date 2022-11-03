@@ -3,6 +3,8 @@
 #include <QPointF>
 #include <QQmlApplicationEngine>
 
+#include "../../Common/hcommons.h"
+#include "../../Common/hjsoncommon.h"
 #include "../../Common/hthreadpool.h"
 #include "../../HChart/hhistogramchart.h"
 #include "../../Handles/hhandlearrow.h"
@@ -10,11 +12,14 @@
 #include "../../Handles/hhandlemove.h"
 #include "../../Handles/hhandlepaint.h"
 #include "../../Nodes/hfillnode.h"
+#include "../../Nodes/hmultshapenode.h"
 #include "../../Nodes/hnodebase.h"
+#include "../../Nodes/hreviewnodemanager.h"
 #include "../../Nodes/hshapenodes.h"
 #include "../../hboardmanager.h"
 #include "../../hboarduicontrol.h"
 #include "../../himagemapboard.h"
+#include "hnodescontrol.h"
 int main(int argc, char *argv[]) {
   QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
   QCoreApplication::setOrganizationName("qmlboard nodes example");
@@ -24,6 +29,7 @@ int main(int argc, char *argv[]) {
   QQmlApplicationEngine engine;
 
   qmlRegisterType<HImageMapBoard>("hBoard", 1, 0, "HBoard");
+  qmlRegisterType<HNodesControl>("hNodes", 1, 0, "HNodes");
 
   const QUrl url(QStringLiteral("qrc:/main.qml"));
   QObject::connect(
@@ -147,6 +153,16 @@ int main(int argc, char *argv[]) {
       auto node =
           std::make_shared<HShapeFillEllipseNode>(QRectF(600, 700, 200, 100));
       node->setText("shape fill ellipse node", QRectF(0, -30, 100, 30));
+      board->pushNode(node);
+    }
+
+    {
+      QList<QList<QPointF>> list;
+      QPointF center(1000, 1000);
+      for (int i = 4; i > 0; i--) {
+        list.push_back(HCommon::BuildCircle(center, 10 * i, 360));
+      }
+      auto node = std::make_shared<HMultShapeNode>(list);
       board->pushNode(node);
     }
 

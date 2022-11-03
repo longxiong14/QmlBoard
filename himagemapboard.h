@@ -3,6 +3,7 @@
 #include "hboard.h"
 class HBOARD_EXPORT HImageMapBoard : public HBoard {
   Q_OBJECT
+  Q_PROPERTY(bool debug READ debug WRITE setDebug NOTIFY debugChanged)
  public:
   HImageMapBoard();
 
@@ -24,6 +25,10 @@ class HBOARD_EXPORT HImageMapBoard : public HBoard {
   virtual bool updateNodeMat(const QUuid &node, const QImage &mat,
                              const QPointF &start) override;
 
+ public:
+  bool debug();
+  void setDebug(bool f);
+
  protected:
   void updateImages();
 
@@ -32,11 +37,13 @@ class HBOARD_EXPORT HImageMapBoard : public HBoard {
 
   QList<std::shared_ptr<HNodeBase>> getZOrderNodes();
  signals:
+  void debugChanged();
 
  public slots:
 
  protected:
   QSGNode *_image_node;
+  bool _debug;
 };
 
 #endif  // HIMAGEMAPBOARD_H

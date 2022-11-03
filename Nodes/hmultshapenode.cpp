@@ -104,7 +104,7 @@ void HMultShapeNode::setParam(const QJsonObject &p) {
     }
   }
   if (pr != r || pg != g || pb != b || pa != a) {
-    DEBUG << "set color " << getColor(p);
+    //    DEBUG << "set color " << getColor(p);
     setColor(getColor(p));
   }
   HNodeBase::setParam(p);
@@ -144,7 +144,7 @@ void HMultShapeNode::changedSelectStatus() {
 }
 
 void HMultShapeNode::timeOut() {
-  DEBUG << "mult shape node timeOut";
+  //  DEBUG << "mult shape node timeOut";
   if (!_node) return;
   if (_dash_node) {
     for (int i = 0; i < _node->childCount(); i++) {

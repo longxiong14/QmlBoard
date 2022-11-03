@@ -60,7 +60,16 @@ add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
     COMMENT "Copying  ${data_dir} =>
     $<TARGET_FILE_DIR:${PROJECT_NAME}>/${data_dir}.")
 
+add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different
+    "${CMAKE_BINARY_DIR}/${PROJECT_NAME}.dll"
+    ${CMAKE_BINARY_DIR}/examples/trains/${PROJECT_NAME}.dll
+    COMMENT "Copying  ${data_dir} =>
+    $<TARGET_FILE_DIR:${PROJECT_NAME}>/${data_dir}.")
+
 add_subdirectory(examples/picture)
 add_subdirectory(examples/nodes)
 add_subdirectory(examples/handles)
 add_subdirectory(examples/chart)
+add_subdirectory(examples/trains)
+add_subdirectory(examples/face)

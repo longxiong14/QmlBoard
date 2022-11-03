@@ -10,8 +10,9 @@
 #include "Common/hthreadpool.h"
 #include "Nodes/himagemapnode.h"
 #include "Nodes/hnodebase.h"
-#define DEBUG qDebug() << __FUNCTION__ << __LINE__
-HImageMapBoard::HImageMapBoard() : _image_node(nullptr) {}
+#define DEBUG \
+  if (_debug) qDebug() << __FUNCTION__ << __LINE__
+HImageMapBoard::HImageMapBoard() : _image_node(nullptr), _debug(false) {}
 
 void HImageMapBoard::home() {
   HBoard::home();
@@ -20,9 +21,6 @@ void HImageMapBoard::home() {
 
 void HImageMapBoard::pushNode(std::shared_ptr<HNodeBase> node, bool flag) {
   HBoard::pushNode(node, flag);
-  if (node)
-    DEBUG << (HNodeBase::NODETYPE::MAPINAGE == node->nodeType())
-          << node->getZOrder();
   if (node && HNodeBase::NODETYPE::MAPINAGE == node->nodeType()) {
     updateImageTask();
   }
@@ -30,7 +28,10 @@ void HImageMapBoard::pushNode(std::shared_ptr<HNodeBase> node, bool flag) {
 
 void HImageMapBoard::removeNode(const QUuid &id) {
   HBoard::removeNode(id);
-  updateImageTask();
+  auto node = getNodeById(id);
+  if (node && HNodeBase::NODETYPE::MAPINAGE == node->nodeType()) {
+    updateImageTask();
+  }
 }
 
 void HImageMapBoard::pushTransform(const QTransform &trans) {
@@ -90,6 +91,15 @@ bool HImageMapBoard::updateNodeMat(const QUuid &node, const QImage &mat,
   return flag;
 }
 
+bool HImageMapBoard::debug() { return _debug; }
+
+void HImageMapBoard::setDebug(bool f) {
+  if (_debug != f) {
+    _debug = f;
+    debugChanged();
+  }
+}
+
 void HImageMapBoard::updateImages() {
   if (true) {
     double scale = getScale();
@@ -104,7 +114,6 @@ void HImageMapBoard::updateImages() {
     auto nodes = getZOrderNodes();
     for (auto node : nodes) {
       if (node && HNodeBase::NODETYPE::MAPINAGE == node->nodeType()) {
-        DEBUG << node->getBoundRect();
         auto map_image_node = dynamic_cast<HImageMapNodeDelegate *>(node.get());
         if (map_image_node) {
           auto rect = node->getBoundRect();
@@ -192,6 +201,7 @@ void HImageMapBoard::updateImageTask() {
   pushTask([=]() {
     clearImageNodes();
     updateImages();
+    DEBUG;
   });
 }
 
