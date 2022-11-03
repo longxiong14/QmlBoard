@@ -40,6 +40,8 @@ class HBOARD_EXPORT HBoard : public QQuickItem {
 
  public:
   virtual void pushTransform(const QTransform &trans);
+  Q_INVOKABLE
+  virtual void face(int x, int y);
   virtual void pushNode(std::shared_ptr<HNodeBase> node, bool flag = true);
   //  void pushDashNode(HNodeBase* node);
   virtual void removeNode(const QUuid &id);

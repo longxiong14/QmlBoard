@@ -20,6 +20,13 @@ ApplicationWindow {
                 idFile.open()
             }
         }
+
+        Button{
+            text: "face"
+            onClicked: {
+                idBoard.face(100,200)
+            }
+        }
     }
 
     HBoard{

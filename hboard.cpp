@@ -198,6 +198,17 @@ void HBoard::pushTransform(const QTransform &trans) {
   });
 }
 
+void HBoard::face(int x, int y) {
+  auto rect = getWCSBoundRect();
+  auto center = rect.center();
+  auto last = transform();
+
+  QTransform trans;
+  trans.translate(center.x() - x, center.y() - y);
+  pushTransform(trans * last);
+  update();
+}
+
 void HBoard::pushNode(std::shared_ptr<HNodeBase> node, bool flag) {
   if (containNodes(node->id())) return;
   if (flag) _nodes.insert(node->id(), node);
