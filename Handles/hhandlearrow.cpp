@@ -133,8 +133,10 @@ void HHandleArrow::mouseReleaseEvent(HBoard *board, QMouseEvent *event,
         }
       }
     }
-    board->removeNode(_select_node);
-    _select_node = "";
+    if (!_select_node.isNull()) {
+      board->removeNode(_select_node);
+      _select_node = "";
+    }
   }
   HHandleMove::mouseReleaseEvent(board, event);
 }
