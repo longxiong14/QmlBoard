@@ -79,8 +79,6 @@ void HFillNode::move(const QPointF &p) {
   HNodeBase::move(p);
 }
 
-void HFillNode::moveTo(const QPointF &p) {}
-
 void HFillNode::drawPoints(const QList<QPointF> &points) {
   auto ptr = _node->geometry();
   if (ptr)

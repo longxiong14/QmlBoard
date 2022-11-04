@@ -93,6 +93,16 @@ void HNodeBase::move(const QPointF &p) {
   }
 }
 
+void HNodeBase::moveTo(const QPointF &p) {
+  // move _dash
+  auto rect = getBoundRect();
+  auto center = rect.center();
+  DEBUG << center;
+  auto dlt = -QPointF(center.x() - p.x(), center.y() - p.y());
+  move(dlt);
+  //  flushMayiLine();
+}
+
 bool HNodeBase::isSelect() { return _flag & NODEFLAG::SELECTED; }
 
 unsigned long HNodeBase::drawingMode() { return 0; }

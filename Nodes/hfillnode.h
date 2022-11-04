@@ -18,7 +18,6 @@ class HBOARD_EXPORT HFillNode : public HNodeBase /*, public QSGGeometryNode*/ {
   virtual QRectF getBoundRect() override;
   virtual QList<QPointF> getPointList() override;
   virtual void move(const QPointF &p) override;
-  virtual void moveTo(const QPointF &p) override;
   virtual void drawPoints(const QList<QPointF> &points) override;
   virtual void setColor(const QColor &color) override;
   virtual void setParam(const QJsonObject &p) override;

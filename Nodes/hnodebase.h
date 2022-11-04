@@ -54,7 +54,7 @@ class HBOARD_EXPORT HNodeBase : public HStorageBase<QJsonObject> {
   virtual void setId(const QUuid &id);
   virtual void changedSelectStatus();
   virtual void move(const QPointF &);
-  virtual void moveTo(const QPointF &) {}  // move to point
+  virtual void moveTo(const QPointF &);  // move to point
   virtual bool isSelect();
   virtual void drawPoints(const QList<QPointF> &) {}
   virtual void setColor(const QColor &) {}

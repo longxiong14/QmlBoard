@@ -24,7 +24,14 @@ ApplicationWindow {
         Button{
             text: "face"
             onClicked: {
-                idBoard.face(100,200)
+                gMainControl.face(idBoard.name, 100,200)
+            }
+        }
+
+        Button{
+            text: "move to"
+            onClicked: {
+                gMainControl.moveTo(idBoard.name, 100,200)
             }
         }
     }

@@ -1,6 +1,8 @@
 ﻿#include <QDebug>
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
+#include <QQmlContext>
+#include <QQmlEngine>
 
 #include "../../Common/hthreadpool.h"
 #include "../../HChart/hhistogramchart.h"
@@ -13,6 +15,7 @@
 #include "../../hboardmanager.h"
 #include "../../hboarduicontrol.h"
 #include "../../himagemapboard.h"
+#include "maincontrol.h"
 int main(int argc, char *argv[]) {
   QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
   QCoreApplication::setOrganizationName("qmlboard picture example");
@@ -20,6 +23,9 @@ int main(int argc, char *argv[]) {
   QGuiApplication app(argc, argv);
 
   QQmlApplicationEngine engine;
+  MainControl control;
+  //  engine.g
+  engine.rootContext()->setContextProperty("gMainControl", &control);
 
   qmlRegisterType<HImageMapBoard>("hBoard", 1, 0, "HBoard");
   qmlRegisterType<HBoardUIControl>("hUIControl", 1, 0, "HUIControl");
