@@ -54,12 +54,14 @@ HBoard::HBoard(QQuickItem *parent)
               }
             }
           });
-          update();
+          emit sigUpdate();
           break;
         }
       }
     }
   });
+
+  connect(this, &HBoard::sigUpdate, this, &QQuickItem::update);
 }
 
 HBoard::~HBoard() {
@@ -111,7 +113,7 @@ void HBoard::home() {
       faceChanged();
     }
   });
-  update();
+  emit sigUpdate();
 }
 
 void HBoard::checkItems() {
@@ -206,7 +208,7 @@ void HBoard::face(int x, int y) {
   QTransform trans;
   trans.translate(center.x() - x, center.y() - y);
   pushTransform(trans * last);
-  update();
+  emit sigUpdate();
 }
 
 void HBoard::pushNode(std::shared_ptr<HNodeBase> node, bool flag) {
@@ -217,7 +219,7 @@ void HBoard::pushNode(std::shared_ptr<HNodeBase> node, bool flag) {
       _trans_node->appendChildNode(node->build(this));
     }
   });
-  update();
+  emit sigUpdate();
 }
 
 void HBoard::removeNode(const QUuid &id) {
@@ -228,7 +230,7 @@ void HBoard::removeNode(const QUuid &id) {
   }
   removeNodeToList(id);
   pushTask([=]() { removeNode(node); });
-  update();
+  emit sigUpdate();
 }
 
 void HBoard::removeNodes(const QList<QUuid> &nodes) {
@@ -242,7 +244,7 @@ void HBoard::removeNodes(const QList<QUuid> &nodes) {
     removeNodeToList(id);
     pushTask([=]() { removeNode(node); });
   }
-  update();
+  emit sigUpdate();
 }
 
 void HBoard::clearNode() {
@@ -253,7 +255,7 @@ void HBoard::clearNode() {
       removeNode(node);
     }
   });
-  update();
+  emit sigUpdate();
 }
 
 void HBoard::removeSelectNode() {
@@ -280,7 +282,7 @@ void HBoard::clearSelect() {
       }
     }
   });
-  update();
+  emit sigUpdate();
 }
 
 void HBoard::pushSelect(const QUuid &s) {
@@ -296,7 +298,7 @@ void HBoard::pushSelect(const QUuid &s) {
       }
     }
   });
-  update();
+  emit sigUpdate();
 }
 
 void HBoard::removeSelect(const QUuid &s) {
@@ -309,7 +311,7 @@ void HBoard::removeSelect(const QUuid &s) {
       }
     }
   });
-  update();
+  emit sigUpdate();
 }
 
 void HBoard::changeSelectStatus(const QUuid &s) {
@@ -338,7 +340,7 @@ void HBoard::changeSelectParam(const QString &key, const QJsonValue &value) {
       }
     }
   });
-  update();
+  emit sigUpdate();
 }
 
 QSet<QUuid> HBoard::selects() {
@@ -381,7 +383,7 @@ void HBoard::moveNode(const QUuid &n, QPointF dlt) {
       }
     }
   });
-  update();
+  emit sigUpdate();
 }
 
 void HBoard::nodeMoveTo(const QUuid &n, QPointF point) {
@@ -391,7 +393,7 @@ void HBoard::nodeMoveTo(const QUuid &n, QPointF point) {
       if (node) node->moveTo(point);
     }
   });
-  update();
+  emit sigUpdate();
 }
 
 void HBoard::drawNodePoint(const QUuid &node, const QList<QPointF> points) {
@@ -401,7 +403,7 @@ void HBoard::drawNodePoint(const QUuid &node, const QList<QPointF> points) {
     else
       DEBUG << "hasn't this node " << node;
   });
-  update();
+  emit sigUpdate();
 }
 
 void HBoard::updateNodeIndexPoint(const QUuid &node, int index,
@@ -415,7 +417,7 @@ void HBoard::updateNodeIndexPoint(const QUuid &node, int index,
       }
     }
   });
-  update();
+  emit sigUpdate();
 }
 
 int HBoard::updateNodeText(const QUuid &node, const QString &text,
@@ -430,7 +432,7 @@ int HBoard::updateNodeText(const QUuid &node, const QString &text,
       n->buildTextNode(this);
     }
   });
-  update();
+  emit sigUpdate();
   return 0;
 }
 
@@ -443,7 +445,7 @@ int HBoard::updateNodeDrawMode(const QUuid &node, unsigned long mode) {
       }
     }
   });
-  update();
+  emit sigUpdate();
   return 0;
 }
 
@@ -489,7 +491,7 @@ void HBoard::visibleNode(const QUuid &node, bool flag) {
         }
       });
     }
-    update();
+    emit sigUpdate();
   }
 }
 
@@ -529,7 +531,7 @@ void HBoard::setRule(bool f) {
   if (_rule_flag != f) {
     _rule_flag = f;
     ruleChanged();
-    update();
+    emit sigUpdate();
   }
 }
 
@@ -605,24 +607,24 @@ QSGNode *HBoard::updatePaintNode(QSGNode *node,
 
 void HBoard::mousePressEvent(QMouseEvent *event) {
   if (_handle) _handle->mousePressEvent(this, event, getHandleParam());
-  update();
+  emit sigUpdate();
 }
 
 void HBoard::mouseMoveEvent(QMouseEvent *event) {
   if (_handle) _handle->mouseMoveEvent(this, event, getHandleParam());
   auto pos = WCS2LCS(event->pos());
   hoverPoint(int(pos.x()), int(pos.y()));
-  update();
+  emit sigUpdate();
 }
 
 void HBoard::mouseReleaseEvent(QMouseEvent *event) {
   if (_handle) _handle->mouseReleaseEvent(this, event, getHandleParam());
-  update();
+  emit sigUpdate();
 }
 
 void HBoard::wheelEvent(QWheelEvent *event) {
   if (_handle) _handle->wheelEvent(this, event);
-  update();
+  emit sigUpdate();
 }
 
 void HBoard::hoverEnterEvent(QHoverEvent *e) {

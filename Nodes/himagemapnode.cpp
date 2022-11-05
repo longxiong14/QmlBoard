@@ -3,6 +3,7 @@
 #include <QDebug>
 #include <QPainter>
 
+#include "../Common/hplanvector.h"
 #include "hfillnode.h"
 #define DEBUG qDebug() << __FUNCTION__ << __LINE__
 HImageMapNodeDelegate::HImageMapNodeDelegate(const QRectF &rect)
@@ -40,8 +41,14 @@ void HImageMapNode::setImage(const QImage &i) { _image = i; }
 QImage HImageMapNode::getImage(const QRectF &roi, double scale) {
   auto s = QRectF(0, 0, roi.width() * scale, roi.height() * scale);
   QImage out(s.toRect().size(), _image.format());
+  HPlanVector vec;
   if (!out.isNull()) {
     QPainter painter(&out);
+    //    double rotate = -20;
+    //    QPointF out;
+    //    vec.pointRotateByOtherPoint(QPointF(), s.center(), rotate, out);
+    //    painter.translate(out);
+    //    painter.rotate(rotate);
     painter.drawImage(s, _image, roi);
   }
   return out;

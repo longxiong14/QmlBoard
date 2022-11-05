@@ -68,3 +68,17 @@ double HPlanVector::area(const QList<QPointF>& list) {
   }
   return area;
 }
+
+int HPlanVector::pointRotateByOtherPoint(const QPointF& r_point,
+                                         const QPointF& center, double rotate,
+                                         QPointF& out) {
+  auto PI = 3.1415926;
+  auto sin = std::sin(rotate / 180.0 * PI);
+  auto cos = std::cos(rotate / 180.0 * PI);
+  auto x0 = center.x(), y0 = center.y();
+  auto x = r_point.x(), y = r_point.y();
+  auto dx = (x - x0) * cos - (y - y0) * sin + x0;
+  auto dy = (x - x0) * sin + (y - y0) * cos + y0;
+  out = QPointF(dx, dy);
+  return 0;
+}

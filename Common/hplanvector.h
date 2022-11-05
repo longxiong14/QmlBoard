@@ -19,6 +19,8 @@ class HBOARD_EXPORT HPlanVector {
   double ptmPoly(const QPointF& point,
                  const QList<QPointF>& list);  //点到多边形的最小距离
   double area(const QList<QPointF>& list);
+  int pointRotateByOtherPoint(const QPointF& r_point, const QPointF& center,
+                              double rotate, QPointF& out);
 };
 
 #endif  // HPLANVECTOR_H
