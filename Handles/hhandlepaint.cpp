@@ -76,7 +76,6 @@ void HHandleDrawCurve::mousePressEvent(HBoard *board, QMouseEvent *event,
   HHandleMove::mousePressEvent(board, event);
   if (board && event && isButtonPress(event)) {
     auto point = board->WCS2LCS(event->pos());
-    DEBUG << _node;
     if (_node.isNull()) {
       auto node = std::make_shared<HShapeCurveNode>(QList<QPointF>({point}), o);
       _points = {point};
@@ -86,7 +85,6 @@ void HHandleDrawCurve::mousePressEvent(HBoard *board, QMouseEvent *event,
       _points.push_back(point);
       board->drawNodePoint(_node, _points);
     }
-    DEBUG << _node;
   }
 }
 
@@ -230,7 +228,6 @@ void HHandleDrawCircle::mouseMoveEvent(HBoard *board, QMouseEvent *event,
 
 void HHandleDrawCircle::mousePressEvent(HBoard *board, QMouseEvent *event,
                                         const QJsonObject &object) {
-  DEBUG << event->buttons();
   HHandleMove::mousePressEvent(board, event, object);
   if (board && event && isButtonPress(event)) {
     auto center = board->WCS2LCS(event->pos());

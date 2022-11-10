@@ -46,6 +46,7 @@ int HBoardUIControl::openBoardPicture(const QString &board,
     return -1;
   }
   auto node = std::make_shared<HImageMapNode>(path);
+  node->setColor(QColor(255, 255, 255, 0));
   ptr->pushNode(node);
   ptr->home();
   return 0;

@@ -104,12 +104,10 @@ void HFillNode::setParam(const QJsonObject &p) {
 
   if (line_width != pline_width) {
     if (_node->geometry()) {
-      DEBUG << "set line width " << pline_width;
       _node->geometry()->setLineWidth(pline_width);
     }
   }
   if (pr != r || pg != g || pb != b || pa != a) {
-    DEBUG << "set color " << getColor(p);
     setColor(getColor(p));
   }
   HNodeBase::setParam(p);

@@ -6,8 +6,14 @@
 #include "../Common/hplanvector.h"
 #include "hfillnode.h"
 #define DEBUG qDebug() << __FUNCTION__ << __LINE__
+
 HImageMapNodeDelegate::HImageMapNodeDelegate(const QRectF &rect)
-    : HFillNode(rect) {}
+    : HFillNode(rect, GL_LINE_LOOP,
+                QJsonObject({{"b", 0},
+                             {"g", 0},
+                             {"r", 255},
+                             {"a", 255},
+                             {"line_width", 1}})) {}
 
 HNodeBase::NODETYPE HImageMapNodeDelegate::nodeType() {
   return HNodeBase::NODETYPE::MAPINAGE;
@@ -17,12 +23,16 @@ HImageMapNode::HImageMapNode() : HImageMapNodeDelegate() {}
 
 HImageMapNode::HImageMapNode(const QString &path, const QPointF &start_point)
     : HImageMapNodeDelegate(), _image(path) {
-  setRect(QRectF(start_point, _image.size()));
+  setRect(QRectF(start_point, _image.size()), GL_LINE_LOOP,
+          QJsonObject(
+              {{"b", 0}, {"g", 0}, {"r", 255}, {"a", 255}, {"line_width", 1}}));
 }
 
 HImageMapNode::HImageMapNode(const QImage &mat, const QPointF &start_point)
     : _image(mat) {
-  setRect(QRectF(start_point, _image.size()));
+  setRect(QRectF(start_point, _image.size()), GL_LINE_LOOP,
+          QJsonObject(
+              {{"b", 0}, {"g", 0}, {"r", 255}, {"a", 255}, {"line_width", 1}}));
 }
 
 HImageMapNode::~HImageMapNode() {}

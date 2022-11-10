@@ -2,7 +2,7 @@
 import QtQuick.Controls 2.5
 import hBoard 1.0
 import hUIControl 1.0
-
+import QtQuick.Controls 1.4
 ApplicationWindow {
     visible: true
     width: 960
@@ -19,14 +19,13 @@ ApplicationWindow {
             delegate: Button{
                 text: handles[index]
                 onClicked: {
-                    idControl.setBoardHandle(idBoard.name,text)
+                    idControl.setBoardHandle("test_board",text)
                 }
             }
         }
     }
 
-    HBoard{
-        id:idBoard
+    TabView{
         anchors{
             left: parent.left
             top: idButtonsFlow.bottom
@@ -34,11 +33,22 @@ ApplicationWindow {
             bottom: parent.bottom
         }
         anchors.margins: 5
-        onHoverPoint: {
-            hoverd.text = "x:"+x + " y:"+y
+
+        Tab{
+            active: true
+            HBoard{
+                id:idBoard
+                focus: true
+                onHoverPoint: {
+                    hoverd.text = "x:"+x + " y:"+y
+                }
+                name: "test_board"
+            }
+
         }
-        name: "test_board"
+
     }
+
 
     Text {
         id: hoverd
