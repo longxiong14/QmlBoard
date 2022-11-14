@@ -16,6 +16,10 @@ class HBOARD_EXPORT HImageMapBoard : public HBoard {
 
   virtual void pushTransform(const QTransform &trans) override;
 
+  virtual void face(double x, double y) override;
+
+  virtual void setScale(double scale) override;
+
   virtual void moveNode(const QUuid &n, QPointF dlt) override;
   virtual void nodeMoveTo(const QUuid &n, QPointF point) override;
 

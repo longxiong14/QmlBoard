@@ -40,6 +40,16 @@ void HImageMapBoard::pushTransform(const QTransform &trans) {
   updateImageTask();
 }
 
+void HImageMapBoard::face(double x, double y) {
+  HBoard::face(x, y);
+  updateImageTask();
+}
+
+void HImageMapBoard::setScale(double scale) {
+  HBoard::setScale(scale);
+  updateImageTask();
+}
+
 void HImageMapBoard::moveNode(const QUuid &n, QPointF dlt) {
   HBoard::moveNode(n, dlt);
   auto node = getNodeById(n);

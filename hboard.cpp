@@ -200,14 +200,35 @@ void HBoard::pushTransform(const QTransform &trans) {
   });
 }
 
-void HBoard::face(int x, int y) {
-  auto rect = getWCSBoundRect();
-  auto center = rect.center();
-  auto last = transform();
+void HBoard::setScale(double scale) {
+  if (!transformNode()) return;
+  pushTask([=]() {
+    auto s = getScale();
+    auto pos = getWCSBoundRect().center();
+    auto trans = transformNode()->matrix().toTransform();
+    trans.translate(pos.x(), pos.y());
+    trans.scale(scale / s, scale / s);
+    trans.translate(-pos.x(), -pos.y());
+    if (_trans_node) _trans_node->setMatrix(trans);
+    updateSelectDragNodes();
+    faceChanged();
+  });
+  emit sigUpdate();
+}
 
-  QTransform trans;
-  trans.translate(center.x() - x, center.y() - y);
-  pushTransform(trans * last);
+void HBoard::face(double x, double y) {
+  pushTask([=]() {
+    auto rect = getWCSBoundRect();
+    auto center = rect.center();
+    auto last = transform();
+    QTransform trans;
+    trans.translate(center.x() - x, center.y() - y);
+    trans = trans * last;
+    if (_trans_node) _trans_node->setMatrix(trans);
+    updateSelectDragNodes();
+    faceChanged();
+  });
+
   emit sigUpdate();
 }
 
