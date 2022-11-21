@@ -16,6 +16,7 @@ int MainControl::open(const QString &path) {
   {
     auto node = std::make_shared<HImageMapNode>(
         image.scaled(int(image.width() * 0.1), int(image.height() * 0.1)));
+    node->setColor(QColor(0, 0, 0, 0));
     node->setFlag(HNodeBase::NODEFLAG::CANSELECT, false);
     thumbail->pushNode(node);
     thumbail->home();

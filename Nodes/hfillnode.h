@@ -8,9 +8,11 @@
 class HBOARD_EXPORT HFillNode : public HNodeBase /*, public QSGGeometryNode*/ {
  public:
   HFillNode(const QList<QPointF> &points, unsigned long type = GL_LINE_LOOP,
-            const QJsonObject &p = QJsonObject());
+            const QJsonObject &p =
+                QJsonObject({{"b", 0}, {"g", 0}, {"r", 255}, {"a", 255}}));
   HFillNode(const QRectF &rect = QRectF(), unsigned long type = GL_LINE_LOOP,
-            const QJsonObject &p = QJsonObject());
+            const QJsonObject &p =
+                QJsonObject({{"b", 0}, {"g", 0}, {"r", 255}, {"a", 255}}));
 
  public:
   virtual QSGNode *get() override;

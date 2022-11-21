@@ -214,9 +214,6 @@ float HFillNode::getLineWidth() {
 }
 
 QColor HFillNode::getColor(const QJsonObject &p) {
-  if (p.empty()) {
-    return Qt::red;
-  }
   auto color = QColor(p.value("r").toInt(), p.value("g").toInt(),
                       p.value("b").toInt(), p.value("a").toInt());
   return color;
