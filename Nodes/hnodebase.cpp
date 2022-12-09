@@ -196,6 +196,8 @@ void HNodeBase::setFlag(HNodeBase::NODEFLAG flag, bool open) {
   }
 }
 
+HNodeBase::NODEFLAG HNodeBase::flag() { return HNodeBase::NODEFLAG(_flag); }
+
 bool HNodeBase::canSelect() { return _flag & NODEFLAG::CANSELECT; }
 
 QSGNode *HNodeBase::buildDragNode(HBoard *) { return nullptr; }

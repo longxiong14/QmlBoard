@@ -51,14 +51,21 @@ void HHandleMove::mouseReleaseEvent(HBoard *board, QMouseEvent *event,
 
 void HHandleMove::wheelEvent(HBoard *board, QWheelEvent *event) {
   if (board && event) {
+    auto keys = board->keys();
+    auto s = _scale;
+    if (keys.contains(Qt::Key_Control)) {
+      s *= 10;
+    }
     auto dlt = event->delta();
     auto pos = board->WCS2LCS(event->pos());
     auto trans = board->transformNode()->matrix().toTransform();
     double scale = 1.0;
+
     if (dlt < 0) {
-      scale -= _scale;
+      scale = 1 / (1 + s);
+      //      scale -= s;
     } else {
-      scale += _scale;
+      scale += s;
     }
     trans.translate(pos.x(), pos.y());
     trans.scale(scale, scale);

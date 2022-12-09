@@ -14,6 +14,7 @@
 #include "Common/hcommons.h"
 #include "Common/hjsoncommon.h"
 #include "Common/hsgnodecommon.h"
+#include "Factory/hkeyfactory.h"
 #include "Factory/hnodefactory.h"
 #include "Handles/hhandlearrow.h"
 #include "Handles/hhandlebase.h"
@@ -33,6 +34,7 @@ HBoard::HBoard(QQuickItem *parent)
       _rule(nullptr),
       _drag_nodes(nullptr),
       _rule_flag(true) {
+  setKeysControlFactory(std::make_shared<HKeyFactory>());
   setFlag(QQuickItem::ItemHasContents, true);
   setClip(true);
   setAcceptHoverEvents(true);
@@ -65,17 +67,14 @@ HBoard::HBoard(QQuickItem *parent)
 }
 
 HBoard::~HBoard() {
-  DEBUG << _nodes.size();
   for (const auto &node : nodes()) {
     node->setDestory(false);
   }
   clearNode();
-  DEBUG << "clear nodes";
   auto instance = HBoardManager::getInstance();
   if (instance) {
     instance->removeBoard(name());
   }
-  DEBUG << "end distruct";
 }
 
 void HBoard::home() {
@@ -374,7 +373,18 @@ QSet<QUuid> HBoard::selects() {
   return set;
 }
 
-QSet<int> HBoard::keys() { return _keys; }
+void HBoard::setKeysControlFactory(std::shared_ptr<HKeyFactoryBase> ctrl) {
+  _keys_control = ctrl;
+}
+
+std::shared_ptr<HKeyFactoryBase> HBoard::getKeysControl() {
+  return _keys_control;
+}
+
+QSet<int> HBoard::keys() {
+  if (_keys_control) return _keys_control->keys();
+  return {};
+}
 
 QHash<QUuid, std::shared_ptr<HNodeBase>> HBoard::nodes() {
   //  QHash<QUuid, std::shared_ptr<HNodeBase>> node;
@@ -661,32 +671,17 @@ void HBoard::hoverMoveEvent(QHoverEvent *event) {
 
 void HBoard::hoverLeaveEvent(QHoverEvent *e) {
   if (_handle) _handle->hoverLeaveEvent(this, e, getHandleParam());
-  _keys.clear();
+  if (_keys_control) _keys_control->clearKeys();
   setFocus(false);
 }
 
 void HBoard::keyPressEvent(QKeyEvent *event) {
-  if (event) {
-    _keys.insert(event->key());
-  }
-  switch (event->key()) {
-    case Qt::Key_Delete:
-      removeSelectNode();
-      break;
-    case Qt::Key_H:
-      if (_keys.contains(Qt::Key_Control)) {
-        home();
-      }
-      break;
-    case Qt::Key_Escape:
-      clearSelect();
-      break;
-  }
+  if (_keys_control) _keys_control->keyPressEvent(this, event);
 }
 
 void HBoard::keyReleaseEvent(QKeyEvent *event) {
-  if (event) {
-    _keys.remove(event->key());
+  if (event && _keys_control) {
+    _keys_control->keyReleaseEvent(this, event);
   }
 }
 

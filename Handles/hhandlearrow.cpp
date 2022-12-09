@@ -181,24 +181,31 @@ bool HHandleArrow::canSelect(HNodeBase *node, const QPointF &pos,
   auto points = node->getPointList();
   auto rect = node->getBoundRect();
   HPlanVector vec;
-  switch (type) {
-    case HNodeBase::IMAGE:
-    case HNodeBase::MAPINAGE:
-    case HNodeBase::SHAPERECT:
-    case HNodeBase::SHAPEFILLRECT:
-    case HNodeBase::MULTSHAPE:
-      return HCommon::PointInRect(pos, rect);
-    case HNodeBase::SHAPECIRCLE:
-    case HNodeBase::SHAPEFILLCIRCLE:
-    case HNodeBase::SHAPEELLIPSE:
-    case HNodeBase::SHAPEFILLELLIPSE:
-      return HCommon::PointInContour(pos, points);
-    default: {
-      auto min = vec.ptmPoly(pos, points);
-      if (std::fabs(min) < (_distance / scale)) {
-        return true;
-      }
-    } break;
+  if (false) {
+    switch (type) {
+      case HNodeBase::IMAGE:
+      case HNodeBase::MAPINAGE:
+      case HNodeBase::SHAPERECT:
+      case HNodeBase::SHAPEFILLRECT:
+      case HNodeBase::MULTSHAPE:
+        return HCommon::PointInRect(pos, rect);
+      case HNodeBase::SHAPECIRCLE:
+      case HNodeBase::SHAPEFILLCIRCLE:
+      case HNodeBase::SHAPEELLIPSE:
+      case HNodeBase::SHAPEFILLELLIPSE:
+        return HCommon::PointInContour(pos, points);
+      default: {
+        auto min = vec.ptmPoly(pos, points);
+        if (std::fabs(min) < (_distance / scale)) {
+          return true;
+        }
+      } break;
+    }
+  } else {
+    auto min = vec.ptmPoly(pos, points);
+    if (std::fabs(min) < (_distance / scale)) {
+      return true;
+    }
   }
   return false;
 }

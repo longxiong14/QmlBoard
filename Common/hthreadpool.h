@@ -22,6 +22,8 @@ class HBOARD_EXPORT HThreadPool {
 
   void stop();
 
+  std::size_t taskSize();
+
  protected:
   std::list<std::thread> _works;
   std::queue<std::function<void()>> _tasks;

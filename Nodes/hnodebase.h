@@ -77,6 +77,7 @@ class HBOARD_EXPORT HNodeBase : public HStorageBase<QJsonObject> {
   virtual void setDestory(bool flag);
 
   virtual void setFlag(NODEFLAG flag, bool open);
+  virtual NODEFLAG flag();
   bool canSelect();
 
   // drag nodes

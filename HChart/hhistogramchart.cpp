@@ -63,13 +63,13 @@ void HHistogramChart::mouseMoveEvent(QMouseEvent *event) {
     auto step = width() / _array.size();
     switch (_lor) {
       case LOR::LEFT:
-        _left = int(pos.x() / step);
-        //        setLeft(int(pos.x() / step));
+        //        _left = int(pos.x() / step);
+        setLeft(int(pos.x() / step));
         update();
         break;
       case LOR::RIGHT:
-        _right = int(pos.x() / step);
-        //        setRight(int(pos.x() / step));
+        //        _right = int(pos.x() / step);
+        setRight(int(pos.x() / step));
         update();
         break;
       case LOR::NONE:

@@ -135,7 +135,8 @@ void HImageMapBoard::updateImages() {
           auto lcs_rect =
               QRectF(LCS2WCS(dst.topLeft()), LCS2WCS(dst.bottomRight()));
           auto image = map_image_node->getImage(clone_dst, scale);
-          painter.drawImage(lcs_rect.topLeft(), image);
+          painter.drawImage(lcs_rect.topLeft(), image, image.rect(),
+                            Qt::ThresholdDither);
 
           flag = true;
         }

@@ -31,6 +31,9 @@ class HBOARD_EXPORT HMultShapeNode : public HNodeBase {
   virtual int save(QJsonObject &o) override;
   virtual int load(const QJsonObject &o) override;
 
+ public:
+  QList<QList<QPointF>> getContours();
+
  protected:
   QColor getColor(const QJsonObject &p);
   QList<QPointF> getGeometryPoints(QSGGeometryNode *node);

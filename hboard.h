@@ -19,6 +19,7 @@ class HHandleBase;
 class HNodeBase;
 class HFillNode;
 class QSGGeometryNode;
+class HKeyFactoryBase;
 class HBOARD_EXPORT HBoard : public QQuickItem {
   using task = std::function<void(void)>;
   Q_OBJECT
@@ -81,6 +82,8 @@ class HBOARD_EXPORT HBoard : public QQuickItem {
   QSet<QUuid> selects();
 
  public:  // keys
+  void setKeysControlFactory(std::shared_ptr<HKeyFactoryBase> ctrl);
+  std::shared_ptr<HKeyFactoryBase> getKeysControl();
   QSet<int> keys();
 
  public:
@@ -140,9 +143,9 @@ class HBOARD_EXPORT HBoard : public QQuickItem {
   QMutex _mutex;
   QHash<QUuid, std::shared_ptr<HNodeBase>> _nodes;
   //  QList<std::shared_ptr<HNodeBase>> _nodes;
+  std::shared_ptr<HKeyFactoryBase> _keys_control;
   QString _name;
   QQueue<task> _tasks;
-  QSet<int> _keys;
   QTimer _timer;
   QJsonObject _items;
   QSGGeometryNode *_rule;

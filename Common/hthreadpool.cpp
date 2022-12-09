@@ -58,6 +58,11 @@ void HThreadPool::stop() {
   _condition.notify_all();
 }
 
+std::size_t HThreadPool::taskSize() {
+  std::unique_lock<std::mutex> lock(_mutex);
+  return _tasks.size();
+}
+
 HSyncThreadPool::HSyncThreadPool(std::size_t size)
     : _pool(new HThreadPool(size,
                             [this]() {
@@ -73,7 +78,7 @@ void HSyncThreadPool::run() {
   _flag = false;
   _pool->run();
   std::unique_lock<std::mutex> lock(_mutex);
-  _condition.wait(lock, [=]() { return _flag; });
+  _condition.wait(lock, [=]() { return _flag || !_pool->taskSize(); });
 }
 
 void HSyncThreadPool::stop() { _pool->stop(); }

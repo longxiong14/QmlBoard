@@ -216,6 +216,27 @@ int HMultShapeNode::load(const QJsonObject &o) {
   return 0;
 }
 
+QList<QList<QPointF>> HMultShapeNode::getContours() {
+  if (!_node) return {};
+  QList<QList<QPointF>> out;
+  for (int i = 0; i < _node->childCount(); i++) {
+    QList<QPointF> o1;
+    auto node = _node->childAtIndex(i);
+    auto geonode = dynamic_cast<QSGGeometryNode *>(node);
+    if (!geonode) continue;
+    auto geo = geonode->geometry();
+    if (!geo) continue;
+    auto count = geo->vertexCount();
+    auto point_list = static_cast<QSGGeometry::Point2D *>(geo->vertexData());
+    for (int i = 0; i < count; i++) {
+      QSGGeometry::Point2D pt = point_list[i];
+      o1.push_back(QPointF(double(pt.x), double(pt.y)));
+    }
+    out.push_back(o1);
+  }
+  return out;
+}
+
 QColor HMultShapeNode::getColor(const QJsonObject &p) {
   if (p.empty()) {
     return Qt::red;

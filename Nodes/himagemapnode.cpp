@@ -59,7 +59,7 @@ QImage HImageMapNode::getImage(const QRectF &roi, double scale) {
     //    vec.pointRotateByOtherPoint(QPointF(), s.center(), rotate, out);
     //    painter.translate(out);
     //    painter.rotate(rotate);
-    painter.drawImage(s, _image, roi);
+    painter.drawImage(s, _image, roi, Qt::ThresholdDither);
   }
   return out;
 }
