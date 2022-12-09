@@ -202,9 +202,17 @@ bool HHandleArrow::canSelect(HNodeBase *node, const QPointF &pos,
       } break;
     }
   } else {
-    auto min = vec.ptmPoly(pos, points);
-    if (std::fabs(min) < (_distance / scale)) {
-      return true;
+    switch (type) {
+      case HNodeBase::IMAGE:
+      case HNodeBase::MAPINAGE:
+      case HNodeBase::MULTSHAPE:
+        return HCommon::PointInRect(pos, rect);
+      default: {
+        auto min = vec.ptmPoly(pos, points);
+        if (std::fabs(min) < (_distance / scale)) {
+          return true;
+        }
+      } break;
     }
   }
   return false;

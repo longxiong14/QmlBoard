@@ -25,30 +25,21 @@ ApplicationWindow {
         }
     }
 
-    TabView{
+
+    HBoard{
         anchors{
             left: parent.left
             top: idButtonsFlow.bottom
             right:parent.right
             bottom: parent.bottom
         }
-        anchors.margins: 5
-
-        Tab{
-            active: true
-            HBoard{
-                id:idBoard
-                focus: true
-                onHoverPoint: {
-                    hoverd.text = "x:"+x + " y:"+y
-                }
-                name: "test_board"
-            }
-
+        id:idBoard
+        focus: true
+        onHoverPoint: {
+            hoverd.text = "x:"+x + " y:"+y
         }
-
+        name: "test_board"
     }
-
 
     Text {
         id: hoverd

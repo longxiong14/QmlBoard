@@ -231,7 +231,11 @@ void HHandleDrawCircle::mousePressEvent(HBoard *board, QMouseEvent *event,
   HHandleMove::mousePressEvent(board, event, object);
   if (board && event && isButtonPress(event)) {
     auto center = board->WCS2LCS(event->pos());
-    auto node = std::make_shared<HShapeCircleNode>(center, object);
+    auto radius = object.value("radius").toDouble();
+    QRectF r(QPointF(center.x() - radius, center.y() - radius),
+             QSizeF(radius * 2, radius * 2));
+    auto node = std::make_shared<HShapeEllipseNode>(r, object);
+    //    auto node = std::make_shared<HShapeCircleNode>(center, object);
     board->pushNode(node);
     _node = node->id();
   }
@@ -282,7 +286,12 @@ void HHandleDrawFillCircle::mousePressEvent(HBoard *board, QMouseEvent *event,
   HHandleMove::mousePressEvent(board, event);
   if (board && event && isButtonPress(event)) {
     auto center = board->WCS2LCS(event->pos());
-    auto node = std::make_shared<HShapeFillCircleNode>(center, object);
+
+    auto radius = object.value("radius").toDouble();
+    QRectF r(QPointF(center.x() - radius, center.y() - radius),
+             QSizeF(radius * 2, radius * 2));
+    auto node = std::make_shared<HShapeFillEllipseNode>(r, object);
+    //    auto node = std::make_shared<HShapeFillCircleNode>(center, object);
     board->pushNode(node);
     _node = node->id();
   }
