@@ -245,7 +245,7 @@ void HBoard::pushNode(std::shared_ptr<HNodeBase> node, bool flag) {
 void HBoard::removeNode(const QUuid &id) {
   auto node = getNodeById(id);
   if (!node) {
-    DEBUG << "hasn't node id" << id;
+    //    DEBUG << "hasn't node id" << id;
     return;
   }
   removeNodeToList(id);

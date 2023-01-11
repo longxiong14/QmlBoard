@@ -12,7 +12,8 @@
 #include "Nodes/hnodebase.h"
 #define DEBUG \
   if (_debug) qDebug() << __FUNCTION__ << __LINE__
-HImageMapBoard::HImageMapBoard() : _image_node(nullptr), _debug(false) {}
+HImageMapBoard::HImageMapBoard(QQuickItem *parent)
+    : HBoard(parent), _image_node(nullptr), _debug(false) {}
 
 void HImageMapBoard::home() {
   HBoard::home();

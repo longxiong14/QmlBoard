@@ -5,7 +5,7 @@ class HBOARD_EXPORT HImageMapBoard : public HBoard {
   Q_OBJECT
   Q_PROPERTY(bool debug READ debug WRITE setDebug NOTIFY debugChanged)
  public:
-  HImageMapBoard();
+  HImageMapBoard(QQuickItem *parent = nullptr);
 
   virtual void home() override;
 
