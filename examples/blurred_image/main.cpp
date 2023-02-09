@@ -16,6 +16,7 @@
 #include "../../Nodes/hblurredimage.h"
 #include "../../Nodes/hfillnode.h"
 #include "../../Nodes/hnodebase.h"
+#include "../../Nodes/hshapenodes.h"
 #include "../../hboardmanager.h"
 #include "../../hboarduicontrol.h"
 #include "../../himagemapboard.h"
@@ -42,6 +43,15 @@ int main(int argc, char *argv[]) {
       },
       Qt::QueuedConnection);
   engine.load(url);
+
+  auto board = HBoardManager::getInstance()->getBoard("test_board");
+  if (board) {
+    auto node = std::make_shared<HShapeRectNode>(
+        QRectF(0, 0, 100, 100),
+        QJsonObject(
+            {{"b", 0}, {"r", 255}, {"g", 0}, {"a", 255}, {"line_width", 1}}));
+    board->pushNode(node);
+  }
 
   return app.exec();
 }

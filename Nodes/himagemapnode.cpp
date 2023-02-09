@@ -23,6 +23,9 @@ HImageMapNode::HImageMapNode() : HImageMapNodeDelegate() {}
 
 HImageMapNode::HImageMapNode(const QString &path, const QPointF &start_point)
     : HImageMapNodeDelegate(), _image(path) {
+  if (QImage::Format_Indexed8 == _image.format()) {
+    _image = _image.convertToFormat(QImage::Format_RGB32);
+  }
   setRect(QRectF(start_point, _image.size()), GL_LINE_LOOP,
           QJsonObject(
               {{"b", 0}, {"g", 0}, {"r", 255}, {"a", 255}, {"line_width", 1}}));
@@ -30,6 +33,9 @@ HImageMapNode::HImageMapNode(const QString &path, const QPointF &start_point)
 
 HImageMapNode::HImageMapNode(const QImage &mat, const QPointF &start_point)
     : _image(mat) {
+  if (QImage::Format_Indexed8 == _image.format()) {
+    _image = _image.convertToFormat(QImage::Format_RGB32);
+  }
   setRect(QRectF(start_point, _image.size()), GL_LINE_LOOP,
           QJsonObject(
               {{"b", 0}, {"g", 0}, {"r", 255}, {"a", 255}, {"line_width", 1}}));
