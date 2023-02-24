@@ -69,7 +69,10 @@ class HBOARD_EXPORT HHandleDrawCurve : public HHandleMove {
   virtual QJsonObject getDefaultParam() override;
 
  protected:
-  QList<QPointF> _points;
+  void leave(HBoard* board);
+
+ protected:
+  int _size;
 };
 
 class HBOARD_EXPORT HHandleDrawPoly : public HHandleMove {
