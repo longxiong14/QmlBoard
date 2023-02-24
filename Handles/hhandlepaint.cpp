@@ -232,6 +232,25 @@ void HHandleDrawFillRect::mousePressEvent(HBoard *board, QMouseEvent *event,
   }
 }
 
+void HHandleDrawFillRect::mouseReleaseEvent(HBoard *board, QMouseEvent *event,
+                                            const QJsonObject &o) {
+  if (board && event) {
+    board->removeNode(_node);
+    auto pos = board->WCS2LCS(event->pos());
+    auto rect = HCommon::BuildRect(_point, pos);
+    auto node = std::make_shared<HShapeFillRectNode>(rect, o);
+    auto command = board->getCommand();
+    if (command) {
+      auto action = std::make_shared<HPushNodeAction>(board->name(), node);
+      command->excute(action);
+    } else {
+      board->pushNode(node);
+    }
+    _node = node->id();
+  }
+  HHandleMove::mouseReleaseEvent(board, event);
+}
+
 HHandleDrawFillPoly::HHandleDrawFillPoly() { _name = "fill poly"; }
 
 void HHandleDrawFillPoly::boardLeaveOffThisHandle(HBoard *board) {
@@ -274,8 +293,13 @@ void HHandleDrawCircle::mousePressEvent(HBoard *board, QMouseEvent *event,
     QRectF r(QPointF(center.x() - radius, center.y() - radius),
              QSizeF(radius * 2, radius * 2));
     auto node = std::make_shared<HShapeEllipseNode>(r, object);
-    //    auto node = std::make_shared<HShapeCircleNode>(center, object);
-    board->pushNode(node);
+    auto command = board->getCommand();
+    if (command) {
+      auto action = std::make_shared<HPushNodeAction>(board->name(), node);
+      command->excute(action);
+    } else {
+      board->pushNode(node);
+    }
     _node = node->id();
   }
 }
@@ -330,8 +354,13 @@ void HHandleDrawFillCircle::mousePressEvent(HBoard *board, QMouseEvent *event,
     QRectF r(QPointF(center.x() - radius, center.y() - radius),
              QSizeF(radius * 2, radius * 2));
     auto node = std::make_shared<HShapeFillEllipseNode>(r, object);
-    //    auto node = std::make_shared<HShapeFillCircleNode>(center, object);
-    board->pushNode(node);
+    auto command = board->getCommand();
+    if (command) {
+      auto action = std::make_shared<HPushNodeAction>(board->name(), node);
+      command->excute(action);
+    } else {
+      board->pushNode(node);
+    }
     _node = node->id();
   }
 }
@@ -383,8 +412,7 @@ HHandleDrawEllipse::HHandleDrawEllipse() { _name = "ellipse"; }
 
 void HHandleDrawEllipse::mousePressEvent(HBoard *board, QMouseEvent *event,
                                          const QJsonObject &object) {
-  if (board && event && isButtonPress(event, Qt::LeftButton) &&
-      _node.isNull()) {
+  if (board && event && isButtonPress(event, Qt::LeftButton)) {
     auto pos = board->WCS2LCS(event->pos());
     auto node = std::make_shared<HShapeEllipseNode>(QRectF(pos, pos), object);
     board->pushNode(node);
@@ -406,8 +434,21 @@ void HHandleDrawEllipse::mouseMoveEvent(HBoard *board, QMouseEvent *event,
 
 void HHandleDrawEllipse::mouseReleaseEvent(HBoard *board, QMouseEvent *event,
                                            const QJsonObject &object) {
+  if (board && event) {
+    board->removeNode(_node);
+    auto pos = board->WCS2LCS(event->pos());
+    auto rect = HCommon::BuildRect(_point, pos);
+    auto node = std::make_shared<HShapeEllipseNode>(rect, object);
+    auto command = board->getCommand();
+    if (command) {
+      auto action = std::make_shared<HPushNodeAction>(board->name(), node);
+      command->excute(action);
+    } else {
+      board->pushNode(node);
+    }
+    _node = node->id();
+  }
   HHandleMove::mouseReleaseEvent(board, event, object);
-  _node = "";
 }
 
 QJsonObject HHandleDrawEllipse::getDefaultParam() {
@@ -423,8 +464,7 @@ HHandleDrawFillEllipse::HHandleDrawFillEllipse() { _name = "fill ellipse"; }
 
 void HHandleDrawFillEllipse::mousePressEvent(HBoard *board, QMouseEvent *event,
                                              const QJsonObject &object) {
-  if (board && event && isButtonPress(event, Qt::LeftButton) &&
-      _node.isNull()) {
+  if (board && event && isButtonPress(event, Qt::LeftButton)) {
     auto pos = board->WCS2LCS(event->pos());
     auto node =
         std::make_shared<HShapeFillEllipseNode>(QRectF(pos, pos), object);
@@ -448,8 +488,21 @@ void HHandleDrawFillEllipse::mouseMoveEvent(HBoard *board, QMouseEvent *event,
 void HHandleDrawFillEllipse::mouseReleaseEvent(HBoard *board,
                                                QMouseEvent *event,
                                                const QJsonObject &object) {
+  if (board && event) {
+    board->removeNode(_node);
+    auto pos = board->WCS2LCS(event->pos());
+    auto rect = HCommon::BuildRect(_point, pos);
+    auto node = std::make_shared<HShapeFillEllipseNode>(rect, object);
+    auto command = board->getCommand();
+    if (command) {
+      auto action = std::make_shared<HPushNodeAction>(board->name(), node);
+      command->excute(action);
+    } else {
+      board->pushNode(node);
+    }
+    _node = node->id();
+  }
   HHandleMove::mouseReleaseEvent(board, event, object);
-  _node = "";
 }
 
 QJsonObject HHandleDrawFillEllipse::getDefaultParam() {

@@ -103,6 +103,9 @@ class HBOARD_EXPORT HHandleDrawFillRect : public HHandleDrawRect {
   virtual void mousePressEvent(
       HBoard* board, QMouseEvent* event,
       const QJsonObject& object = QJsonObject()) override;
+  virtual void mouseReleaseEvent(
+      HBoard* board, QMouseEvent* event,
+      const QJsonObject& object = QJsonObject()) override;
 };
 
 class HBOARD_EXPORT HHandleDrawFillPoly : public HHandleDrawPoly {
