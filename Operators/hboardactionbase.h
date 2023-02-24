@@ -1,5 +1,7 @@
 ﻿#ifndef HBOARDACTIONBASE_H
 #define HBOARDACTIONBASE_H
+#include <QList>
+#include <QPointF>
 #include <QString>
 #include <QUuid>
 #include <memory>
@@ -47,5 +49,23 @@ class HBOARD_EXPORT HRemoveNodeAction : public HBoardActionBase {
   QUuid _id;
   std::shared_ptr<HNodeBase> _node;
 };
+
+// class HBOARD_EXPORT HHandeUpdatePointsAction : public HBoardActionBase {
+// public:
+//  HHandeUpdatePointsAction(const QString &name, const QUuid &id,
+//                           QList<QPointF> &handle_points);
+//  HHandeUpdatePointsAction(const HHandeUpdatePointsAction &other) = delete;
+//  HHandeUpdatePointsAction &operator=(const HHandeUpdatePointsAction &other) =
+//      delete;
+//  virtual ~HHandeUpdatePointsAction();
+
+//  virtual int excute();
+//  virtual int undo();
+
+// protected:
+//  QString _board_name;
+//  QUuid _id;
+//  QList<QPointF> &_points;
+//};
 
 #endif  // HBOARDACTIONBASE_H

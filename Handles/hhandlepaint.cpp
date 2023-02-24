@@ -162,7 +162,7 @@ void HHandleDrawCurve::boardLeaveOffThisHandle(HBoard *board) {
 
 QJsonObject HHandleDrawCurve::getDefaultParam() { return defaultParam(); }
 
-HHandleDrawPoly::HHandleDrawPoly() { _name = "poly"; }
+HHandleDrawPoly::HHandleDrawPoly() : _size(0) { _name = "poly"; }
 
 void HHandleDrawPoly::mousePressEvent(HBoard *board, QMouseEvent *event,
                                       const QJsonObject &object) {
@@ -172,12 +172,17 @@ void HHandleDrawPoly::mousePressEvent(HBoard *board, QMouseEvent *event,
     if (_node.isNull()) {
       auto node =
           std::make_shared<HShapePolyNode>(QList<QPointF>({point}), object);
-      _points = {point};
       board->pushNode(node);
+      _size = 1;
       _node = node->id();
     } else {
-      _points.push_back(point);
-      board->drawNodePoint(_node, _points);
+      auto node = board->getNodeById(_node);
+      if (node) {
+        auto points = node->getPointList();
+        points.push_back(point);
+        _size = points.size();
+        board->drawNodePoint(_node, points);
+      }
     }
   }
 }
@@ -187,9 +192,15 @@ void HHandleDrawPoly::hoverMoveEvent(HBoard *board, QHoverEvent *event,
   if (board && event) {
     auto point = board->WCS2LCS(event->pos());
     if (!_node.isNull()) {
-      auto pts = _points;
-      pts.push_back(point);
-      board->drawNodePoint(_node, pts);
+      auto node = board->getNodeById(_node);
+      if (node) {
+        auto points = node->getPointList();
+        while (points.size() > _size) {
+          points.pop_back();
+        }
+        points.push_back(point);
+        board->drawNodePoint(_node, points);
+      }
     }
   }
 }
@@ -197,6 +208,8 @@ void HHandleDrawPoly::hoverMoveEvent(HBoard *board, QHoverEvent *event,
 void HHandleDrawPoly::mouseReleaseEvent(HBoard *board, QMouseEvent *event,
                                         const QJsonObject &) {
   if (isButtonPress(event, Qt::MouseButton::RightButton)) {
+    board->clearSelect();
+    board->setSelect(_node);
     boardLeaveOffThisHandle(board);
     HHandleMove::mouseReleaseEvent(board, event);
   } else {
@@ -208,11 +221,20 @@ void HHandleDrawPoly::mouseReleaseEvent(HBoard *board, QMouseEvent *event,
 }
 
 void HHandleDrawPoly::boardLeaveOffThisHandle(HBoard *board) {
-  if (board && !_node.isNull() && !_points.empty()) {
-    _points.push_back(_points[0]);
-    board->drawNodePoint(_node, _points);
+  if (board && !_node.isNull()) {
+    auto node = board->getNodeById(_node);
+    if (node) {
+      auto points = node->getPointList();
+      if (!points.empty()) {
+        while (points.size() > _size) {
+          points.pop_back();
+        }
+        points.push_back(points[0]);
+        board->drawNodePoint(_node, points);
+      }
+    }
   }
-  _points.clear();
+  _size = 0;
   _node = "";
 }
 
@@ -255,12 +277,21 @@ HHandleDrawFillPoly::HHandleDrawFillPoly() { _name = "fill poly"; }
 
 void HHandleDrawFillPoly::boardLeaveOffThisHandle(HBoard *board) {
   //
-  if (board && !_node.isNull() && !_points.empty()) {
-    _points.push_back(_points[0]);
-    board->drawNodePoint(_node, _points);
-    board->updateNodeDrawMode(_node, GL_POLYGON);
+  if (board && !_node.isNull()) {
+    auto node = board->getNodeById(_node);
+    if (node) {
+      auto points = node->getPointList();
+      if (!points.empty()) {
+        while (points.size() > _size) {
+          points.pop_back();
+        }
+        points.push_back(points[0]);
+        board->drawNodePoint(_node, points);
+        board->updateNodeDrawMode(_node, GL_POLYGON);
+      }
+    }
   }
-  _points.clear();
+  _size = 0;
   _node = "";
 }
 

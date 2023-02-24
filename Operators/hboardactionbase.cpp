@@ -78,3 +78,9 @@ int HRemoveNodeAction::undo() {
   board->pushNode(_node);
   return 0;
 }
+
+// HHandeUpdatePointsAction::HHandeUpdatePointsAction(
+//    const QString &name, const QUuid &id, QList<QPointF> &handle_points)
+//    : _board_name(name), _id(id), _points(handle_points) {}
+
+// HHandeUpdatePointsAction::~HHandeUpdatePointsAction() {}

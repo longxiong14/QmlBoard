@@ -93,7 +93,7 @@ class HBOARD_EXPORT HHandleDrawPoly : public HHandleMove {
   virtual QJsonObject getDefaultParam() override;
 
  protected:
-  QList<QPointF> _points;
+  int _size;
 };
 
 class HBOARD_EXPORT HHandleDrawFillRect : public HHandleDrawRect {
