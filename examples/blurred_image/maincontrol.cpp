@@ -32,6 +32,7 @@ int MainControl::open(const QString &path) {
   }
 
   auto node = std::make_shared<HBlurredImageNode>(out, QPointF(), scale);
+  node->setColor(QColor(0, 0, 0, 0));
   _blurred = node->id();
   node->setZOrder(-1);
   board->pushNode(node);
@@ -48,7 +49,8 @@ void HBlurredImageBoard::mouseReleaseEvent(QMouseEvent *event) {
 
   auto roi = getWCSBoundRect();
   roi &= _image.rect();
-  auto scale = getScale();
+  //  auto scale = getScale();
+  auto scale = 1.0;
   auto s = QRectF(0, 0, roi.width() * scale, roi.height() * scale);
   QImage out(s.toRect().size(), _image.format());
   if (!out.isNull()) {
@@ -56,6 +58,7 @@ void HBlurredImageBoard::mouseReleaseEvent(QMouseEvent *event) {
     painter.drawImage(s, _image, roi, Qt::ThresholdDither);
   }
   auto node = std::make_shared<HImageMapNode>(out, roi.topLeft());
+  node->setColor(QColor(0, 0, 0, 0));
   _src = node->id();
   pushNode(node);
 }
