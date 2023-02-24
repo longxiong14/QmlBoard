@@ -4,6 +4,8 @@
 #include <QRectF>
 
 #include "../Nodes/hshapenodes.h"
+#include "../Operators/hboardactionbase.h"
+#include "../Operators/hcommandbase.h"
 #include "Common/hcommons.h"
 #include "hboard.h"
 #define DEBUG qDebug() << __FUNCTION__ << " " << __LINE__ << " "
@@ -42,6 +44,25 @@ void HHandleDrawRect::mouseMoveEvent(HBoard *board, QMouseEvent *event,
   }
 }
 
+void HHandleDrawRect::mouseReleaseEvent(HBoard *board, QMouseEvent *event,
+                                        const QJsonObject &o) {
+  if (board && event) {
+    board->removeNode(_node);
+    auto pos = board->WCS2LCS(event->pos());
+    auto rect = HCommon::BuildRect(_point, pos);
+    auto node = std::make_shared<HShapeRectNode>(rect, o);
+    auto command = board->getCommand();
+    if (command) {
+      auto action = std::make_shared<HPushNodeAction>(board->name(), node);
+      command->excute(action);
+    } else {
+      board->pushNode(node);
+    }
+    _node = node->id();
+  }
+  HHandleMove::mouseReleaseEvent(board, event);
+}
+
 QJsonObject HHandleDrawRect::getDefaultParam() { return defaultParam(); }
 
 HHandleDrawLine::HHandleDrawLine() { _name = "line"; }
@@ -65,6 +86,24 @@ void HHandleDrawLine::mouseMoveEvent(HBoard *board, QMouseEvent *event,
     QList<QPointF> list{_point, point};
     board->drawNodePoint(_node, list);
   }
+}
+
+void HHandleDrawLine::mouseReleaseEvent(HBoard *board, QMouseEvent *event,
+                                        const QJsonObject &object) {
+  if (board && event) {
+    board->removeNode(_node);
+    auto pos = board->WCS2LCS(event->pos());
+    auto node = std::make_shared<HShapeLineNode>(_point, pos, object);
+    auto command = board->getCommand();
+    if (command) {
+      auto action = std::make_shared<HPushNodeAction>(board->name(), node);
+      command->excute(action);
+    } else {
+      board->pushNode(node);
+    }
+    _node = node->id();
+  }
+  HHandleMove::mouseReleaseEvent(board, event);
 }
 
 QJsonObject HHandleDrawLine::getDefaultParam() { return defaultParam(); }

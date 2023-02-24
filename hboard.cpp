@@ -23,6 +23,7 @@
 #include "Nodes/hfillnode.h"
 #include "Nodes/himagenode.h"
 #include "Nodes/hnodebase.h"
+#include "Operators/hcommandbase.h"
 #include "hboardmanager.h"
 #define DEBUG qDebug() << __FUNCTION__ << " " << __LINE__ << " "
 
@@ -33,7 +34,8 @@ HBoard::HBoard(QQuickItem *parent)
       _name(""),
       _rule(nullptr),
       _drag_nodes(nullptr),
-      _rule_flag(true) {
+      _rule_flag(true),
+      _command_base(std::make_shared<HCommand>()) {
   setKeysControlFactory(std::make_shared<HKeyFactory>());
   setFlag(QQuickItem::ItemHasContents, true);
   setClip(true);
@@ -385,6 +387,12 @@ QSet<int> HBoard::keys() {
   if (_keys_control) return _keys_control->keys();
   return {};
 }
+
+void HBoard::setCommand(std::shared_ptr<HCommandBase> command) {
+  _command_base = command;
+}
+
+std::shared_ptr<HCommandBase> HBoard::getCommand() { return _command_base; }
 
 QHash<QUuid, std::shared_ptr<HNodeBase>> HBoard::nodes() {
   //  QHash<QUuid, std::shared_ptr<HNodeBase>> node;

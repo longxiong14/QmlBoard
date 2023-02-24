@@ -20,6 +20,7 @@ class HNodeBase;
 class HFillNode;
 class QSGGeometryNode;
 class HKeyFactoryBase;
+class HCommandBase;
 class HBOARD_EXPORT HBoard : public QQuickItem {
   using task = std::function<void(void)>;
   Q_OBJECT
@@ -85,6 +86,8 @@ class HBOARD_EXPORT HBoard : public QQuickItem {
   void setKeysControlFactory(std::shared_ptr<HKeyFactoryBase> ctrl);
   std::shared_ptr<HKeyFactoryBase> getKeysControl();
   QSet<int> keys();
+  void setCommand(std::shared_ptr<HCommandBase> command);
+  std::shared_ptr<HCommandBase> getCommand();
 
  public:
   QString name();
@@ -151,6 +154,7 @@ class HBOARD_EXPORT HBoard : public QQuickItem {
   QSGGeometryNode *_rule;
   QSGNode *_drag_nodes;
   bool _rule_flag;
+  std::shared_ptr<HCommandBase> _command_base;
 };
 
 #endif  // HBOARD_H

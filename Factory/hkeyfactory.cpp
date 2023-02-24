@@ -2,6 +2,7 @@
 
 #include <QDebug>
 
+#include "../Operators/hcommandbase.h"
 #include "../hboard.h"
 HKeyFactoryBase::HKeyFactoryBase() {}
 
@@ -27,6 +28,18 @@ void HKeyFactory::keyPressEvent(HBoard *board, QKeyEvent *event) {
         break;
       case Qt::Key_Escape:
         board->clearSelect();
+        break;
+      case Qt::Key_Z:
+        if (_keys.contains(Qt::Key_Control)) {
+          auto command = board->getCommand();
+          command->undo();
+        }
+        break;
+      case Qt::Key_Y:
+        if (_keys.contains(Qt::Key_Control)) {
+          auto command = board->getCommand();
+          command->redo();
+        }
         break;
     }
   }
