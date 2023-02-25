@@ -51,6 +51,7 @@ void HHandleDrawRect::mouseReleaseEvent(HBoard *board, QMouseEvent *event,
     auto pos = board->WCS2LCS(event->pos());
     auto rect = HCommon::BuildRect(_point, pos);
     auto node = std::make_shared<HShapeRectNode>(rect, o);
+    node->setId(_node);
     auto command = board->getCommand();
     if (command) {
       auto action = std::make_shared<HPushNodeAction>(board->name(), node);
@@ -58,7 +59,6 @@ void HHandleDrawRect::mouseReleaseEvent(HBoard *board, QMouseEvent *event,
     } else {
       board->pushNode(node);
     }
-    _node = node->id();
   }
   HHandleMove::mouseReleaseEvent(board, event);
 }
@@ -94,6 +94,7 @@ void HHandleDrawLine::mouseReleaseEvent(HBoard *board, QMouseEvent *event,
     board->removeNode(_node);
     auto pos = board->WCS2LCS(event->pos());
     auto node = std::make_shared<HShapeLineNode>(_point, pos, object);
+    node->setId(_node);
     auto command = board->getCommand();
     if (command) {
       auto action = std::make_shared<HPushNodeAction>(board->name(), node);
@@ -101,7 +102,6 @@ void HHandleDrawLine::mouseReleaseEvent(HBoard *board, QMouseEvent *event,
     } else {
       board->pushNode(node);
     }
-    _node = node->id();
   }
   HHandleMove::mouseReleaseEvent(board, event);
 }
@@ -297,6 +297,7 @@ void HHandleDrawFillRect::mouseReleaseEvent(HBoard *board, QMouseEvent *event,
     auto pos = board->WCS2LCS(event->pos());
     auto rect = HCommon::BuildRect(_point, pos);
     auto node = std::make_shared<HShapeFillRectNode>(rect, o);
+    node->setId(_node);
     auto command = board->getCommand();
     if (command) {
       auto action = std::make_shared<HPushNodeAction>(board->name(), node);
@@ -304,7 +305,6 @@ void HHandleDrawFillRect::mouseReleaseEvent(HBoard *board, QMouseEvent *event,
     } else {
       board->pushNode(node);
     }
-    _node = node->id();
   }
   HHandleMove::mouseReleaseEvent(board, event);
 }
@@ -493,6 +493,7 @@ void HHandleDrawEllipse::mouseReleaseEvent(HBoard *board, QMouseEvent *event,
     auto pos = board->WCS2LCS(event->pos());
     auto rect = HCommon::BuildRect(_point, pos);
     auto node = std::make_shared<HShapeEllipseNode>(rect, object);
+    node->setId(_node);
     auto command = board->getCommand();
     if (command) {
       auto action = std::make_shared<HPushNodeAction>(board->name(), node);
@@ -500,7 +501,6 @@ void HHandleDrawEllipse::mouseReleaseEvent(HBoard *board, QMouseEvent *event,
     } else {
       board->pushNode(node);
     }
-    _node = node->id();
   }
   HHandleMove::mouseReleaseEvent(board, event, object);
 }
@@ -547,6 +547,7 @@ void HHandleDrawFillEllipse::mouseReleaseEvent(HBoard *board,
     auto pos = board->WCS2LCS(event->pos());
     auto rect = HCommon::BuildRect(_point, pos);
     auto node = std::make_shared<HShapeFillEllipseNode>(rect, object);
+    node->setId(_node);
     auto command = board->getCommand();
     if (command) {
       auto action = std::make_shared<HPushNodeAction>(board->name(), node);
@@ -554,7 +555,6 @@ void HHandleDrawFillEllipse::mouseReleaseEvent(HBoard *board,
     } else {
       board->pushNode(node);
     }
-    _node = node->id();
   }
   HHandleMove::mouseReleaseEvent(board, event, object);
 }

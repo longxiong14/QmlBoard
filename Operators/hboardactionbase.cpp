@@ -79,8 +79,17 @@ int HRemoveNodeAction::undo() {
   return 0;
 }
 
-// HHandeUpdatePointsAction::HHandeUpdatePointsAction(
-//    const QString &name, const QUuid &id, QList<QPointF> &handle_points)
-//    : _board_name(name), _id(id), _points(handle_points) {}
+HHandeUpdatePointsAction::HHandeUpdatePointsAction(const QString &name,
+                                                   const QUuid &id, int size,
+                                                   const QList<QPointF> &points)
+    : _board_name(name), _id(id), _size(size), _points(points) {}
 
-// HHandeUpdatePointsAction::~HHandeUpdatePointsAction() {}
+HHandeUpdatePointsAction::~HHandeUpdatePointsAction() {}
+
+int HHandeUpdatePointsAction::excute() {  //
+  return 0;
+}
+
+int HHandeUpdatePointsAction::undo() {  //
+  return 0;
+}

@@ -50,22 +50,23 @@ class HBOARD_EXPORT HRemoveNodeAction : public HBoardActionBase {
   std::shared_ptr<HNodeBase> _node;
 };
 
-// class HBOARD_EXPORT HHandeUpdatePointsAction : public HBoardActionBase {
-// public:
-//  HHandeUpdatePointsAction(const QString &name, const QUuid &id,
-//                           QList<QPointF> &handle_points);
-//  HHandeUpdatePointsAction(const HHandeUpdatePointsAction &other) = delete;
-//  HHandeUpdatePointsAction &operator=(const HHandeUpdatePointsAction &other) =
-//      delete;
-//  virtual ~HHandeUpdatePointsAction();
+class HBOARD_EXPORT HHandeUpdatePointsAction : public HBoardActionBase {
+ public:
+  HHandeUpdatePointsAction(const QString &name, const QUuid &id, int size,
+                           const QList<QPointF> &points);
+  HHandeUpdatePointsAction(const HHandeUpdatePointsAction &other) = default;
+  HHandeUpdatePointsAction &operator=(const HHandeUpdatePointsAction &other) =
+      default;
+  virtual ~HHandeUpdatePointsAction();
 
-//  virtual int excute();
-//  virtual int undo();
+  virtual int excute();
+  virtual int undo();
 
-// protected:
-//  QString _board_name;
-//  QUuid _id;
-//  QList<QPointF> &_points;
-//};
+ protected:
+  QString _board_name;
+  QUuid _id;
+  int _size;
+  QList<QPointF> _points;
+};
 
 #endif  // HBOARDACTIONBASE_H
