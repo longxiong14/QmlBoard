@@ -65,13 +65,14 @@ void HHandleArrow::mouseMoveEvent(HBoard *board, QMouseEvent *event,
       HHandleMove::mouseMoveEvent(board, event);
     } else if (leftButtonPress(event)) {
       if (_drag_node) {
-        auto p = _drag_node->getParent();
-        board->updateNodeIndexPoint(p, _drag_node->getPointIndex(), pos);
-        auto pnode = board->getNodeById(p);
-        if (pnode) {
-          board->updateNodeText(p, pnode->getText(), pnode->getTextRect(),
-                                pnode->getPixelSize());
-        }
+        moveDragNode(board, pos);
+        //        auto p = _drag_node->getParent();
+        //        board->updateNodeIndexPoint(p, _drag_node->getPointIndex(),
+        //        pos); auto pnode = board->getNodeById(p); if (pnode) {
+        //          board->updateNodeText(p, pnode->getText(),
+        //          pnode->getTextRect(),
+        //                                pnode->getPixelSize());
+        //        }
 
       } else {
         if (_can_move) _moved = true;
@@ -102,11 +103,17 @@ void HHandleArrow::mouseReleaseEvent(HBoard *board, QMouseEvent *event,
                                      const QJsonObject &) {
   if (board && event) {
     auto pos = board->WCS2LCS(event->pos());
+    auto command = board->getCommand();
     if (_drag_node) {
+      if (command) {
+        auto action = std::make_shared<HMoveDragNodeAction>(
+            board->name(), _drag_node_id, _drag_node->getPointIndex(),
+            _drag_begin, _drag_end);
+        command->excute(action);
+      }
       return;
     }
     if (_moved) {
-      auto command = board->getCommand();
       if (command) {
         auto action = std::make_shared<HMoveNodeAction>(board->name(),
                                                         board->selects(), _dlt);
@@ -174,7 +181,13 @@ void HHandleArrow::hoverMoveEvent(HBoard *board, QHoverEvent *e,
       if (node->isSelect() &&
           node->pointInDragNode(e->pos(), _drag_node, board->getScale()) &&
           _drag_node) {
+        auto index = _drag_node->getPointIndex();
+        auto list = node->getPointList();
+        if (index >= 0 && index < list.size()) {
+          _drag_begin = list[index];
+        }
         board->setCursor(_drag_node->getCursor());
+        _drag_node_id = s;
         return;
       }
     }
@@ -227,4 +240,15 @@ bool HHandleArrow::canSelect(HNodeBase *node, const QPointF &pos,
     }
   }
   return false;
+}
+
+void HHandleArrow::moveDragNode(HBoard *board, const QPointF &pos) {
+  auto p = _drag_node->getParent();
+  board->updateNodeIndexPoint(p, _drag_node->getPointIndex(), pos);
+  auto pnode = board->getNodeById(p);
+  if (pnode) {
+    board->updateNodeText(p, pnode->getText(), pnode->getTextRect(),
+                          pnode->getPixelSize());
+  }
+  _drag_end = pos;
 }

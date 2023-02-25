@@ -73,4 +73,21 @@ class HBOARD_EXPORT HMoveNodeAction : public HBoardActionBase {
   bool _flag;
 };
 
+class HBOARD_EXPORT HMoveDragNodeAction : public HBoardActionBase {
+ public:
+  HMoveDragNodeAction(const QString &board, const QUuid &node, int index,
+                      const QPointF &begin, const QPointF &end,
+                      bool flag = false);
+  virtual int excute() override;
+  virtual int undo() override;
+
+ protected:
+  QString _board_name;
+  QUuid _node;
+  int _index;
+  QPointF _begin;
+  QPointF _end;
+  bool _flag;
+};
+
 #endif  // HBOARDACTIONBASE_H

@@ -134,3 +134,38 @@ int HMoveNodeAction::undo() {
   }
   return 0;
 }
+
+HMoveDragNodeAction::HMoveDragNodeAction(const QString &board,
+                                         const QUuid &node, int index,
+                                         const QPointF &begin,
+                                         const QPointF &end, bool flag)
+    : _board_name(board),
+      _node(node),
+      _index(index),
+      _begin(begin),
+      _end(end),
+      _flag(flag) {}
+
+int HMoveDragNodeAction::excute() {
+  if (!_flag) {
+    _flag = true;
+    return 0;
+  }
+  auto board = HBoardManager::getInstance()->getBoard(_board_name);
+  if (!board) {
+    DEBUG << "get board" << _board_name << "error";
+    return -1;
+  }
+  board->updateNodeIndexPoint(_node, _index, _end);
+  return 0;
+}
+
+int HMoveDragNodeAction::undo() {
+  auto board = HBoardManager::getInstance()->getBoard(_board_name);
+  if (!board) {
+    DEBUG << "get board" << _board_name << "error";
+    return -1;
+  }
+  board->updateNodeIndexPoint(_node, _index, _begin);
+  return 0;
+}

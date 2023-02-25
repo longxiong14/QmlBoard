@@ -32,6 +32,7 @@ class HBOARD_EXPORT HHandleArrow : public HHandleMove {
 
  protected:
   virtual bool canSelect(HNodeBase* node, const QPointF& pos, double scale);
+  void moveDragNode(HBoard* board, const QPointF& pos);
 
  protected:
   bool _can_move;
@@ -40,6 +41,9 @@ class HBOARD_EXPORT HHandleArrow : public HHandleMove {
   QUuid _select_node;
   QPointF _dlt;
   QPointF _select_start_point;
+  QPointF _drag_begin;
+  QPointF _drag_end;
+  QUuid _drag_node_id;
   HDragNode* _drag_node;
 };
 
