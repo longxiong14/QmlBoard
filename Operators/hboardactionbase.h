@@ -33,14 +33,13 @@ class HBOARD_EXPORT HPushNodeAction : public HBoardActionBase {
 
 class HBOARD_EXPORT HRemoveNodeAction : public HBoardActionBase {
  public:
-  HRemoveNodeAction(const QString &name, const QUuid &id);
+  HRemoveNodeAction(const QString &name, const QSet<QUuid> &id);
   virtual int excute() override;
   virtual int undo() override;
 
  protected:
   QString _board_name;
-  QUuid _id;
-  std::shared_ptr<HNodeBase> _node;
+  QHash<QUuid, std::shared_ptr<HNodeBase>> _nodes;
 };
 
 class HBOARD_EXPORT HUpdateNodePointsAction : public HBoardActionBase {

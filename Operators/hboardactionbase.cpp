@@ -42,8 +42,12 @@ int HPushNodeAction::undo() {
   return 0;
 }
 
-HRemoveNodeAction::HRemoveNodeAction(const QString &name, const QUuid &id)
-    : _board_name(name), _id(id), _node(nullptr) {}
+HRemoveNodeAction::HRemoveNodeAction(const QString &name, const QSet<QUuid> &id)
+    : _board_name(name) {
+  for (const auto &n : id) {
+    _nodes.insert(n, nullptr);
+  }
+}
 
 int HRemoveNodeAction::excute() {
   auto board = HBoardManager::getInstance()->getBoard(_board_name);
@@ -51,27 +55,25 @@ int HRemoveNodeAction::excute() {
     DEBUG << "get board" << _board_name << "error";
     return -1;
   }
-  auto node = board->getNodeById(_id);
-  if (!node) {
-    DEBUG << "get node" << _id << "from board" << _board_name << "error";
-    return -1;
+  for (const auto &id : _nodes.keys()) {
+    auto node = board->getNodeById(id);
+    if (!node) {
+      DEBUG << "get node" << id << "from board" << _board_name << "error";
+      return -1;
+    }
+    _nodes[id] = node;
+    board->removeNode(id);
   }
-  _node = node;
-  board->removeNode(_id);
   return 0;
 }
 
 int HRemoveNodeAction::undo() {
-  if (!_node) {
-    DEBUG << "node is nullptr";
-    return -1;
-  }
   auto board = HBoardManager::getInstance()->getBoard(_board_name);
   if (!board) {
     DEBUG << "get board" << _board_name << "error";
     return -1;
   }
-  board->pushNode(_node);
+  for (const auto &node : _nodes) board->pushNode(node);
   return 0;
 }
 

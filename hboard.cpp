@@ -256,7 +256,7 @@ void HBoard::removeNode(const QUuid &id) {
 }
 
 void HBoard::removeNodes(const QList<QUuid> &nodes) {
-  //
+  QList<std::shared_ptr<HNodeBase>> ns;
   for (const auto &id : nodes) {
     auto node = getNodeById(id);
     if (!node) {
@@ -264,8 +264,13 @@ void HBoard::removeNodes(const QList<QUuid> &nodes) {
       return;
     }
     removeNodeToList(id);
-    pushTask([=]() { removeNode(node); });
+    ns.push_back(node);
   }
+  pushTask([=]() {
+    for (const auto &n : ns) {
+      if (n) removeNode(n);
+    }
+  });
   emit sigUpdate();
 }
 
