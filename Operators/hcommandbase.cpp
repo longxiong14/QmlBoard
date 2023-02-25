@@ -12,7 +12,7 @@ HCommand::HCommand() {}
 
 int HCommand::excute(std::shared_ptr<HBoardActionBase> ptr) {
   if (ptr) {
-    DEBUG << "excute";
+    //    DEBUG << "excute";
     clearUndos();
     ptr->excute();
     _excutes.push(ptr);
@@ -22,7 +22,7 @@ int HCommand::excute(std::shared_ptr<HBoardActionBase> ptr) {
 
 int HCommand::undo() {
   if (_excutes.empty()) {
-    DEBUG << "excute actions is empty";
+    //    DEBUG << "excute actions is empty";
     return -1;
   }
   auto ptr = _excutes.top();
@@ -36,7 +36,7 @@ int HCommand::undo() {
 
 int HCommand::redo() {
   if (_undos.empty()) {
-    DEBUG << "undo actions is empty";
+    //    DEBUG << "undo actions is empty";
     return -1;
   }
   auto ptr = _undos.top();

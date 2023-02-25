@@ -8,6 +8,8 @@
 #include "../Common/hcommons.h"
 #include "../Common/hplanvector.h"
 #include "../Nodes/hdragnode.h"
+#include "../Operators/hboardactionbase.h"
+#include "../Operators/hcommandbase.h"
 #include "Nodes/hfillnode.h"
 #include "Nodes/hnodebase.h"
 #include "hboard.h"
@@ -39,7 +41,7 @@ void HHandleArrow::mousePressEvent(HBoard *board, QMouseEvent *event,
           return;
         }
       }
-      _point = pos;
+      _dlt = QPointF();
     } else if (rightButtonPress(event)) {
       QJsonObject o;
       o.insert("b", 200);
@@ -81,6 +83,7 @@ void HHandleArrow::mouseMoveEvent(HBoard *board, QMouseEvent *event,
               auto node = nodes[s];
               auto dlt = pos - _last_point - board->WCS2LCS(QPointF());
               board->moveNode(node->id(), dlt);
+              _dlt += dlt;
             } else {
             }
           }
@@ -101,6 +104,14 @@ void HHandleArrow::mouseReleaseEvent(HBoard *board, QMouseEvent *event,
     auto pos = board->WCS2LCS(event->pos());
     if (_drag_node) {
       return;
+    }
+    if (_moved) {
+      auto command = board->getCommand();
+      if (command) {
+        auto action = std::make_shared<HMoveNodeAction>(board->name(),
+                                                        board->selects(), _dlt);
+        command->excute(action);
+      }
     }
     if (isButtonPress(event) && !middleButtonPress(event) && !_moved) {
       if (!ctrlKeyPress(board->keys())) {

@@ -14,8 +14,6 @@ HPushNodeAction::HPushNodeAction(const QString &name,
                                  std::shared_ptr<HNodeBase> node)
     : _board_name(name), _node(node) {}
 
-HPushNodeAction::~HPushNodeAction() {}
-
 int HPushNodeAction::excute() {
   if (!_node) {
     DEBUG << "node is nullptr";
@@ -47,8 +45,6 @@ int HPushNodeAction::undo() {
 HRemoveNodeAction::HRemoveNodeAction(const QString &name, const QUuid &id)
     : _board_name(name), _id(id), _node(nullptr) {}
 
-HRemoveNodeAction::~HRemoveNodeAction() {}
-
 int HRemoveNodeAction::excute() {
   auto board = HBoardManager::getInstance()->getBoard(_board_name);
   if (!board) {
@@ -79,17 +75,60 @@ int HRemoveNodeAction::undo() {
   return 0;
 }
 
-HHandeUpdatePointsAction::HHandeUpdatePointsAction(const QString &name,
-                                                   const QUuid &id, int size,
-                                                   const QList<QPointF> &points)
-    : _board_name(name), _id(id), _size(size), _points(points) {}
+HUpdateNodePointsAction::HUpdateNodePointsAction(const QString &name,
+                                                 const QUuid &node_id,
+                                                 const QList<QPointF> &list)
+    : _board_name(name), _id(node_id), _list(list) {}
 
-HHandeUpdatePointsAction::~HHandeUpdatePointsAction() {}
+int HUpdateNodePointsAction::excute() { return update(); }
 
-int HHandeUpdatePointsAction::excute() {  //
+int HUpdateNodePointsAction::undo() { return update(); }
+
+int HUpdateNodePointsAction::update() {
+  auto board = HBoardManager::getInstance()->getBoard(_board_name);
+  if (!board) {
+    DEBUG << "get board" << _board_name << "error";
+    return -1;
+  }
+  auto node = board->getNodeById(_id);
+  if (!node) {
+    DEBUG << "get node" << _id << "from board" << _board_name << "error";
+    return -1;
+  }
+  auto list = node->getPointList();
+  board->drawNodePoint(_id, _list);
+  _list = list;
   return 0;
 }
 
-int HHandeUpdatePointsAction::undo() {  //
+HMoveNodeAction::HMoveNodeAction(const QString &board, const QSet<QUuid> &nodes,
+                                 const QPointF &dlt, bool flag)
+    : _board_name(board), _nodes(nodes), _dlt(dlt), _flag(flag) {}
+
+int HMoveNodeAction::excute() {
+  if (!_flag) {
+    _flag = true;
+    return 0;
+  }
+  auto board = HBoardManager::getInstance()->getBoard(_board_name);
+  if (!board) {
+    DEBUG << "get board" << _board_name << "error";
+    return -1;
+  }
+  for (const auto &_id : _nodes) {
+    board->moveNode(_id, _dlt);
+  }
+  return 0;
+}
+
+int HMoveNodeAction::undo() {
+  auto board = HBoardManager::getInstance()->getBoard(_board_name);
+  if (!board) {
+    DEBUG << "get board" << _board_name << "error";
+    return -1;
+  }
+  for (const auto &_id : _nodes) {
+    board->moveNode(_id, -_dlt);
+  }
   return 0;
 }

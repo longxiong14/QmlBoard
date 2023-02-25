@@ -22,12 +22,9 @@ class HBOARD_EXPORT HBoardActionBase {
 class HBOARD_EXPORT HPushNodeAction : public HBoardActionBase {
  public:
   HPushNodeAction(const QString &name, std::shared_ptr<HNodeBase> node);
-  HPushNodeAction(const HPushNodeAction &other) = default;
-  HPushNodeAction &operator=(const HPushNodeAction &other) = default;
-  virtual ~HPushNodeAction();
 
-  virtual int excute();
-  virtual int undo();
+  virtual int excute() override;
+  virtual int undo() override;
 
  protected:
   QString _board_name;
@@ -37,12 +34,8 @@ class HBOARD_EXPORT HPushNodeAction : public HBoardActionBase {
 class HBOARD_EXPORT HRemoveNodeAction : public HBoardActionBase {
  public:
   HRemoveNodeAction(const QString &name, const QUuid &id);
-  HRemoveNodeAction(const HRemoveNodeAction &other) = default;
-  HRemoveNodeAction &operator=(const HRemoveNodeAction &other) = default;
-  virtual ~HRemoveNodeAction();
-
-  virtual int excute();
-  virtual int undo();
+  virtual int excute() override;
+  virtual int undo() override;
 
  protected:
   QString _board_name;
@@ -50,23 +43,35 @@ class HBOARD_EXPORT HRemoveNodeAction : public HBoardActionBase {
   std::shared_ptr<HNodeBase> _node;
 };
 
-class HBOARD_EXPORT HHandeUpdatePointsAction : public HBoardActionBase {
+class HBOARD_EXPORT HUpdateNodePointsAction : public HBoardActionBase {
  public:
-  HHandeUpdatePointsAction(const QString &name, const QUuid &id, int size,
-                           const QList<QPointF> &points);
-  HHandeUpdatePointsAction(const HHandeUpdatePointsAction &other) = default;
-  HHandeUpdatePointsAction &operator=(const HHandeUpdatePointsAction &other) =
-      default;
-  virtual ~HHandeUpdatePointsAction();
+  HUpdateNodePointsAction(const QString &name, const QUuid &node_id,
+                          const QList<QPointF> &list);
 
-  virtual int excute();
-  virtual int undo();
+  virtual int excute() override;
+  virtual int undo() override;
+
+ protected:
+  int update();
 
  protected:
   QString _board_name;
   QUuid _id;
-  int _size;
-  QList<QPointF> _points;
+  QList<QPointF> _list;
+};
+
+class HBOARD_EXPORT HMoveNodeAction : public HBoardActionBase {
+ public:
+  HMoveNodeAction(const QString &board, const QSet<QUuid> &nodes,
+                  const QPointF &dlt, bool flag = false);
+  virtual int excute() override;
+  virtual int undo() override;
+
+ protected:
+  QString _board_name;
+  QSet<QUuid> _nodes;
+  QPointF _dlt;
+  bool _flag;
 };
 
 #endif  // HBOARDACTIONBASE_H
