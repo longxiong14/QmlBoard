@@ -32,7 +32,7 @@ void HHandleBase::hoverLeaveEvent(HBoard *, QHoverEvent *,
 
 void HHandleBase::wheelEvent(HBoard *, QWheelEvent *) {}
 
-void HHandleBase::boardLeaveOffThisHandle(HBoard *) {}
+void HHandleBase::boardLeaveOffThisHandle(HBoard *) { _buttons.clear(); }
 
 QJsonObject HHandleBase::getDefaultParam() { return QJsonObject(); }
 

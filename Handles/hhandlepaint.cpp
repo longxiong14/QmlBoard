@@ -130,6 +130,7 @@ void HHandleDrawCurve::hoverMoveEvent(HBoard *board, QHoverEvent *event,
 
 void HHandleDrawCurve::mouseReleaseEvent(HBoard *b, QMouseEvent *e,
                                          const QJsonObject &o) {
+  HHandleBase::mouseReleaseEvent(b, e, o);
   if (isButtonPress(e, Qt::MouseButton::RightButton)) {
     leave(b);
     if (b) {
@@ -148,6 +149,7 @@ void HHandleDrawCurve::mouseReleaseEvent(HBoard *b, QMouseEvent *e,
 void HHandleDrawCurve::boardLeaveOffThisHandle(HBoard *board) {
   leave(board);
   _node = "";
+  HHandleMove::boardLeaveOffThisHandle(board);
 }
 
 QJsonObject HHandleDrawCurve::getDefaultParam() { return defaultParam(); }
@@ -215,7 +217,8 @@ void HHandleDrawPoly::hoverMoveEvent(HBoard *board, QHoverEvent *event,
 }
 
 void HHandleDrawPoly::mouseReleaseEvent(HBoard *board, QMouseEvent *event,
-                                        const QJsonObject &) {
+                                        const QJsonObject &o) {
+  HHandleBase::mouseReleaseEvent(board, event, o);
   if (isButtonPress(event, Qt::MouseButton::RightButton)) {
     if (board) {
       board->clearSelect();
@@ -247,6 +250,7 @@ void HHandleDrawPoly::boardLeaveOffThisHandle(HBoard *board) {
   }
   _size = 0;
   _node = "";
+  HHandleMove::boardLeaveOffThisHandle(board);
 }
 
 QJsonObject HHandleDrawPoly::getDefaultParam() { return defaultParam(); }
@@ -313,6 +317,7 @@ void HHandleDrawCircle::boardLeaveOffThisHandle(HBoard *board) {
     board->removeNode(_circle_node);
     _circle_node = "";
   }
+  HHandleMove::boardLeaveOffThisHandle(board);
 }
 
 void HHandleDrawCircle::hoverLeaveEvent(HBoard *board, QHoverEvent *event,
