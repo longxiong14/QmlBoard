@@ -17,6 +17,7 @@
 #include "../../hboarduicontrol.h"
 #include "../../himagemapboard.h"
 #include "control/huicontrol.h"
+#include "model/hcvmatboard.h"
 #include "model/huimodel.h"
 int main(int argc, char *argv[]) {
   QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
@@ -25,11 +26,14 @@ int main(int argc, char *argv[]) {
   QQmlApplicationEngine engine;
 
   HUIModel model;
+  HUIControl control;
+  control.setModel(&model);
 
   auto root = engine.rootContext();
-  qmlRegisterType<HImageMapBoard>("hBoard", 1, 0, "HBoard");
+  qmlRegisterType<HCVMatBoard>("hBoard", 1, 0, "HBoard");
   qmlRegisterType<HBoardUIControl>("hUIControl", 1, 0, "HUIControl");
   root->setContextProperty("gModel", &model);
+  root->setContextProperty("gCtrl", &control);
   const QUrl url(QStringLiteral("qrc:/main.qml"));
   QObject::connect(
       &engine, &QQmlApplicationEngine::objectCreated, &app,

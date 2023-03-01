@@ -19,6 +19,8 @@ class HBOARD_EXPORT HBoardManager {
 
   void changeBoardName(const QString& old, HBoard* board);
 
+  QHash<QString, HBoard*> boards();
+
  private:
   QHash<QString, HBoard*> _boards;
   QMutex _mutex;

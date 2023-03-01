@@ -41,3 +41,5 @@ void HBoardManager::changeBoardName(const QString &old, HBoard *board) {
   }
   _boards.insert(board->name(), board);
 }
+
+QHash<QString, HBoard *> HBoardManager::boards() { return _boards; }
