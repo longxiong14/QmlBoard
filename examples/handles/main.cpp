@@ -10,6 +10,7 @@
 #include "../../Handles/hhandlepaint.h"
 #include "../../Nodes/hfillnode.h"
 #include "../../Nodes/hnodebase.h"
+#include "../../Nodes/hshapenodes.h"
 #include "../../hboardmanager.h"
 #include "../../hboarduicontrol.h"
 #include "../../himagemapboard.h"

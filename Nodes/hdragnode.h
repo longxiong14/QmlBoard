@@ -34,10 +34,15 @@ class HBOARD_EXPORT HDragNode : public QSGGeometryNode, public QJsonObject {
 
   QUuid getParent();
 
+  void setCenter(const QPointF& c);
+
+  QPointF getCenter();
+
  protected:
   QCursor _cursor;
   QUuid _parent;
   double _size;
+  QPointF _center;
 };
 
 #endif  // HDRAGNODE_H

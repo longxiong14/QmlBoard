@@ -26,6 +26,7 @@ HDragNode *HDragNode::buildNode(const QPointF &center, double size,
   node->setFlag(QSGNode::OwnsGeometry);
   node->setParent(parent);
   node->_size = size;
+  node->setCenter(center);
   return node;
 }
 
@@ -79,3 +80,7 @@ QCursor HDragNode::getCursor() { return _cursor; }
 void HDragNode::setParent(const QUuid &p) { _parent = p; }
 
 QUuid HDragNode::getParent() { return _parent; }
+
+void HDragNode::setCenter(const QPointF &c) { _center = c; }
+
+QPointF HDragNode::getCenter() { return _center; }

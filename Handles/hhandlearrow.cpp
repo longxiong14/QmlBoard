@@ -107,7 +107,7 @@ void HHandleArrow::mouseReleaseEvent(HBoard *board, QMouseEvent *event,
     if (_drag_node) {
       if (command) {
         auto action = std::make_shared<HMoveDragNodeAction>(
-            board->name(), _drag_node_id, _drag_node->getPointIndex(),
+            board->name(), _drag_node->getParent(), _drag_node->getPointIndex(),
             _drag_begin, _drag_end);
         command->excute(action);
       }
@@ -118,6 +118,7 @@ void HHandleArrow::mouseReleaseEvent(HBoard *board, QMouseEvent *event,
         auto action = std::make_shared<HMoveNodeAction>(board->name(),
                                                         board->selects(), _dlt);
         command->excute(action);
+        _dlt = {};
       }
     }
     if (isButtonPress(event) && !middleButtonPress(event) && !_moved) {
@@ -181,13 +182,8 @@ void HHandleArrow::hoverMoveEvent(HBoard *board, QHoverEvent *e,
       if (node->isSelect() &&
           node->pointInDragNode(e->pos(), _drag_node, board->getScale()) &&
           _drag_node) {
-        auto index = _drag_node->getPointIndex();
-        auto list = node->getPointList();
-        if (index >= 0 && index < list.size()) {
-          _drag_begin = list[index];
-        }
+        _drag_begin = _drag_node->getCenter();
         board->setCursor(_drag_node->getCursor());
-        _drag_node_id = s;
         return;
       }
     }
