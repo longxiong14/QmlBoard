@@ -9,14 +9,12 @@ ApplicationWindow {
     visible: true
     width: 960
     height: 540
-    title: qsTr("nodes")
+    title: qsTr("language")
 
     property var handles: idControl.handleList()
     HUIControl{
         id:idControl
     }
-
-
 
     HBoard{
         id:idBoard

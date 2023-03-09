@@ -3,8 +3,9 @@
         <file>main.qml</file>
         <file>qtquickcontrols2.conf</file>
         <file>qml/HCheckBox.qml</file>
-        <file>qml/operators/HOperator.qml</file>
+        <file>qml/operators/CVSize.qml</file>
         <file>qml/parmeters/HBlurParameters.qml</file>
         <file>qml/tabs/HBlurredTab.qml</file>
+        <file>qml/operators/CVPoint.qml</file>
     </qresource>
 </RCC>

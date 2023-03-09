@@ -1,7 +1,7 @@
 ﻿#ifndef HUICONTROL_H
 #define HUICONTROL_H
-
 #include <QObject>
+#include <opencv2/core.hpp>
 class HUIModel;
 class HCVMatBoard;
 class HUIControl : public QObject {
@@ -15,7 +15,7 @@ class HUIControl : public QObject {
   int openImage(const QString& path);
 
   Q_INVOKABLE
-  int blur(const QJsonObject& param);
+  int blur(const QJsonObject& size, const QJsonObject& point);
 
   Q_INVOKABLE
   int test();
@@ -23,6 +23,9 @@ class HUIControl : public QObject {
  protected:
   HCVMatBoard* getSingleSource();
   HCVMatBoard* getDest();
+
+  cv::Size getSize(const QJsonObject& param);
+  cv::Point getPoint(const QJsonObject& param);
 
  signals:
   void sigError(const QString& error);

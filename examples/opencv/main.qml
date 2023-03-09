@@ -6,6 +6,7 @@ import hBoard 1.0
 import hUIControl 1.0
 import "./qml"
 import "./qml/tabs"
+import hEnumModel 1.0
 ApplicationWindow {
     visible: true
     title: qsTr("opencv flow")
@@ -123,5 +124,9 @@ ApplicationWindow {
 
     HUIControl{
         id:idUIControl
+    }
+
+    HEnumModel{
+        id:idEnumModel
     }
 }

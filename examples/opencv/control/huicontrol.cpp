@@ -7,6 +7,7 @@
 
 #include "../../Handles/hhandleflyweight.h"
 #include "../../hboardmanager.h"
+#include "../hqdebug.h"
 #include "../model/hcvmatboard.h"
 #include "../model/hcvmatnode2.h"
 #include "../model/hmulthandles.h"
@@ -47,15 +48,13 @@ int HUIControl::openImage(const QString &path) {
   return board->setMatNode(node);
 }
 
-int HUIControl::blur(const QJsonObject &param) {
+int HUIControl::blur(const QJsonObject &size, const QJsonObject &point) {
   SIGNLE
 
   auto mat = board->getMatNode();
   cv::Mat dst;
-  cv::blur(mat, dst,
-           cv::Size(param.value("size_width").toInt(3),
-                    param.value("size_height").toInt(3)),
-           cv::Point(), cv::BorderTypes::BORDER_DEFAULT);
+  cv::blur(mat, dst, getSize(size), getPoint(point),
+           cv::BorderTypes::BORDER_DEFAULT);
   return dest->setMatNode(dst);
 }
 
@@ -90,4 +89,14 @@ HCVMatBoard *HUIControl::getDest() {
   if (!board) return nullptr;
   auto b = dynamic_cast<HCVMatBoard *>(board);
   return b;
+}
+
+cv::Size HUIControl::getSize(const QJsonObject &param) {
+  return cv::Size(param.value("size_width").toInt(),
+                  param.value("size_height").toInt());
+}
+
+cv::Point HUIControl::getPoint(const QJsonObject &param) {
+  return cv::Size(param.value("point_x").toInt(),
+                  param.value("point_y").toInt());
 }
