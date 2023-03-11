@@ -18,6 +18,9 @@ class HUIControl : public QObject {
   int blur(const QJsonObject& size, const QJsonObject& point);
 
   Q_INVOKABLE
+  int translate(const QJsonObject& dlt_point);
+
+  Q_INVOKABLE
   int test();
 
  protected:

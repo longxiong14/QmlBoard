@@ -1,12 +1,10 @@
-#ifndef HBOARD_GLOBAL_H
+﻿#ifndef HBOARD_GLOBAL_H
 #define HBOARD_GLOBAL_H
 
-#include <QtCore/qglobal.h>
-
 #if defined(HBOARD_LIBRARY)
-#  define HBOARD_EXPORT Q_DECL_EXPORT
+#define HBOARD_EXPORT __declspec(dllexport)
 #else
-#  define HBOARD_EXPORT Q_DECL_IMPORT
+#define HBOARD_EXPORT __declspec(dllimport)
 #endif
 
-#endif // HBOARD_GLOBAL_H
+#endif  // HBOARD_GLOBAL_H

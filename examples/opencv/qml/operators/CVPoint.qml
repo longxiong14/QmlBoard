@@ -1,12 +1,13 @@
 ﻿import QtQuick 2.13
 
 Row{
+    property var title: "point"
     property var cvPoint: ({point_x:0,
                            point_y:0})
     spacing: 10
     Text {
         width: 60
-        text: qsTr("point")
+        text: qsTr(title)
     }
 
     Column{

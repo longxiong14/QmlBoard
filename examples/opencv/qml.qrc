@@ -7,5 +7,7 @@
         <file>qml/parmeters/HBlurParameters.qml</file>
         <file>qml/tabs/HBlurredTab.qml</file>
         <file>qml/operators/CVPoint.qml</file>
+        <file>qml/tabs/HAffineTransformationTab.qml</file>
+        <file>qml/parmeters/HTranslateParamter.qml</file>
     </qresource>
 </RCC>

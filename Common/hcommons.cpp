@@ -273,3 +273,25 @@ bool HCommon::RectHasOverlap(const QRectF &r1, const QRectF &r2) {
   }
   return false;
 }
+
+QList<QPointF> HCommon::RotateRect(const QRectF &rect, double angle,
+                                   const QPointF &center) {
+  QList<QPointF> list = {rect.topLeft(), rect.topRight(), rect.bottomRight(),
+                         rect.bottomLeft()};
+  return RotateList(list, angle, center);
+}
+
+QList<QPointF> HCommon::RotateList(const QList<QPointF> &list, double angle,
+                                   const QPointF &center) {
+  angle = PI * angle / 180.0;
+  QList<QPointF> out;
+  for (const auto &point : list) {
+    auto dx = point.x() - center.x();
+    auto dy = point.y() - center.y();
+
+    auto rx = dx * cos(angle) - dy * sin(angle) + center.x();
+    auto ry = dx * sin(angle) + dy * cos(angle) + center.y();
+    out.push_back(QPointF(rx, ry));
+  }
+  return out;
+}

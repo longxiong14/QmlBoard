@@ -37,6 +37,13 @@ class HBOARD_EXPORT HCommon {
 
   static bool RectHasOverlap(const QRectF &r1, const QRectF &r2);
 
+  // rotate
+  static QList<QPointF> RotateRect(const QRectF &rect, double angle,
+                                   const QPointF &center);
+
+  static QList<QPointF> RotateList(const QList<QPointF> &list, double angle,
+                                   const QPointF &center);
+
 };  // class HCommon
 
 #endif  // HCOMMONS_H

@@ -1,5 +1,6 @@
 ﻿#ifndef HTHREADPOOL_H
 #define HTHREADPOOL_H
+#include <atomic>
 #include <condition_variable>
 #include <functional>
 #include <iostream>

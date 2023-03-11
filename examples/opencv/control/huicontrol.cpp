@@ -1,5 +1,5 @@
 ﻿#include "huicontrol.h"
-
+//#include <opencv2/
 #include <QDebug>
 #include <memory>
 #include <opencv2/imgcodecs.hpp>
@@ -55,6 +55,19 @@ int HUIControl::blur(const QJsonObject &size, const QJsonObject &point) {
   cv::Mat dst;
   cv::blur(mat, dst, getSize(size), getPoint(point),
            cv::BorderTypes::BORDER_DEFAULT);
+  return dest->setMatNode(dst);
+}
+
+int HUIControl::translate(const QJsonObject &dlt_point) {
+  SIGNLE
+
+  auto mat = board->getMatNode();
+  cv::Point dlt = getPoint(dlt_point);
+  cv::Mat dst;
+  //  cv::Mat m = (cv::Mat_<double>(3, 3) << 1, 0, dlt.x, 0, 1, dlt.y, 0, 0, 1);
+  cv::Mat m = (cv::Mat_<double>(2, 3) << 1, 0, dlt.x, 0, 1, dlt.y);
+  DEBUG << m;
+  cv::warpAffine(mat, dst, m, mat.size());
   return dest->setMatNode(dst);
 }
 

@@ -106,6 +106,9 @@ ApplicationWindow {
                 HBlurredTab{
 
                 }
+                HAffineTransformationTab{
+
+                }
             }
         }
     }
