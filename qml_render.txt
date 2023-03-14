@@ -1,0 +1,1 @@
+由于渲染线程和GUI线程不同步，所以connect的方式需要选择 Qt::DirectConnection
