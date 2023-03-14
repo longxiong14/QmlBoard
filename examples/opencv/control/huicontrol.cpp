@@ -11,6 +11,7 @@
 #include "../model/hcvmatboard.h"
 #include "../model/hcvmatnode2.h"
 #include "../model/hmulthandles.h"
+#include "../model/htrans.h"
 #include "../model/huimodel.h"
 #define DEBUG qDebug() << __FUNCTION__ << __LINE__
 
@@ -26,21 +27,30 @@
     return -1;                                     \
   }
 
-HUIControl::HUIControl(QObject *parent) : QObject(parent) {
+#define qsTr(str) _translator->trans(str)
+
+HUIControl::HUIControl(QObject *parent)
+    : QObject(parent), _model(nullptr), _translator(nullptr) {
+  _translator = std::shared_ptr<HTranslator>(new HTranslator());
   HHandleFlyWeight::registHandle<HMultHandles>();
 }
 
 void HUIControl::setModel(HUIModel *ptr) { _model = ptr; }
 
+HTranslator *HUIControl::getTranslate() {
+  if (_translator) return _translator.get();
+  return nullptr;
+}
+
 int HUIControl::openImage(const QString &path) {
   DEBUG << path;
   if (!_model) {
-    sigError("_model is nullptr");
+    sigError(qsTr("_model is nullptr"));
     return -1;
   }
   auto board = getSingleSource();
   if (!board) {
-    sigError("please select single source board");
+    sigError(qsTr("please select single source board"));
     return -1;
   }
   auto node =
@@ -50,7 +60,7 @@ int HUIControl::openImage(const QString &path) {
 
 int HUIControl::blur(const QJsonObject &size, const QJsonObject &point) {
   SIGNLE
-
+  DEBUG << size << point;
   auto mat = board->getMatNode();
   cv::Mat dst;
   cv::blur(mat, dst, getSize(size), getPoint(point),
@@ -71,10 +81,25 @@ int HUIControl::translate(const QJsonObject &dlt_point) {
   return dest->setMatNode(dst);
 }
 
+int HUIControl::maskBoard(const QString &name, bool checked) {
+  auto board = getBoardByName(name);
+  if (board->getMatNode().empty()) {
+    sigError(qsTr("unload image..."));
+  }
+  return 0;
+}
+
 int HUIControl::test() {
   //    cv::blur()
 
   return 0;
+}
+
+HCVMatBoard *HUIControl::getBoardByName(const QString &name) {
+  auto *board = HBoardManager::getInstance()->getBoard(name);
+  if (!board) return nullptr;
+  auto b = dynamic_cast<HCVMatBoard *>(board);
+  return b;
 }
 
 HCVMatBoard *HUIControl::getSingleSource() {
@@ -89,10 +114,7 @@ HCVMatBoard *HUIControl::getSingleSource() {
     }
   }
   if (count > 1) return nullptr;
-  auto *board = HBoardManager::getInstance()->getBoard(name);
-  if (!board) return nullptr;
-  auto b = dynamic_cast<HCVMatBoard *>(board);
-  return b;
+  return getBoardByName(name);
 }
 
 HCVMatBoard *HUIControl::getDest() {

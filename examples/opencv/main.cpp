@@ -19,6 +19,7 @@
 #include "control/huicontrol.h"
 #include "model/hcvmatboard.h"
 #include "model/henummodel.h"
+#include "model/htrans.h"
 #include "model/huimodel.h"
 int main(int argc, char *argv[]) {
   QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
@@ -36,6 +37,7 @@ int main(int argc, char *argv[]) {
   qmlRegisterType<HEnumModel>("hEnumModel", 1, 0, "HEnumModel");
   root->setContextProperty("gModel", &model);
   root->setContextProperty("gCtrl", &control);
+  root->setContextProperty("trans", control.getTranslate());
   const QUrl url(QStringLiteral("qrc:/main.qml"));
   QObject::connect(
       &engine, &QQmlApplicationEngine::objectCreated, &app,

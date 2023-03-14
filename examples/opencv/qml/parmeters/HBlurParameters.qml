@@ -3,19 +3,21 @@ import QtQuick.Controls 1.4
 import "../operators"
 GroupBox{
     title: qsTr("blur")
-    Row{
+    Flow{
+        width: parent.width
         spacing: 20
         CVSize{
             id:idSize
         }
 
         CVPoint{
+            id:idPoint
         }
 
         Button{
             text: qsTr("blur")
             onClicked: {
-                gCtrl.blur(idSize.cvSize)
+                gCtrl.blur(idSize.cvSize, idPoint.cvPoint)
             }
         }
     }

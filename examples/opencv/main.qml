@@ -79,6 +79,12 @@ ApplicationWindow {
                             checked: gModel.dest === idBoard.name
                             onClicked: gModel.dest = idBoard.name
                         }
+
+                        HCheckBox{
+                            text: qsTr("mask")
+                            checked: idBoard.mask
+                            onClicked: idBoard.mask = !idBoard.mask
+                        }
                     }
                     Button{
                         anchors.right: parent.right

@@ -4,8 +4,13 @@
 
 #include "../../Nodes/hnodebase.h"
 #include "hcvmatnode2.h"
+#define DEBUG qDebug() << __FUNCTION__ << __LINE__
 
-HCVMatBoard::HCVMatBoard(QQuickItem *parent) : HImageMapBoard(parent) {}
+HCVMatBoard::HCVMatBoard(QQuickItem *parent) : HImageMapBoard(parent) {
+  init();
+}
+
+void HCVMatBoard::init() { setMask(false); }
 
 int HCVMatBoard::setMatNode(std::shared_ptr<HCVMatNode2> node) {
   if (!node) return -1;
@@ -46,10 +51,31 @@ void HCVMatBoard::setMsg(const QString &msg) {
 
 QString HCVMatBoard::msg() { return _msg; }
 
+void HCVMatBoard::setMask(bool checked) {
+  if (_mask != checked) {
+    _mask = checked;
+    maskChanged();
+  }
+}
+
+bool HCVMatBoard::mask() { return _mask; }
+
 void HCVMatBoard::setMatMsg(cv::Mat mat) {
   QString s = QString("width:%1\nheight:%2\nchannels:%3\n")
                   .arg(mat.cols)
                   .arg(mat.rows)
                   .arg(mat.channels());
   setMsg(s);
+}
+
+void HCVMatBoard::connections() {
+  connect(this, &HCVMatBoard::maskChanged, this, &HCVMatBoard::slotMask);
+}
+
+void HCVMatBoard::slotMask() {
+  if (mask()) {
+    //      auto node = std::make_shared<HCVMatNode2>()
+  } else {
+    removeNode(_mask_node);
+  }
 }

@@ -2,7 +2,7 @@
 import QtQuick.Controls 1.4
 import "../parmeters"
 Tab {
-    title: qsTr("blurred")
+    title: qsTr("translate")
     Column{
         HTranslateParamter{
 

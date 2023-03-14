@@ -2,14 +2,19 @@
 #define HUICONTROL_H
 #include <QObject>
 #include <opencv2/core.hpp>
+
 class HUIModel;
+class HTranslator;
 class HCVMatBoard;
+
 class HUIControl : public QObject {
   Q_OBJECT
  public:
   explicit HUIControl(QObject* parent = nullptr);
 
   void setModel(HUIModel* ptr);
+
+  HTranslator* getTranslate();
 
   Q_INVOKABLE
   int openImage(const QString& path);
@@ -21,9 +26,13 @@ class HUIControl : public QObject {
   int translate(const QJsonObject& dlt_point);
 
   Q_INVOKABLE
+  int maskBoard(const QString& name, bool checked);
+
+  Q_INVOKABLE
   int test();
 
  protected:
+  HCVMatBoard* getBoardByName(const QString& name);
   HCVMatBoard* getSingleSource();
   HCVMatBoard* getDest();
 
@@ -37,6 +46,7 @@ class HUIControl : public QObject {
 
  protected:
   HUIModel* _model;
+  std::shared_ptr<HTranslator> _translator;
 };
 
 #endif  // HUICONTROL_H
