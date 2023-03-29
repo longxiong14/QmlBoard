@@ -12,7 +12,7 @@ HCVMatBoard::HCVMatBoard(QQuickItem *parent) : HImageMapBoard(parent) {
 
 void HCVMatBoard::init() { setMask(false); }
 
-int HCVMatBoard::setMatNode(std::shared_ptr<HCVMatNode2> node) {
+int HCVMatBoard::setMatNode(std::shared_ptr<HCVMatNode> node) {
   if (!node) return -1;
   removeMatNode();
   node->setFlag(HNodeBase::NODEFLAG::CANSELECT, false);
@@ -25,7 +25,7 @@ int HCVMatBoard::setMatNode(std::shared_ptr<HCVMatNode2> node) {
 
 int HCVMatBoard::setMatNode(cv::Mat mat) {
   if (mat.empty()) return -1;
-  auto node = std::make_shared<HCVMatNode2>(mat);
+  auto node = std::make_shared<HCVMatNode>(mat);
   return setMatNode(node);
 }
 

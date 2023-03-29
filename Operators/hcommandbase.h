@@ -12,6 +12,7 @@ class HBOARD_EXPORT HCommandBase {
   HCommandBase &operator=(const HCommandBase &other) = default;
   virtual ~HCommandBase();
 
+  virtual int pushAction(std::shared_ptr<HBoardActionBase>) = 0;
   virtual int excute(std::shared_ptr<HBoardActionBase>) = 0;
   virtual int undo() = 0;
   virtual int redo() = 0;
@@ -21,6 +22,7 @@ class HBOARD_EXPORT HCommand : public HCommandBase {
  public:
   HCommand();
 
+  virtual int pushAction(std::shared_ptr<HBoardActionBase>) override;
   virtual int excute(std::shared_ptr<HBoardActionBase>) override;
   virtual int undo() override;
   virtual int redo() override;

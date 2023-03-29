@@ -10,6 +10,7 @@
 #include "../hqdebug.h"
 #include "../model/hcvmatboard.h"
 #include "../model/hcvmatnode2.h"
+#include "../model/hcvmatnode_rotate.h"
 #include "../model/hmulthandles.h"
 #include "../model/htrans.h"
 #include "../model/huimodel.h"
@@ -90,8 +91,14 @@ int HUIControl::maskBoard(const QString &name, bool checked) {
 }
 
 int HUIControl::test() {
-  //    cv::blur()
-
+  auto board = getSingleSource();
+  if (!board) {
+    sigError("please select single source board");
+    return -1;
+  }
+  auto node = std::make_shared<HCVMatRotateNode>(
+      "C:\\Users\\xiaolong\\Pictures\\bgr.png");
+  board->pushNode(node);
   return 0;
 }
 

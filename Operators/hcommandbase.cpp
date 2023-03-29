@@ -10,6 +10,14 @@ HCommandBase::~HCommandBase() {}
 
 HCommand::HCommand() {}
 
+int HCommand::pushAction(std::shared_ptr<HBoardActionBase> ptr) {
+  if (ptr) {
+    clearUndos();
+    _excutes.push(ptr);
+  }
+  return 0;
+}
+
 int HCommand::excute(std::shared_ptr<HBoardActionBase> ptr) {
   if (ptr) {
     //    DEBUG << "excute";

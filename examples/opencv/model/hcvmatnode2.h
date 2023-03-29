@@ -4,16 +4,16 @@
 #include <opencv2/core.hpp>
 
 #include "../../Nodes/himagemapnode.h"
-class HCVMatNode2 : public HImageMapNodeDelegate {
+class HCVMatNode : public HImageMapNodeDelegate {
  public:
-  HCVMatNode2(const QString &path);
-  HCVMatNode2(const cv::Mat &mat);
-  HCVMatNode2(const cv::Mat &mat, const QPointF &s);
+  HCVMatNode(const QString &path);
+  HCVMatNode(const cv::Mat &mat);
+  HCVMatNode(const cv::Mat &mat, const QPointF &s);
 
   cv::Mat getMat();
   void setMat(const cv::Mat &m);
 
-  virtual ~HCVMatNode2() override;
+  virtual ~HCVMatNode() override;
 
   virtual QImage getImage(const QRectF &roi, double scale) override;
 

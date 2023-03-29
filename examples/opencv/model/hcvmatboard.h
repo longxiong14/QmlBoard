@@ -4,7 +4,7 @@
 #include <opencv2/core.hpp>
 
 #include "../../himagemapboard.h"
-class HCVMatNode2;
+class HCVMatNode;
 class HCVMatBoard : public HImageMapBoard {
   Q_OBJECT
   Q_PROPERTY(QString msg READ msg WRITE setMsg NOTIFY msgChanged)
@@ -15,7 +15,7 @@ class HCVMatBoard : public HImageMapBoard {
  public:
   void init();
 
-  int setMatNode(std::shared_ptr<HCVMatNode2> node);
+  int setMatNode(std::shared_ptr<HCVMatNode> node);
   int setMatNode(cv::Mat mat);
 
   cv::Mat getMatNode();
@@ -39,7 +39,7 @@ class HCVMatBoard : public HImageMapBoard {
   void slotMask();
 
  protected:
-  std::shared_ptr<HCVMatNode2> _mat_node;
+  std::shared_ptr<HCVMatNode> _mat_node;
   QString _msg;
   bool _mask;
   QUuid _mask_node;

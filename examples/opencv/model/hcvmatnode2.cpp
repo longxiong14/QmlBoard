@@ -5,36 +5,36 @@
 #include <opencv2/imgcodecs.hpp>
 #include <opencv2/imgproc.hpp>
 #define DEBUG qDebug() << __FUNCTION__ << __LINE__
-HCVMatNode2::HCVMatNode2(const QString &path) : HImageMapNodeDelegate() {
+HCVMatNode::HCVMatNode(const QString &path) : HImageMapNodeDelegate() {
   _mat = cv::imread(path.toLocal8Bit().toStdString(), cv::IMREAD_UNCHANGED);
   setRect(QRect(QPoint(), QSize(_mat.cols, _mat.rows)));
   setFlag(NODEFLAG::CANSELECT, false);
 }
 
-HCVMatNode2::HCVMatNode2(const cv::Mat &mat)
+HCVMatNode::HCVMatNode(const cv::Mat &mat)
     : HImageMapNodeDelegate(), _mat(mat) {
   setRect(QRect(QPoint(), QSize(_mat.cols, _mat.rows)));
   setFlag(NODEFLAG::CANSELECT, false);
 }
 
-HCVMatNode2::HCVMatNode2(const cv::Mat &mat, const QPointF &s)
+HCVMatNode::HCVMatNode(const cv::Mat &mat, const QPointF &s)
     : HImageMapNodeDelegate(), _mat(mat) {
   setRect(QRectF(s, QSizeF(_mat.cols, _mat.rows)));
   setFlag(NODEFLAG::CANSELECT, false);
 }
 
-cv::Mat HCVMatNode2::getMat() { return _mat; }
+cv::Mat HCVMatNode::getMat() { return _mat; }
 
-void HCVMatNode2::setMat(const cv::Mat &m) {
+void HCVMatNode::setMat(const cv::Mat &m) {
   _mat = m;
   setRect(QRect(QPoint(), QSize(_mat.cols, _mat.rows)));
 }
 
-HCVMatNode2::~HCVMatNode2() {}
+HCVMatNode::~HCVMatNode() {}
 
 // void HCVMatNode2::changedSelectStatus() { setf }
 
-QImage HCVMatNode2::CVMat2Qimage(cv::Mat mat) {
+QImage HCVMatNode::CVMat2Qimage(cv::Mat mat) {
   if (mat.type() == CV_8UC1) {
     QImage image(mat.cols, mat.rows, QImage::Format_Grayscale8);
     image.setColorCount(256);
@@ -63,7 +63,7 @@ QImage HCVMatNode2::CVMat2Qimage(cv::Mat mat) {
   return QImage();
 }
 
-QImage HCVMatNode2::getImage(const QRectF &roi, double scale) {
+QImage HCVMatNode::getImage(const QRectF &roi, double scale) {
   QImage q;
 
   auto src_rect =

@@ -23,6 +23,12 @@ ApplicationWindow {
                     idFile.open()
                 }
             }
+            MenuItem {
+                text: qsTr("test")
+                onTriggered: {
+                    gCtrl.test()
+                }
+            }
         }
     }
 
