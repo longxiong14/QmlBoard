@@ -19,7 +19,9 @@ HHistogramChart::HHistogramChart(QQuickItem *parent)
       _left(0),
       _right(255),
       _color("red"),
-      _font_size(10) {
+      _font_size(10),
+      _line_width(1),
+      _line_color("") {
   setFlag(QQuickItem::ItemHasContents, true);
   setAcceptHoverEvents(true);
   setClip(true);
@@ -151,6 +153,24 @@ void HHistogramChart::setFontSize(int size) {
   }
 }
 
+int HHistogramChart::lineWidth() { return _line_width; }
+
+void HHistogramChart::setLineWidth(int w) {
+  if (_line_width != w) {
+    _line_width = w;
+    lineWidthChanged();
+  }
+}
+
+QString HHistogramChart::lineColor() { return _line_color; }
+
+void HHistogramChart::setLineColor(const QString &color) {
+  if (_line_color != color) {
+    _line_color = color;
+    lineColorChanged();
+  }
+}
+
 void HHistogramChart::updateChart(QSGNode *node) {
   if (node) {
     if (!_chart_node) {
@@ -234,16 +254,20 @@ void HHistogramChart::updateNode(QSGGeometryNode *&node, int num) {
 
   QList<QPointF> list{{step * num, 0}, {step * num, height()}};
   auto geo = HSGNodeCommon::buildGeometry(list, GL_LINES);
-  geo->setLineWidth(2);
+  geo->setLineWidth(lineWidth());
   node->setGeometry(geo);
   node->setFlag(QSGNode::OwnsGeometry);
 
   QColor c;
-  c.setNamedColor(color());
-  auto red = c.red() ^ 0xff;
-  auto green = c.green() ^ 0xff;
-  auto blue = c.blue() ^ 0xff;
-  c = QColor(red, green, blue);
+  if (lineColor().isEmpty()) {
+    c.setNamedColor(color());
+    auto red = c.red() ^ 0xff;
+    auto green = c.green() ^ 0xff;
+    auto blue = c.blue() ^ 0xff;
+    c = QColor(red, green, blue);
+  } else {
+    c.setNamedColor(lineColor());
+  }
   {
     auto image = HSGNodeCommon::createTextImage(QString::number(num),
                                                 _font_size * 3, _font_size * 2);

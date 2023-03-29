@@ -52,6 +52,8 @@ ApplicationWindow {
                height: 100
                array: gHandle.charts[index]
                color: colors[index]
+//               lineColor:"pink"
+//               lineWidth:5
             }
         }
     }

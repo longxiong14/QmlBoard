@@ -18,6 +18,10 @@ class HBOARD_EXPORT HHistogramChart : public QQuickItem {
   Q_PROPERTY(QString color READ color WRITE setColor NOTIFY colorChanged)
   Q_PROPERTY(
       int fontSize READ fontSize WRITE setFontSize NOTIFY fontSizeChanged)
+  Q_PROPERTY(
+      int lineWidth READ lineWidth WRITE setLineWidth NOTIFY lineWidthChanged)
+  Q_PROPERTY(QString lineColor READ lineColor WRITE setLineColor NOTIFY
+                 lineColorChanged)
 
  public:
   HHistogramChart(QQuickItem *parent = nullptr);
@@ -45,6 +49,12 @@ class HBOARD_EXPORT HHistogramChart : public QQuickItem {
   int fontSize();
   void setFontSize(int size);
 
+  int lineWidth();
+  void setLineWidth(int w);
+
+  QString lineColor();
+  void setLineColor(const QString &color);
+
  protected:
   void updateChart(QSGNode *node);
   void updateLeft(QSGNode *node);
@@ -53,6 +63,8 @@ class HBOARD_EXPORT HHistogramChart : public QQuickItem {
   void updateNode(QSGGeometryNode *&node, int num);
 
  signals:
+  void lineColorChanged();
+  void lineWidthChanged();
   void arrayChanged();
   void leftChanged();
   void rightChanged();
@@ -78,6 +90,8 @@ class HBOARD_EXPORT HHistogramChart : public QQuickItem {
 
   LOR _lor;
   int _font_size;
+  int _line_width;
+  QString _line_color;
 };
 
 #endif  // HHISTOGRAMCHART_H
