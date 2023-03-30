@@ -8,6 +8,7 @@
 
 HCVMatBoard::HCVMatBoard(QQuickItem *parent) : HImageMapBoard(parent) {
   init();
+  connections();
 }
 
 void HCVMatBoard::init() { setMask(false); }
@@ -32,6 +33,12 @@ int HCVMatBoard::setMatNode(cv::Mat mat) {
 cv::Mat HCVMatBoard::getMatNode() {
   cv::Mat out;
   if (_mat_node) out = _mat_node->getMat();
+  return out;
+}
+
+cv::Mat HCVMatBoard::getMaskNode() {
+  cv::Mat out;
+  if (_mask_node) out = _mask_node->getMat();
   return out;
 }
 
@@ -60,6 +67,13 @@ void HCVMatBoard::setMask(bool checked) {
 
 bool HCVMatBoard::mask() { return _mask; }
 
+void HCVMatBoard::setHistogram(const QJsonArray &array) {
+  _histogram = array;
+  histogramChanged();
+}
+
+QJsonArray HCVMatBoard::histogram() { return _histogram; }
+
 void HCVMatBoard::setMatMsg(cv::Mat mat) {
   QString s = QString("width:%1\nheight:%2\nchannels:%3\n")
                   .arg(mat.cols)
@@ -73,9 +87,22 @@ void HCVMatBoard::connections() {
 }
 
 void HCVMatBoard::slotMask() {
+  if (_mask_node) {
+    removeNode(_mask_node->id());
+    _mask_node = nullptr;
+  }
   if (mask()) {
-    //      auto node = std::make_shared<HCVMatNode2>()
+    if (_mat_node) {
+      cv::Mat m =
+          cv::Mat(_mat_node->getMat().size(), CV_8UC4, cv::Scalar::all(0));
+      DEBUG << "mat size : " << m.cols << m.rows;
+      _mask_node = std::make_shared<HCVMatNode>(m);
+      pushNode(_mask_node);
+    }
   } else {
-    removeNode(_mask_node);
+    if (_mask_node) {
+      removeNode(_mask_node->id());
+      _mask_node = nullptr;
+    }
   }
 }

@@ -1,6 +1,7 @@
 ﻿#ifndef HCVMATBOARD_H
 #define HCVMATBOARD_H
 
+#include <QJsonArray>
 #include <opencv2/core.hpp>
 
 #include "../../himagemapboard.h"
@@ -9,6 +10,8 @@ class HCVMatBoard : public HImageMapBoard {
   Q_OBJECT
   Q_PROPERTY(QString msg READ msg WRITE setMsg NOTIFY msgChanged)
   Q_PROPERTY(bool mask READ mask WRITE setMask NOTIFY maskChanged)
+  Q_PROPERTY(QJsonArray histogram READ histogram WRITE setHistogram NOTIFY
+                 histogramChanged)
  public:
   HCVMatBoard(QQuickItem* parent = nullptr);
 
@@ -19,6 +22,7 @@ class HCVMatBoard : public HImageMapBoard {
   int setMatNode(cv::Mat mat);
 
   cv::Mat getMatNode();
+  cv::Mat getMaskNode();
 
   void removeMatNode();
 
@@ -27,7 +31,11 @@ class HCVMatBoard : public HImageMapBoard {
   QString msg();
   void setMask(bool checked);
   bool mask();
+  void setHistogram(const QJsonArray& array);
+  QJsonArray histogram();
+
  signals:
+  void histogramChanged();
   void msgChanged();
   void maskChanged();
 
@@ -42,7 +50,8 @@ class HCVMatBoard : public HImageMapBoard {
   std::shared_ptr<HCVMatNode> _mat_node;
   QString _msg;
   bool _mask;
-  QUuid _mask_node;
+  std::shared_ptr<HCVMatNode> _mask_node;
+  QJsonArray _histogram;
 };
 
 #endif  // HCVMATBOARD_H

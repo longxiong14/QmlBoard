@@ -90,6 +90,18 @@ int HUIControl::maskBoard(const QString &name, bool checked) {
   return 0;
 }
 
+int HUIControl::openInrange(const QString &name, const QString &file) {
+  auto board = HBoardManager::getInstance()->getBoard(name);
+  if (!board) return -1;
+  auto b = dynamic_cast<HCVMatBoard *>(board);
+  if (!b) return -1;
+  cv::Mat mat =
+      cv::imread(file.toLocal8Bit().toStdString(), cv::IMREAD_UNCHANGED);
+  if (mat.empty()) return -1;
+  b->setMatNode(mat);
+  return 0;
+}
+
 int HUIControl::test() {
   auto board = getSingleSource();
   if (!board) {

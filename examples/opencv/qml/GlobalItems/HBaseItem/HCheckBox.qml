@@ -23,11 +23,15 @@ CheckBox {
                 anchors.fill: parent
             }
         }
-        label: Text {
-            text: idControl.text
-            font.pixelSize: fontSize
-            color: textColor
-            font.bold: isfontbold
-        }
+
+        label: HText {
+                id: idTxt
+                text: idControl.text
+                font.pixelSize: fontSize
+                color: textColor
+                font.bold: isfontbold
+                elide: Text.ElideRight
+                tip: text
+            }
     }
 }

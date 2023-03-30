@@ -2,12 +2,44 @@
     <qresource prefix="/">
         <file>main.qml</file>
         <file>qtquickcontrols2.conf</file>
-        <file>qml/HCheckBox.qml</file>
         <file>qml/operators/CVSize.qml</file>
         <file>qml/parmeters/HBlurParameters.qml</file>
         <file>qml/tabs/HBlurredTab.qml</file>
         <file>qml/operators/CVPoint.qml</file>
         <file>qml/tabs/HAffineTransformationTab.qml</file>
         <file>qml/parmeters/HTranslateParamter.qml</file>
+        <file>qml/GlobalItems/HBaseItem/HButton.qml</file>
+        <file>qml/GlobalItems/HBaseItem/HCheckBox.qml</file>
+        <file>qml/GlobalItems/HBaseItem/HComboBox.qml</file>
+        <file>qml/GlobalItems/HBaseItem/HDeleteTipDialog.qml</file>
+        <file>qml/GlobalItems/HBaseItem/HErrorBox.qml</file>
+        <file>qml/GlobalItems/HBaseItem/HFileDialog.qml</file>
+        <file>qml/GlobalItems/HBaseItem/HFlow.qml</file>
+        <file>qml/GlobalItems/HBaseItem/HFlushComboBox.qml</file>
+        <file>qml/GlobalItems/HBaseItem/HFMComboBox.qml</file>
+        <file>qml/GlobalItems/HBaseItem/HGroupBox.qml</file>
+        <file>qml/GlobalItems/HBaseItem/HHistogramCharDialog.qml</file>
+        <file>qml/GlobalItems/HBaseItem/HHorizontalImageButtons.qml</file>
+        <file>qml/GlobalItems/HBaseItem/HImageButton.qml</file>
+        <file>qml/GlobalItems/HBaseItem/HImageFlagButton.qml</file>
+        <file>qml/GlobalItems/HBaseItem/HImageTextButton.qml</file>
+        <file>qml/GlobalItems/HBaseItem/HIndexShowView.qml</file>
+        <file>qml/GlobalItems/HBaseItem/HListView.qml</file>
+        <file>qml/GlobalItems/HBaseItem/HMagnifierComboBox.qml</file>
+        <file>qml/GlobalItems/HBaseItem/HMouseArea.qml</file>
+        <file>qml/GlobalItems/HBaseItem/HNumberInput.qml</file>
+        <file>qml/GlobalItems/HBaseItem/HRectangle.qml</file>
+        <file>qml/GlobalItems/HBaseItem/HRectangleTextButton.qml</file>
+        <file>qml/GlobalItems/HBaseItem/HRectangleTipString.qml</file>
+        <file>qml/GlobalItems/HBaseItem/HRectTextFlagButton.qml</file>
+        <file>qml/GlobalItems/HBaseItem/HSliderBlock.qml</file>
+        <file>qml/GlobalItems/HBaseItem/HSuperLinkText.qml</file>
+        <file>qml/GlobalItems/HBaseItem/HTableView.qml</file>
+        <file>qml/GlobalItems/HBaseItem/HTabView.qml</file>
+        <file>qml/GlobalItems/HBaseItem/HText.qml</file>
+        <file>qml/GlobalItems/HBaseItem/HTextArea.qml</file>
+        <file>qml/GlobalItems/HBaseItem/HTextInput.qml</file>
+        <file>qml/GlobalItems/HBaseItem/HTipComfirmationDialog.qml</file>
+        <file>qml/GlobalItems/HBaseItem/HWindow.qml</file>
     </qresource>
 </RCC>

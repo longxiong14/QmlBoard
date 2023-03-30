@@ -29,6 +29,9 @@ class HUIControl : public QObject {
   int maskBoard(const QString& name, bool checked);
 
   Q_INVOKABLE
+  int openInrange(const QString& name, const QString& file);
+
+  Q_INVOKABLE
   int test();
 
  protected:
