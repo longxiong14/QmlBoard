@@ -7,7 +7,7 @@
 
 #include "hcvmatnode2.h"
 HCVMatBlurredImage::HCVMatBlurredImage(const cv::Mat &mat, const QPointF &point,
-                           double scale)
+                                       double scale)
     : _scale(scale), _mat(mat) {
   QJsonObject param;
   param.insert("b", 0);
@@ -21,21 +21,22 @@ HCVMatBlurredImage::HCVMatBlurredImage(const cv::Mat &mat, const QPointF &point,
   setColor(QColor(255, 0, 0, 255));
 }
 
-QImage HCVMatBlurredImage::getImage(const QRectF &roi, double scale) {
+QImage HCVMatBlurredImage::getImage(const QRectF &r, double scale) {
   QImage q;
-  auto src_rect = cv::Rect(int(roi.x() * _scale), int(roi.y() * _scale),
-                           int((int(roi.width() * _scale + 1))),
-                           int((int(roi.height() * _scale) + 1)));
-  scale = scale / _scale;
+  auto roi = QRectF(r.x() * _scale, r.y() * _scale, r.width() * _scale,
+                    r.height() * _scale);
+  auto src_rect =
+      cv::Rect(int(roi.x()), int(roi.y()), int((int(roi.width() + 1))),
+               int((int(roi.height()) + 1)));
   src_rect &= cv::Rect(0, 0, _mat.cols, _mat.rows);
   auto d = _mat(src_rect);
+  scale = scale / _scale;
   if (d.cols * scale > 1 && d.rows * scale > 1) {
     cv::resize(d, d, cv::Size(), scale, scale, cv::INTER_NEAREST);
 
     auto dst_roi = QRectF((roi.x() - int(roi.x())) * scale,
                           (roi.y() - int(roi.y())) * scale, roi.width() * scale,
                           roi.height() * scale);
-
     cv::Rect int_rect(int(dst_roi.x()), int(dst_roi.y()), int(dst_roi.width()),
                       int(dst_roi.height()));
 
