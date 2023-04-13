@@ -6,7 +6,7 @@
 #include <opencv2/imgproc.hpp>
 
 #include "../../Common/hcommons.h"
-#include "hcvmatnode2.h"
+#include "hcvmatnode.h"
 #define DEBUG qDebug() << __FUNCTION__ << __LINE__
 HCVMatRotateNode::HCVMatRotateNode(const QString &path)
     : HImageMapNodeDelegate() {

@@ -5,7 +5,7 @@
 #include <opencv2/imgcodecs.hpp>
 #include <opencv2/imgproc.hpp>
 
-#include "hcvmatnode2.h"
+#include "hcvmatnode.h"
 HCVMatBlurredImage::HCVMatBlurredImage(const cv::Mat &mat, const QPointF &point,
                                        double scale)
     : _scale(scale), _mat(mat) {

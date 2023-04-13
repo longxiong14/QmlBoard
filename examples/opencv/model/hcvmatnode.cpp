@@ -1,4 +1,4 @@
-﻿#include "hcvmatnode2.h"
+﻿#include "hcvmatnode.h"
 
 #include <QDebug>
 #include <QPainter>
@@ -85,4 +85,38 @@ QImage HCVMatNode::getImage(const QRectF &roi, double scale) {
     q = CVMat2Qimage(out);
   }
   return q;
+}
+
+void HCVMatNode::updateMat(HBoard *board, const cv::Mat &mat,
+                           const QPointF &s) {
+  DEBUG << mat.cols << mat.rows;
+  if (mat.empty()) {
+    DEBUG << "mat empty";
+    return;
+  }
+  if (mat.type() != _mat.type()) {
+    DEBUG << "mat isn't _mat type";
+    return;
+  }
+  auto start = s.toPoint();
+  QRectF roi(start.x(), start.y(), mat.cols, mat.rows);
+  if (!_mat.empty()) {
+    cv::Rect r(start.x(), start.y(), mat.cols, mat.rows);
+    r = r & cv::Rect(0, 0, _mat.cols, _mat.rows);
+    if (r.area() <= 0) return;
+    if (start.x() == r.x && start.y() == r.y) {
+      mat(cv::Rect(cv::Point(0, 0), r.size())).copyTo(_mat(r));
+    } else if (start.x() == r.x) {
+      mat(cv::Rect(0, std::abs(start.y()), r.width, r.height)).copyTo(_mat(r));
+    } else if (start.y() == r.y) {
+      mat(cv::Rect(std::abs(start.x()), 0, r.width, r.height)).copyTo(_mat(r));
+    } else {
+      mat(cv::Rect(std::abs(start.x()), std::abs(start.y()), r.width, r.height))
+          .copyTo(_mat(r));
+    }
+    setRect(QRectF(getBoundRect().topLeft(), QSize(_mat.cols, _mat.rows)));
+  }
+  //  auto img = HCVMatNode::CVMat2Qimage(_mat);
+  //  setImage(img);
+  //  HImageMapNode::updateMat(board, img, s);
 }

@@ -316,7 +316,7 @@ void HBoard::pushSelect(const QUuid &s) {
   pushTask([=]() {
     if (containNodes(s)) {
       auto n = getNodeById(s);
-      if (n && !n->isSelect()) {
+      if (n && !n->isSelect() && n->canSelect()) {
         n->changedSelectStatus();
         auto node = n->buildDragNode(this);
         if (node && _drag_nodes && !node->parent()) {

@@ -2,6 +2,7 @@
 //#include <opencv2/
 #include <QDebug>
 #include <memory>
+#include <opencv2/highgui.hpp>
 #include <opencv2/imgcodecs.hpp>
 #include <opencv2/imgproc.hpp>
 
@@ -9,7 +10,7 @@
 #include "../../hboardmanager.h"
 #include "../hqdebug.h"
 #include "../model/hcvmatboard.h"
-#include "../model/hcvmatnode2.h"
+#include "../model/hcvmatnode.h"
 #include "../model/hcvmatnode_rotate.h"
 #include "../model/hmulthandles.h"
 #include "../model/htrans.h"
@@ -103,14 +104,29 @@ int HUIControl::openInrange(const QString &name, const QString &file) {
 }
 
 int HUIControl::test() {
-  auto board = getSingleSource();
-  if (!board) {
-    sigError("please select single source board");
-    return -1;
+  //  auto board = getSingleSource();
+  //  if (!board) {
+  //    sigError("please select single source board");
+  //    return -1;
+  //  }
+  //  auto node = std::make_shared<HCVMatRotateNode>(
+  //      "C:\\Users\\xiaolong\\Pictures\\bgr.png");
+  //  board->pushNode(node);
+
+  cv::RNG rng;
+  cv::Mat mask = cv::Mat::zeros(256, 256, CV_8UC1);
+  for (int r = 0; r < 256; r++) {
+    auto ptr = mask.ptr<uchar>(r);
+    for (int c = 0; c < 256; c++) {
+      ptr[c] = uchar(rng.uniform(0, 255));
+    }
   }
-  auto node = std::make_shared<HCVMatRotateNode>(
-      "C:\\Users\\xiaolong\\Pictures\\bgr.png");
-  board->pushNode(node);
+  cv::imshow("mask", mask);
+
+  auto dest = (mask == 3);
+  cv::imshow("dest", dest);
+
+  cv::waitKey();
   return 0;
 }
 

@@ -3,7 +3,7 @@
 #include <QDebug>
 
 #include "../../Nodes/hnodebase.h"
-#include "hcvmatnode2.h"
+#include "hcvmatnode.h"
 #define DEBUG qDebug() << __FUNCTION__ << __LINE__
 
 HCVMatBoard::HCVMatBoard(QQuickItem *parent) : HImageMapBoard(parent) {

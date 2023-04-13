@@ -17,6 +17,8 @@ class HCVMatNode : public HImageMapNodeDelegate {
 
   virtual QImage getImage(const QRectF &roi, double scale) override;
 
+  void updateMat(HBoard *board, const cv::Mat &mat, const QPointF &s);
+
   virtual int save(QJsonObject &) override { return -1; }
   virtual int load(const QJsonObject &) override { return -1; }
 
