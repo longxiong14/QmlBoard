@@ -46,13 +46,13 @@ void HKeyFactory::keyPressEvent(HBoard *board, QKeyEvent *event) {
       case Qt::Key_Z:
         if (_keys.contains(Qt::Key_Control)) {
           auto command = board->getCommand();
-          command->undo();
+          if (command) command->undo();
         }
         break;
       case Qt::Key_Y:
         if (_keys.contains(Qt::Key_Control)) {
           auto command = board->getCommand();
-          command->redo();
+          if (command) command->redo();
         }
         break;
     }
